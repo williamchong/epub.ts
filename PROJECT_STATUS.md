@@ -18,7 +18,8 @@
 
 ### Stage C: Improvements
 - [x] Enable `noImplicitAny` (270 implicit-any params annotated)
-- [x] Replace ~528 explicit `any` with proper types (~123 remain where genuinely needed)
+- [x] Replace ~528 explicit `any` with proper types (~100 remain where genuinely needed)
+- [x] Type all public APIs (no `any` in user-facing signatures)
 - [ ] Replace `localforage` with lighter IndexedDB wrapper
 - [ ] Replace `@xmldom/xmldom` with browser-native DOMParser
 - [x] Enable `strictNullChecks` (476 errors fixed across 30 files)

@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.3.96 (2026-02-07)
+
+### Type safety
+
+- Replace `any` with proper types across all public APIs: `ePub()`, `Book.ready`,
+  `Book.loaded`, `Rendition.next/prev`, `Locations.generateFromWords`,
+  `Store.getText/getBase64`, `EpubCFI.base/path/parse/fromRange/fromNode`, and more
+- Fix `SpineItem.next()/prev()` return type from `SpineItem` to `Section`
+  (matches runtime behavior; eliminates all `as unknown as Section` casts)
+- Export all public classes (`Spine`, `Locations`, `Navigation`, `PageList`,
+  `Resources`, `Packaging`, `Archive`, `Store`, `DisplayOptions`, `Annotations`,
+  `Themes`, `Mapping`) from package entry point
+
+### Bug fixes
+
+- Fix `EpubCFI.compare()` null-safety bug: offset comparison now guards against
+  null offsets instead of silently returning "equal"
+- Fix `Annotations.each()` which used broken `forEach.apply` on a Record
+- Fix `Locations.processWords` early return to resolve with `[]` instead of
+  `undefined`
+- Guard rendition mark-click callback against destroyed view contents
+
 ## 0.3.95 (2026-02-07)
 
 ### Exports
