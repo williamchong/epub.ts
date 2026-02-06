@@ -3,6 +3,7 @@ import EpubCFI from "./epubcfi";
 import Rendition from "./rendition";
 import Contents from "./contents";
 import Layout from "./layout";
+import Section from "./section";
 import ePub from "./epub";
 
 export default ePub;
@@ -11,5 +12,7 @@ export {
 	EpubCFI,
 	Rendition,
 	Contents,
-	Layout
+	Layout,
+	Section,
 };
+export * from "./types";
