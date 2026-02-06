@@ -1,7 +1,8 @@
 {
   "name": "@likecoin/epub-ts",
-  "version": "0.4.0",
+  "version": "0.3.93",
   "description": "Parse and Render Epubs",
+  "keywords": ["epub", "ebook", "reader", "typescript", "epubjs", "parser", "renderer"],
   "type": "module",
   "main": "dist/epub.cjs",
   "module": "dist/epub.js",
@@ -25,7 +26,15 @@
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix"
   },
-  "author": "fchasen@gmail.com",
+  "author": "William Chong <me@williamchong.cloud>",
+  "contributors": [
+    {
+      "name": "Fred Chasen",
+      "email": "fchasen@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/likecoin/epub.ts",
+  "bugs": "https://github.com/likecoin/epub.ts/issues",
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@eslint/js": "^9.39.2",

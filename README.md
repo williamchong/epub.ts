@@ -1,10 +1,8 @@
 # epub.ts (`@likecoin/epub-ts`)
 
-A TypeScript fork of [epubjs](https://github.com/futurepress/epub.js) v0.3.93 — parse and render EPUB documents in the browser.
+A TypeScript fork of [epubjs](https://github.com/futurepress/epub.js) v0.3.93 by [Fred Chasen](https://github.com/fchasen) / [FuturePress](https://github.com/futurepress) — parse and render EPUB documents in the browser.
 
-## Why fork?
-
-epub.js is a mature, widely-used library but development has stalled. This fork modernizes the tooling and converts the source to TypeScript while maintaining API compatibility as a drop-in replacement.
+This library is primarily developed for internal use at [3ook.com](https://3ook.com) and is provided as-is. It was mainly built with AI-assisted development.
 
 ## Install
 
@@ -40,6 +38,14 @@ All APIs remain the same.
 import { Book, EpubCFI, Rendition, Contents, Layout } from "@likecoin/epub-ts";
 ```
 
+## What's Changed
+
+- Build: webpack + Babel → Vite
+- Tests: Karma + Mocha → Vitest
+- Source: JavaScript → TypeScript (incremental conversion)
+- Removed dependencies: `core-js`, `lodash`, `path-webpack`
+- Replaced `event-emitter` with inline typed emitter
+
 ## Development
 
 ```bash
@@ -48,14 +54,6 @@ npm run build     # Vite library build → dist/
 npm test          # Vitest
 npm run typecheck # tsc --noEmit
 ```
-
-## What's Changed
-
-- Build: webpack + Babel → Vite
-- Tests: Karma + Mocha → Vitest
-- Source: JavaScript → TypeScript (incremental conversion)
-- Removed dependencies: `core-js`, `lodash`, `path-webpack`
-- Replaced `event-emitter` with `mitt` (typed, 200 bytes)
 
 ## Contributing
 

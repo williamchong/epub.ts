@@ -4,16 +4,17 @@
 - `npm run build` — Vite library build
 - `npm test` — Vitest
 - `npm run typecheck` — tsc --noEmit
+- `npm run lint` — ESLint
 
 ## Codebase
-- `src/` — Library source (JS, converting to TypeScript)
+- `src/` — Library source (TypeScript)
 - `test/` — Vitest tests
 - `dist/` — Build output (gitignored)
 - `types/` — Legacy TS declarations (will be removed after full TS conversion)
 
 ## Conventions
-- ES6 classes with event-emitter mixin (migrating to mitt)
-- Moderate TS strictness (noImplicitAny: true)
+- ES6 classes with inline typed emitter
+- Strict TS (noImplicitAny, strictNullChecks)
 - API-compatible with epubjs v0.3.93
 - Tabs for indentation, double quotes for strings
 - BSD-2-Clause license

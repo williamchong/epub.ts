@@ -1,0 +1,32 @@
+# Changelog
+
+## 0.3.93 (2026-02-07)
+
+Initial release of `@likecoin/epub-ts`, a TypeScript fork of [epubjs](https://github.com/futurepress/epub.js) v0.3.93.
+
+### Build & tooling
+
+- Replaced webpack + Babel + Karma with Vite + Vitest
+- Added ESLint with TypeScript plugin (0 errors, 0 warnings)
+- Added GitHub Actions CI
+
+### TypeScript conversion
+
+- Converted all source files from JavaScript to TypeScript
+- Enabled `noImplicitAny` (270 implicit-any params annotated)
+- Replaced ~528 explicit `any` with proper types
+- Enabled `strictNullChecks` (476 errors fixed across 30 files)
+
+### Dependencies removed
+
+- `core-js` (Babel polyfills, not needed with Vite)
+- `lodash` (throttle/debounce replaced with native)
+- `path-webpack` (replaced with inline path utils)
+- `event-emitter` (replaced with inline typed emitter)
+- `marks-pane` (inlined as src/marks-pane/)
+
+### Bug fixes
+
+- Fixed Path class directory extension parsing
+- Fixed Url file:// origin handling
+- Fixed all skipped/todo tests with HTTP fixture server
