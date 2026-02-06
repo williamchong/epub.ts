@@ -35,7 +35,6 @@
     "@types/localforage": "0.0.34",
     "@xmldom/xmldom": "^0.7.5",
     "jszip": "^3.7.1",
-    "localforage": "^1.10.0",
-    "marks-pane": "^1.0.9"
+    "localforage": "^1.10.0"
   }
 }
