@@ -117,7 +117,7 @@ class Snap implements IEventEmitter {
 	}
 
 	supportsTouch(): any {
-		if (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
+		if (('ontouchstart' in window) || (window as any).DocumentTouch && document instanceof (window as any).DocumentTouch) {
 			return true;
 		}
 

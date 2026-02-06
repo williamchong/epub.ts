@@ -307,7 +307,7 @@ class Store implements IEventEmitter {
 			reader.addEventListener("loadend", () => {
 				deferred.resolve(reader.result);
 			});
-			reader.readAsDataURL(blob, mimeType);
+			reader.readAsDataURL(blob);
 
 			return deferred.promise;
 		});
@@ -321,7 +321,7 @@ class Store implements IEventEmitter {
 	 */
 	createUrl(url: string, options?: any): Promise<string> {
 		var deferred = new defer();
-		var _URL = window.URL || window.webkitURL || window.mozURL;
+		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
 		var tempUrl;
 		var response;
 		var useBase64 = options && options.base64;
@@ -376,13 +376,13 @@ class Store implements IEventEmitter {
 	 * @param  {string} url url of the item in the store
 	 */
 	revokeUrl(url: string): void {
-		var _URL = window.URL || window.webkitURL || window.mozURL;
+		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
 		var fromCache = this.urlCache[url];
 		if(fromCache) _URL.revokeObjectURL(fromCache);
 	}
 
 	destroy(): void {
-		var _URL = window.URL || window.webkitURL || window.mozURL;
+		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
 		for (let fromCache in this.urlCache) {
 			_URL.revokeObjectURL(fromCache);
 		}

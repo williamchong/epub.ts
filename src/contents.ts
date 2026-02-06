@@ -299,7 +299,7 @@ class Contents implements IEventEmitter {
 		var _width, _height, _scale, _minimum, _maximum, _scalable;
 		// var width, height, scale, minimum, maximum, scalable;
 		var $viewport = this.document.querySelector("meta[name='viewport']");
-		var parsed = {
+		var parsed: any = {
 			"width": undefined,
 			"height": undefined,
 			"scale": undefined,
@@ -308,7 +308,7 @@ class Contents implements IEventEmitter {
 			"scalable": undefined
 		};
 		var newContent = [];
-		var settings = {};
+		var settings: any = {};
 
 		/*
 		* check for the viewport size
@@ -651,7 +651,7 @@ class Contents implements IEventEmitter {
 				}
 
 				if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
-					position = range.startContainer.getBoundingClientRect();
+					position = (range.startContainer as Element).getBoundingClientRect();
 					targetPos.left = position.left;
 					targetPos.top = position.top;
 				} else {
@@ -664,8 +664,8 @@ class Contents implements IEventEmitter {
 						let newRange = new Range();
 						try {
 							if (container.nodeType === ELEMENT_NODE) {
-								position = container.getBoundingClientRect();
-							} else if (range.startOffset + 2 < container.length) {
+								position = (container as Element).getBoundingClientRect();
+							} else if (range.startOffset + 2 < (container as CharacterData).length) {
 								newRange.setStart(container, range.startOffset);
 								newRange.setEnd(container, range.startOffset + 2);
 								position = newRange.getBoundingClientRect();
@@ -674,7 +674,7 @@ class Contents implements IEventEmitter {
 								newRange.setEnd(container, range.startOffset);
 								position = newRange.getBoundingClientRect();
 							} else { // empty, return the parent element
-								position = container.parentNode.getBoundingClientRect();
+								position = (container.parentNode as Element).getBoundingClientRect();
 							}
 						} catch (e) {
 							console.error(e, e.stack);
@@ -964,7 +964,7 @@ class Contents implements IEventEmitter {
 		if(!this.document) {
 			return;
 		}
-		this.document.removeEventListener("selectionchange", this._onSelectionChange, { passive: true });
+		this.document.removeEventListener("selectionchange", this._onSelectionChange);
 		this._onSelectionChange = undefined;
 	}
 
@@ -1034,7 +1034,7 @@ class Contents implements IEventEmitter {
 	// TODO: find where this is used - remove?
 	map(layout: any): any {
 		var map = new Mapping(layout);
-		return map.section();
+		return map.section(undefined as any);
 	}
 
 	/**
@@ -1043,7 +1043,7 @@ class Contents implements IEventEmitter {
 	 * @param {number} [height]
 	 */
 	size(width?: number, height?: number): void {
-		var viewport = { scale: 1.0, scalable: "no" };
+		var viewport: any = { scale: 1.0, scalable: "no" };
 
 		this.layoutStyle("scrolling");
 
@@ -1199,7 +1199,7 @@ class Contents implements IEventEmitter {
 	}
 
 	mapPage(cfiBase: string, layout: any, start: number, end: number, dev?: boolean): any {
-		var mapping = new Mapping(layout, dev);
+		var mapping = new Mapping(layout, dev as any);
 
 		return mapping.page(this, cfiBase, start, end);
 	}
@@ -1237,7 +1237,7 @@ class Contents implements IEventEmitter {
 
 		if (style) {
 			this._layoutStyle = style;
-			navigator.epubReadingSystem.layoutStyle = this._layoutStyle;
+			(navigator as any).epubReadingSystem.layoutStyle = this._layoutStyle;
 		}
 
 		return this._layoutStyle || "paginated";
@@ -1250,7 +1250,7 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	epubReadingSystem(name: string, version: string): any {
-		navigator.epubReadingSystem = {
+		(navigator as any).epubReadingSystem = {
 			name: name,
 			version: version,
 			layoutStyle: this.layoutStyle(),
@@ -1273,7 +1273,7 @@ class Contents implements IEventEmitter {
 				}
 			}
 		};
-		return navigator.epubReadingSystem;
+		return (navigator as any).epubReadingSystem;
 	}
 
 	destroy(): void {

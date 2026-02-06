@@ -95,9 +95,9 @@ class Mapping {
 			}
 		};
 		var safeFilter = filter.acceptNode;
-		safeFilter.acceptNode = filter.acceptNode;
+		(safeFilter as any).acceptNode = filter.acceptNode;
 
-		var treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, safeFilter, false);
+		var treeWalker = (document as any).createTreeWalker(root, NodeFilter.SHOW_TEXT, safeFilter, false);
 		var node;
 		var result;
 		while ((node = treeWalker.nextNode())) {
@@ -117,7 +117,7 @@ class Mapping {
 		var gap = this.layout.gap;
 		var start, end;
 
-		for (var i = 0; i < count.pages; i++) {
+		for (var i = 0; i < count; i++) {
 			start = (columnWidth + gap) * i;
 			end = (columnWidth * (i+1)) + (gap * i);
 			columns.push({

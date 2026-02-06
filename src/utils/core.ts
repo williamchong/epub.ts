@@ -116,7 +116,7 @@ export function prefixed(unprefixed: string): string {
  * @returns {object}
  * @memberof Core
  */
-export function defaults(obj: any): any {
+export function defaults(obj: any, ..._sources: any[]): any {
 	for (var i = 1, length = arguments.length; i < length; i++) {
 		var source = arguments[i];
 		for (var prop in source) {

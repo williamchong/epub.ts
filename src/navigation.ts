@@ -199,8 +199,8 @@ class Navigation {
 	 */
 	navItem(item: any, parent?: string): NavItem | undefined {
 		let id = item.getAttribute("id") || undefined;
-		let content = filterChildren(item, "a", true)
-			|| filterChildren(item, "span", true);
+		let content = (filterChildren(item, "a", true)
+			|| filterChildren(item, "span", true)) as Element;
 
 		if (!content) {
 			return;
@@ -262,7 +262,7 @@ class Navigation {
 	 * @return {object} landmarkItem
 	 */
 	landmarkItem(item: any): LandmarkItem | undefined {
-		let content = filterChildren(item, "a", true);
+		let content = filterChildren(item, "a", true) as Element;
 
 		if (!content) {
 			return;

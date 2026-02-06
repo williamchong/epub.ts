@@ -184,7 +184,7 @@ class Archive {
 	 */
 	createUrl(url: string, options?: any): Promise<string> {
 		var deferred = new defer();
-		var _URL = window.URL || window.webkitURL || window.mozURL;
+		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
 		var tempUrl;
 		var response;
 		var useBase64 = options && options.base64;
@@ -239,13 +239,13 @@ class Archive {
 	 * @param  {string} url url of the item in the archive
 	 */
 	revokeUrl(url: string): void {
-		var _URL = window.URL || window.webkitURL || window.mozURL;
+		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
 		var fromCache = this.urlCache[url];
 		if(fromCache) _URL.revokeObjectURL(fromCache);
 	}
 
 	destroy(): void {
-		var _URL = window.URL || window.webkitURL || window.mozURL;
+		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
 		for (let fromCache in this.urlCache) {
 			_URL.revokeObjectURL(fromCache);
 		}

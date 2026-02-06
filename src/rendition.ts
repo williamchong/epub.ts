@@ -800,7 +800,7 @@ class Rendition implements IEventEmitter {
 		let start = location[0];
 		let end = location[location.length-1];
 
-		let located = {
+		let located: any = {
 			start: {
 				index: start.index,
 				href: start.href,
@@ -970,7 +970,7 @@ class Rendition implements IEventEmitter {
 	adjustImages(contents: any): Promise<any> {
 
 		if (this._layout.name === "pre-paginated") {
-			return new Promise(function(resolve){
+			return new Promise<void>(function(resolve){
 				resolve();
 			});
 		}
@@ -996,7 +996,7 @@ class Rendition implements IEventEmitter {
 			}
 		});
 
-		return new Promise(function(resolve, reject){
+		return new Promise<void>(function(resolve, reject){
 			// Wait to apply
 			setTimeout(function() {
 				resolve();

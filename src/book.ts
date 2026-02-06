@@ -374,7 +374,7 @@ class Book implements IEventEmitter {
 	 * @param  {string} path path to the resource to load
 	 * @return {Promise}     returns a promise with the requested resource
 	 */
-	load(path: string): Promise<any> {
+	load(path: string, _type?: string): Promise<any> {
 		var resolved = this.resolve(path);
 		if(this.archived) {
 			return this.archive.request(resolved);

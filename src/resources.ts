@@ -213,7 +213,7 @@ class Resources {
 		var newUrl;
 
 		if (path.isAbsolute(href)) {
-			return new Promise(function(resolve){
+			return new Promise<void>(function(resolve){
 				resolve();
 			});
 		}
@@ -239,7 +239,7 @@ class Resources {
 
 		if (!textResponse) {
 			// file not found, don't replace
-			return new Promise(function(resolve){
+			return new Promise<void>(function(resolve){
 				resolve();
 			});
 		}
@@ -258,7 +258,7 @@ class Resources {
 			return newUrl;
 		}, (err) => {
 			// handle response errors
-			return new Promise(function(resolve){
+			return new Promise<void>(function(resolve){
 				resolve();
 			});
 		});

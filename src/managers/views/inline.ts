@@ -108,7 +108,7 @@ class InlineView implements IEventEmitter {
 		}
 
 		if(!this.element) {
-			this.element = this.createContainer();
+			this.element = this.container();
 		}
 
 		this.frame = document.createElement("div");

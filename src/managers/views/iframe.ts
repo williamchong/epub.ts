@@ -125,7 +125,7 @@ class IframeView implements IEventEmitter {
 		}
 
 		if(!this.element) {
-			this.element = this.createContainer();
+			this.element = this.container();
 		}
 
 		this.iframe = document.createElement("iframe");
@@ -158,7 +158,7 @@ class IframeView implements IEventEmitter {
 		this._width = 0;
 		this._height = 0;
 
-		this.element.setAttribute("ref", this.index);
+		this.element.setAttribute("ref", String(this.index));
 
 		this.added = true;
 
@@ -233,7 +233,7 @@ class IframeView implements IEventEmitter {
 				// Listen for events that require an expansion of the iframe
 				this.addListeners();
 
-				return new Promise((resolve, reject) => {
+				return new Promise<void>((resolve, reject) => {
 					// Expand the iframe to the full size of the content
 					this.expand();
 
@@ -462,9 +462,9 @@ class IframeView implements IEventEmitter {
 
 			this.iframe.contentDocument.open();
 			// For Cordova windows platform
-			if(window.MSApp && MSApp.execUnsafeLocalFunction) {
+			if((window as any).MSApp && (window as any).MSApp.execUnsafeLocalFunction) {
 				var outerThis = this;
-				MSApp.execUnsafeLocalFunction(function () {
+				(window as any).MSApp.execUnsafeLocalFunction(function () {
 					outerThis.iframe.contentDocument.write(contents);
 				});
 			} else {
@@ -568,7 +568,7 @@ class IframeView implements IEventEmitter {
 					displayed.resolve(this);
 
 				}.bind(this), function (err) {
-					displayed.reject(err, this);
+					displayed.reject(err);
 				});
 
 		} else {
@@ -756,12 +756,12 @@ class IframeView implements IEventEmitter {
 		}
 
 		if (cb) {
-			mark.addEventListener("click", cb);
-			mark.addEventListener("touchstart", cb);
+			mark.addEventListener("click", cb as EventListener);
+			mark.addEventListener("touchstart", cb as EventListener);
 		}
 
-		mark.addEventListener("click", emitter);
-		mark.addEventListener("touchstart", emitter);
+		mark.addEventListener("click", emitter as EventListener);
+		mark.addEventListener("touchstart", emitter as EventListener);
 
 		this.placeMark(mark, range);
 

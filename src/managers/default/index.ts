@@ -32,6 +32,7 @@ class DefaultViewManager implements IEventEmitter {
 	scrollTop: number;
 	ignore: boolean;
 	writingMode: string;
+	_hasScrolled: boolean;
 	_onScroll: (...args: any[]) => void;
 	orientationTimeout: ReturnType<typeof setTimeout>;
 	resizeTimeout: ReturnType<typeof setTimeout>;
@@ -899,7 +900,7 @@ class DefaultViewManager implements IEventEmitter {
 		} else {
 			window.scrollBy(x * dir, y * dir);
 		}
-		this.scrolled = true;
+		this._hasScrolled = true;
 	}
 
 	scrollTo(x: number, y: number, silent?: boolean): void {
@@ -913,7 +914,7 @@ class DefaultViewManager implements IEventEmitter {
 		} else {
 			window.scrollTo(x,y);
 		}
-		this.scrolled = true;
+		this._hasScrolled = true;
 	}
 
 	onScroll(): void {

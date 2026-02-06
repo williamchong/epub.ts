@@ -246,7 +246,7 @@ class Section {
 			}
 		}
 
-		const treeWalker = document.createTreeWalker(section.document, NodeFilter.SHOW_TEXT, null, false);
+		const treeWalker = (document as any).createTreeWalker(section.document, NodeFilter.SHOW_TEXT, null, false);
 		let node , nodeList = [];
 		while (node = treeWalker.nextNode()) {
 			nodeList.push(node);
