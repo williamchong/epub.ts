@@ -26,7 +26,7 @@
 - [ ] Node.js support (parsing-only entry point)
 - [ ] Improve test coverage
 - [x] ESLint + TS plugin (0 errors, 0 warnings)
-- [ ] GitHub Actions CI
+- [x] GitHub Actions CI
 
 ### Dependency Status
 | Dep | Status | Notes |
