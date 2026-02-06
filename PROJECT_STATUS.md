@@ -43,9 +43,9 @@
 ### Test Status
 | Test | Status | Notes |
 |---|---|---|
-| core.test.ts | ✅ Passing | 2 skipped: file: URL opaque origin (spec behavior, Chrome differs) |
-| epubcfi.test.ts | ✅ Passing | |
-| locations.test.ts | ✅ Passing | |
-| epub.test.ts | ⏳ TODO | Needs local HTTP server for fixtures |
-| book.test.ts | ⏳ TODO | Needs local HTTP server for fixtures |
-| section.test.ts | ⏳ TODO | Needs local HTTP server for fixtures |
+| core.test.ts | ✅ 19 passing | All, including file URL and directory-with-dot tests |
+| epubcfi.test.ts | ✅ 27 passing | |
+| locations.test.ts | ✅ 2 passing | |
+| epub.test.ts | ✅ 2 passing | Unarchived + archived open |
+| book.test.ts | ✅ 8 passing | Unarchived, archived, ArrayBuffer, no-cover |
+| section.test.ts | ✅ 4 passing | find() + search(), including cross-node spans |

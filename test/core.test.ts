@@ -51,8 +51,7 @@ describe("Core", () => {
 				expect(resolved).toBe("http://example.com/derf.html");
 			});
 
-			// Doesn't work with path.parse
-			it.skip("should handle directory with a dot", () => {
+			it("should handle directory with a dot", () => {
 				var a = "http://example.com/fred/chasen/index.epub/";
 
 				var url = new Url(a);
@@ -60,8 +59,7 @@ describe("Core", () => {
 				expect(url.extension).toBe("");
 			});
 
-			// file: URLs have opaque origin per spec (serializes to "null"), Chrome returns "file://"
-		it.skip("should handle file urls", () => {
+			it("should handle file urls", () => {
 				var url = new Url("file:///var/mobile/Containers/Data/Application/F47E4434-9B98-4654-93F1-702336B08EE6/Documents/books/moby-dick/derf.html");
 
 				expect(url.href).toBe("file:///var/mobile/Containers/Data/Application/F47E4434-9B98-4654-93F1-702336B08EE6/Documents/books/moby-dick/derf.html");
@@ -73,8 +71,7 @@ describe("Core", () => {
 				expect(url.search).toBe("");
 			});
 
-			// file: URLs have opaque origin per spec (serializes to "null")
-		it.skip("should resolve with file urls", () => {
+			it("should resolve with file urls", () => {
 				var a = "file:///var/mobile/Containers/Data/Application/books/";
 				var b = "derf.html";
 

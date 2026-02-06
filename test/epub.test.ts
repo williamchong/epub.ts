@@ -1,10 +1,21 @@
-import { describe, it } from "vitest";
+import { describe, it, expect } from "vitest";
+import ePub from "../src/epub";
+import { getFixtureUrl } from "./helpers";
 
-// TODO: These tests require a local HTTP server to serve fixture files.
-// Original tests used Karma's built-in static server at localhost:9876.
-// Need to either: mock fetch/XHR, or start a local server in beforeAll.
+describe("ePub", () => {
+	it("should open a epub", async () => {
+		var book = ePub(getFixtureUrl("/alice/OPS/package.opf"));
 
-describe.todo("ePub", () => {
-	it.todo("should open a epub");
-	it.todo("should open a archived epub");
+		await book.opened;
+		expect(book.isOpen).toBe(true);
+		expect(book.url.toString()).toBe(getFixtureUrl("/alice/OPS/package.opf"));
+	});
+
+	it("should open a archived epub", async () => {
+		var book = ePub(getFixtureUrl("/alice.epub"));
+
+		await book.opened;
+		expect(book.isOpen).toBe(true);
+		expect(book.archive).toBeTruthy();
+	});
 });
