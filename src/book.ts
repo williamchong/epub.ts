@@ -15,8 +15,9 @@ import request from "./utils/request";
 import EpubCFI from "./epubcfi";
 import Store from "./store";
 import DisplayOptions from "./displayoptions";
+import type JSZip from "jszip";
 import { EPUBJS_VERSION, EVENTS } from "./utils/constants";
-import type { IEventEmitter, BookOptions, RenditionOptions, RequestFunction } from "./types";
+import type { IEventEmitter, BookOptions, RenditionOptions, RequestFunction, PackagingManifestObject, PackagingMetadataObject } from "./types";
 import type Section from "./section";
 
 interface BookLoadingState {
@@ -31,14 +32,14 @@ interface BookLoadingState {
 }
 
 interface BookLoadedState {
-	manifest: Promise<any>;
-	spine: Promise<any>;
-	metadata: Promise<any>;
-	cover: Promise<any>;
-	navigation: Promise<any>;
-	pageList: Promise<any>;
-	resources: Promise<any>;
-	displayOptions: Promise<any>;
+	manifest: Promise<PackagingManifestObject>;
+	spine: Promise<Spine>;
+	metadata: Promise<PackagingMetadataObject>;
+	cover: Promise<string>;
+	navigation: Promise<Navigation>;
+	pageList: Promise<PageList>;
+	resources: Promise<Resources>;
+	displayOptions: Promise<DisplayOptions>;
 }
 
 const CONTAINER_PATH = "META-INF/container.xml";
@@ -78,7 +79,7 @@ class Book implements IEventEmitter {
 	isOpen: boolean;
 	loading: BookLoadingState | undefined;
 	loaded: BookLoadedState | undefined;
-	ready: Promise<any[]> | undefined;
+	ready: Promise<[PackagingManifestObject, Spine, PackagingMetadataObject, string, Navigation, Resources, DisplayOptions]> | undefined;
 	isRendered: boolean;
 	request: RequestFunction;
 	spine: Spine | undefined;
@@ -654,7 +655,7 @@ class Book implements IEventEmitter {
 	 * @param  {string} [encoding]
 	 * @return {Archive}
 	 */
-	unarchive(input: string | ArrayBuffer | Blob, encoding?: string): Promise<any> {
+	unarchive(input: string | ArrayBuffer | Blob, encoding?: string): Promise<JSZip> {
 		this.archive = new Archive();
 		return this.archive.open(input, encoding === "base64");
 	}

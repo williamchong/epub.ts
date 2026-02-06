@@ -15,6 +15,7 @@ import type Section from "./section";
 
 // Default Views
 import IframeView from "./managers/views/iframe";
+import type Views from "./managers/helpers/views";
 
 // Default View Managers
 import DefaultViewManager from "./managers/default/index";
@@ -446,9 +447,13 @@ class Rendition implements IEventEmitter {
 	 * @private
 	 * @param  {*} view
 	 */
-	afterDisplayed(view: any): void {
+	afterDisplayed(view: IframeView): void {
 
-		view.on(EVENTS.VIEWS.MARK_CLICKED, (cfiRange: string, data: object) => this.triggerMarkEvent(cfiRange, data, view.contents));
+		view.on(EVENTS.VIEWS.MARK_CLICKED, (cfiRange: string, data: object) => {
+			if (view.contents) {
+				this.triggerMarkEvent(cfiRange, data, view.contents);
+			}
+		});
 
 		this.hooks.render.trigger(view, this)
 			.then(() => {
@@ -475,7 +480,7 @@ class Rendition implements IEventEmitter {
 	 * @private
 	 * @param  {*} view
 	 */
-	afterRemoved(view: any): void {
+	afterRemoved(view: IframeView): void {
 		this.hooks.unloaded.trigger(view, this).then(() => {
 			/**
 			 * Emit that a section has been removed
@@ -563,7 +568,7 @@ class Rendition implements IEventEmitter {
 	 * Go to the next "page" in the rendition
 	 * @return {Promise}
 	 */
-	next(): Promise<any> {
+	next(): Promise<void> {
 		return this.q.enqueue(this.manager!.next.bind(this.manager))
 			.then(this.reportLocation.bind(this));
 	}
@@ -572,7 +577,7 @@ class Rendition implements IEventEmitter {
 	 * Go to the previous "page" in the rendition
 	 * @return {Promise}
 	 */
-	prev(): Promise<any> {
+	prev(): Promise<void> {
 		return this.q.enqueue(this.manager!.prev.bind(this.manager))
 			.then(this.reportLocation.bind(this));
 	}
@@ -961,7 +966,7 @@ class Rendition implements IEventEmitter {
 	 */
 	getRange(cfi: string, ignoreClass?: string): Range | undefined {
 		const _cfi = new EpubCFI(cfi);
-		const found = this.manager!.visible().filter(function (view: any) {
+		const found = this.manager!.visible().filter(function (view: IframeView) {
 			if(_cfi.spinePos === view.index) return true;
 		});
 
@@ -1025,7 +1030,7 @@ class Rendition implements IEventEmitter {
 	 * Get the views member from the manager
 	 * @returns {Views}
 	 */
-	views (): any {
+	views (): Views | IframeView[] {
 		const views = this.manager ? this.manager.views : undefined;
 		return views || [];
 	}

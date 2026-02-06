@@ -279,7 +279,7 @@ class DefaultViewManager implements IEventEmitter {
 		return new this.View(section, extend(this.viewSettings, { forceRight }) );
 	}
 
-	handleNextPrePaginated(forceRight: boolean, section: Section, action: Function): any {
+	handleNextPrePaginated(forceRight: boolean, section: Section, action: Function): Promise<IframeView> | undefined {
 		let next;
 
 		if (this.layout.name === "pre-paginated" && this.layout.divisor > 1) {
@@ -294,7 +294,7 @@ class DefaultViewManager implements IEventEmitter {
 		}
 	}
 
-	display(section: Section, target?: string): Promise<any> {
+	display(section: Section, target?: string): Promise<void> {
 
 		const displaying = new defer();
 		const displayed = displaying.promise;
@@ -487,8 +487,8 @@ class DefaultViewManager implements IEventEmitter {
 	//
 	// };
 
-	next(): any {
-		let next: any;
+	next(): Promise<void> | undefined {
+		let next: Section | undefined;
 		let left;
 
 		const dir = this.settings.direction;
@@ -577,8 +577,8 @@ class DefaultViewManager implements IEventEmitter {
 
 	}
 
-	prev(): any {
-		let prev: any;
+	prev(): Promise<void> | undefined {
+		let prev: Section | undefined;
 		let left;
 		const dir = this.settings.direction;
 
@@ -762,7 +762,7 @@ class DefaultViewManager implements IEventEmitter {
 				pages.push(pg);
 			}
 
-			const mapping = this.mapping.page(view.contents, view.section.cfiBase, startPos, endPos);
+			const mapping = this.mapping.page(view.contents!, view.section.cfiBase, startPos, endPos);
 
 			return {
 				index,
@@ -812,7 +812,7 @@ class DefaultViewManager implements IEventEmitter {
 
 			used += pageWidth;
 
-			const mapping = this.mapping.page(view.contents, view.section.cfiBase, start, end);
+			const mapping = this.mapping.page(view.contents!, view.section.cfiBase, start, end);
 
 			const totalPages = this.layout.count(width).pages;
 			let startPage = Math.floor(start / this.layout.pageWidth);

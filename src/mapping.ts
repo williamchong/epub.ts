@@ -1,6 +1,8 @@
 import EpubCFI from "./epubcfi";
 import { nodeBounds } from "./utils/core";
 import type { EpubCFIPair, RangePair, LayoutProps } from "./types";
+import type IframeView from "./managers/views/iframe";
+import type Contents from "./contents";
 
 /**
  * Map text locations to CFI ranges
@@ -26,7 +28,7 @@ class Mapping {
 	/**
 	 * Find CFI pairs for entire section at once
 	 */
-	section(view: any): EpubCFIPair[] {
+	section(view: IframeView): EpubCFIPair[] {
 		const ranges = this.findRanges(view);
 		const map = this.rangeListToCfiList(view.section.cfiBase, ranges);
 
@@ -40,7 +42,7 @@ class Mapping {
 	 * @param {number} start position to start at
 	 * @param {number} end position to end at
 	 */
-	page(contents: any, cfiBase: string, start: number, end: number): EpubCFIPair | undefined {
+	page(contents: Contents, cfiBase: string, start: number, end: number): EpubCFIPair | undefined {
 		const root = contents && contents.document ? contents.document.body : false;
 
 		if (!root) {
@@ -62,7 +64,7 @@ class Mapping {
 			selection!.removeAllRanges();
 			r.setStart(startRange.startContainer, startRange.startOffset);
 			r.setEnd(endRange.endContainer, endRange.endOffset);
-			selection.addRange(r);
+			selection!.addRange(r);
 		}
 
 		return result;
@@ -107,9 +109,9 @@ class Mapping {
 		return result;
 	}
 
-	findRanges(view: any): any[] {
+	findRanges(view: IframeView): RangePair[] {
 		const columns = [];
-		const scrollWidth = view.contents.scrollWidth();
+		const scrollWidth = view.contents!.scrollWidth();
 		const spreads = Math.ceil( scrollWidth / this.layout.spreadWidth);
 		const count = spreads * this.layout.divisor;
 		const columnWidth = this.layout.columnWidth;

@@ -4,6 +4,7 @@ import CFI from "./epubcfi";
 import Contents from "./contents";
 import * as utils from "./utils/core";
 import { EPUBJS_VERSION } from "./utils/constants";
+import type { BookOptions } from "./types";
 
 
 /**
@@ -13,7 +14,7 @@ import { EPUBJS_VERSION } from "./utils/constants";
  * @returns {Book} a new Book object
  * @example ePub("/path/to/book.epub", {})
  */
-function ePub(url?: any, options?: any): any {
+function ePub(url?: string | ArrayBuffer | Blob | BookOptions, options?: BookOptions): Book {
 	return new Book(url, options);
 }
 

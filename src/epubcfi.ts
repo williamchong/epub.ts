@@ -25,10 +25,10 @@ const DOCUMENT_NODE = 9;
 */
 class EpubCFI {
 	str: string;
-	base: EpubCFIComponent | any;
+	base: EpubCFIComponent;
 	spinePos: number;
 	range: boolean;
-	path: EpubCFIComponent | any;
+	path: EpubCFIComponent;
 	start: EpubCFIComponent | null;
 	end: EpubCFIComponent | null;
 	id: string | null;
@@ -36,12 +36,12 @@ class EpubCFI {
 	constructor(cfiFrom?: string | Range | Node | EpubCFI, base?: string | EpubCFIComponent, ignoreClass?: string) {
 		this.str = "";
 
-		this.base = {};
+		this.base = {} as EpubCFIComponent;
 		this.spinePos = 0; // For compatibility
 
 		this.range = false; // true || false;
 
-		this.path = {};
+		this.path = {} as EpubCFIComponent;
 		this.start = null;
 		this.end = null;
 
@@ -101,14 +101,14 @@ class EpubCFI {
 	 * @param {string} cfiStr
 	 * @returns {object} cfi
 	 */
-	parse(cfiStr: string): any {
-		const cfi: any = {
+	parse(cfiStr: string): Partial<Pick<EpubCFI, "spinePos" | "range" | "base" | "path" | "start" | "end">> {
+		const cfi = {
 			spinePos: -1,
 			range: false,
-			base: {},
-			path: {},
-			start: null,
-			end: null
+			base: {} as EpubCFIComponent,
+			path: {} as EpubCFIComponent,
+			start: null as EpubCFIComponent | null,
+			end: null as EpubCFIComponent | null
 		};
 		if(typeof cfiStr !== "string") {
 			return {spinePos: -1};
@@ -404,11 +404,13 @@ class EpubCFI {
 		}
 
 		// Compare the character offset of the text node
-		if(terminalA.offset > terminalB.offset) {
-			return 1;
-		}
-		if(terminalA.offset < terminalB.offset) {
-			return -1;
+		if(terminalA.offset != null && terminalB.offset != null) {
+			if(terminalA.offset > terminalB.offset) {
+				return 1;
+			}
+			if(terminalA.offset < terminalB.offset) {
+				return -1;
+			}
 		}
 
 		// CFI's are equal
@@ -514,13 +516,14 @@ class EpubCFI {
 	 * @param {string} [ignoreClass]
 	 * @returns {object} cfi
 	 */
-	fromRange(range: Range, base: string | EpubCFIComponent, ignoreClass?: string): Partial<EpubCFI> {
-		const cfi: any = {
+	fromRange(range: Range, base: string | EpubCFIComponent, ignoreClass?: string): Partial<Pick<EpubCFI, "spinePos" | "range" | "base" | "path" | "start" | "end">> {
+		const cfi = {
 			range: false,
-			base: {},
-			path: {},
-			start: null,
-			end: null
+			base: {} as EpubCFIComponent,
+			path: {} as EpubCFIComponent,
+			start: null as EpubCFIComponent | null,
+			end: null as EpubCFIComponent | null,
+			spinePos: 0
 		};
 
 		const start = range.startContainer;
@@ -566,7 +569,7 @@ class EpubCFI {
 			// Create a new empty path
 			cfi.path = {
 				steps: [],
-				terminal: null
+				terminal: { offset: null, assertion: null }
 			};
 
 			// Push steps that are shared between start and end to the common path
@@ -608,13 +611,14 @@ class EpubCFI {
 	 * @param {string} [ignoreClass]
 	 * @returns {object} cfi
 	 */
-	fromNode(anchor: Node, base: string | EpubCFIComponent, ignoreClass?: string): Partial<EpubCFI> {
-		const cfi: any = {
+	fromNode(anchor: Node, base: string | EpubCFIComponent, ignoreClass?: string): Partial<Pick<EpubCFI, "spinePos" | "range" | "base" | "path" | "start" | "end">> {
+		const cfi = {
 			range: false,
-			base: {},
-			path: {},
-			start: null,
-			end: null
+			base: {} as EpubCFIComponent,
+			path: {} as EpubCFIComponent,
+			start: null as EpubCFIComponent | null,
+			end: null as EpubCFIComponent | null,
+			spinePos: 0
 		};
 
 		if (typeof base === "string") {

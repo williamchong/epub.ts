@@ -104,10 +104,10 @@ class Spine {
 					return;
 				}.bind(this);
 			} else {
-				item.prev = function(): SpineItem | undefined {
+				item.prev = function(): Section | undefined {
 					return undefined;
 				}
-				item.next = function(): SpineItem | undefined {
+				item.next = function(): Section | undefined {
 					return undefined;
 				}
 			}
@@ -223,8 +223,8 @@ class Spine {
 	 * Loop over the Sections in the Spine
 	 * @return {method} forEach
 	 */
-	each(...args: any[]): void {
-		return this.spineItems.forEach.apply(this.spineItems, args);
+	each(fn: (section: Section, index: number, array: Section[]) => void): void {
+		return this.spineItems.forEach(fn);
 	}
 
 	/**

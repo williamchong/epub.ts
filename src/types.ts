@@ -2,6 +2,7 @@
  * Shared type definitions for epub.ts
  * Adapted from legacy types/ directory (epubjs v0.3.93)
  */
+import type Section from "./section";
 
 // ===== Deferred =====
 export interface Deferred<T = any> {
@@ -94,8 +95,8 @@ export interface SpineItem {
 	properties: string[];
 	linear: string;
 	id?: string;
-	next: () => SpineItem | undefined;
-	prev: () => SpineItem | undefined;
+	next: () => Section | undefined;
+	prev: () => Section | undefined;
 }
 
 // ===== Page List =====

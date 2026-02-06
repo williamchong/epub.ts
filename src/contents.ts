@@ -789,19 +789,20 @@ class Contents implements IEventEmitter {
 	 * @param {array | object} rules
 	 * @param {string} key If the key is the same, the CSS will be replaced instead of inserted
 	 */
-	addStylesheetRules(rules: any, key?: string): void {
-		if(!this.document || !rules || rules.length === 0) return;
+	addStylesheetRules(rules: Record<string, Record<string, string> | Array<Record<string, string>>> | Array<Array<string | string[]>>, key?: string): void {
+		if(!this.document || !rules || (Array.isArray(rules) && rules.length === 0)) return;
 
 		// Grab style sheet
 		const styleSheet: CSSStyleSheet = (this._getStylesheetNode(key) as HTMLStyleElement).sheet as CSSStyleSheet;
 
-		if (Object.prototype.toString.call(rules) === "[object Array]") {
+		if (Array.isArray(rules)) {
+			// Array format: [selector, [prop, val], ...] or [selector, [[prop, val], ...]]
 			for (let i = 0, rl = rules.length; i < rl; i++) {
-				let j = 1, rule = rules[i], propStr = "";
-				const selector = rules[i][0];
+				let j = 1, rule: Array<string | string[]> = rules[i], propStr = "";
+				const selector = rules[i][0] as string;
 				// If the second argument of a rule is an array of arrays, correct our variables.
-				if (Object.prototype.toString.call(rule[1][0]) === "[object Array]") {
-					rule = rule[1];
+				if (Array.isArray(rule[1]?.[0])) {
+					rule = rule[1] as string[];
 					j = 0;
 				}
 

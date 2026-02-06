@@ -203,7 +203,7 @@ class Locations implements IEventEmitter {
 	 * @param  {int} count result count
 	 * @return {object} locations
 	 */
-	generateFromWords(startCfi?: string, wordCount?: number, count?: number): Promise<any[]> {
+	generateFromWords(startCfi?: string, wordCount?: number, count?: number): Promise<{ cfi: string; wordCount: number }[]> {
 		const start = startCfi ? new EpubCFI(startCfi) : undefined;
 		this.q.pause();
 		this._locationsWords = [];
@@ -231,9 +231,9 @@ class Locations implements IEventEmitter {
 
 	}
 
-	processWords(section: Section, wordCount: number, startCfi?: EpubCFI, count?: number): Promise<any> {
+	processWords(section: Section, wordCount: number, startCfi?: EpubCFI, count?: number): Promise<{ cfi: string; wordCount: number }[]> {
 		if (count && this._locationsWords.length >= count) {
-			return Promise.resolve();
+			return Promise.resolve([]);
 		}
 
 		return section.load(this.request)

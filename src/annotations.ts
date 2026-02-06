@@ -163,8 +163,10 @@ class Annotations {
 	/**
 	 * iterate over annotations in the store
 	 */
-	each (..._args: any[]): any {
-		return (this._annotations as any).forEach.apply(this._annotations, arguments);
+	each (fn: (annotation: Annotation, key: string) => void): void {
+		Object.keys(this._annotations).forEach((key) => {
+			fn(this._annotations[key], key);
+		});
 	}
 
 	/**

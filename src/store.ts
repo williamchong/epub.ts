@@ -19,7 +19,7 @@ class Store implements IEventEmitter {
 	declare emit: (type: string, ...args: any[]) => void;
 
 	urlCache: Record<string, string>;
-	storage: any;
+	storage!: LocalForage;
 	name: string;
 	requester: RequestFunction;
 	resolver: (href: string) => string;
@@ -29,7 +29,7 @@ class Store implements IEventEmitter {
 	constructor(name: string, requester?: RequestFunction, resolver?: (href: string) => string) {
 		this.urlCache = {};
 
-		this.storage = undefined;
+		// storage is set in checkRequirements() called below
 
 		this.name = name;
 		this.requester = requester || httpRequest;
@@ -259,7 +259,7 @@ class Store implements IEventEmitter {
 	 * @param  {string} [mimeType]
 	 * @return {string}
 	 */
-	getText(url: string, mimeType?: string): Promise<any> {
+	getText(url: string, mimeType?: string): Promise<string | undefined> {
 		const encodedUrl = window.encodeURIComponent(url);
 
 		mimeType = mimeType || mime.lookup(url);
@@ -288,7 +288,7 @@ class Store implements IEventEmitter {
 	 * @param  {string} [mimeType]
 	 * @return {string} base64 encoded
 	 */
-	getBase64(url: string, mimeType?: string): Promise<any> {
+	getBase64(url: string, mimeType?: string): Promise<string | undefined> {
 		const encodedUrl = window.encodeURIComponent(url);
 
 		mimeType = mimeType || mime.lookup(url);

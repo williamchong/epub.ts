@@ -22,8 +22,8 @@ class Section {
 	href: string;
 	url: string;
 	canonical: string;
-	next: () => SpineItem | undefined;
-	prev: () => SpineItem | undefined;
+	next: () => Section | undefined;
+	prev: () => Section | undefined;
 	cfiBase: string;
 	hooks: { serialize: Hook; content: Hook };
 	document: Document | undefined;

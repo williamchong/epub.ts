@@ -307,7 +307,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		const prepend = () => {
 			const first = this.views.first();
-			const prev: any = first && first.section.prev();
+			const prev = first && first.section.prev();
 
 			if(prev) {
 				newViews.push(this.prepend(prev));
@@ -316,7 +316,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		const append = () => {
 			const last = this.views.last();
-			const next: any = last && last.section.next();
+			const next = last && last.section.next();
 
 			if(next) {
 				newViews.push(this.append(next));
@@ -547,7 +547,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		}.bind(this), this.settings.afterScrolledTimeout);
 	}
 
-	next(): void {
+	next(): Promise<void> | undefined {
 
 		const delta = this.layout.props.name === "pre-paginated" &&
 								this.layout.props.spread ? this.layout.props.delta * 2 : this.layout.props.delta;
@@ -569,7 +569,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		}.bind(this));
 	}
 
-	prev(): void {
+	prev(): Promise<void> | undefined {
 
 		const delta = this.layout.props.name === "pre-paginated" &&
 								this.layout.props.spread ? this.layout.props.delta * 2 : this.layout.props.delta;
