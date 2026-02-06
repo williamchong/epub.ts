@@ -68,10 +68,10 @@ class PageList {
 	 */
 	parseNav(navHtml: any): any[] {
 		var navElement = querySelectorByType(navHtml, "nav", "page-list");
-		var navItems = navElement ? qsa(navElement, "li") : [];
+		var navItems: any[] = navElement ? qsa(navElement, "li") as any : [];
 		var length = navItems.length;
 		var i;
-		var list = [];
+		var list: any[] = [];
 		var item;
 
 		if(!navItems || length === 0) return list;
@@ -85,7 +85,7 @@ class PageList {
 	}
 
 	parseNcx(navXml: any): any[] {
-		var list = [];
+		var list: any[] = [];
 		var i = 0;
 		var item;
 		var pageList;

@@ -152,7 +152,7 @@ class InlineView implements IEventEmitter {
 
 		// Render Chain
 		return this.section.render(request)
-			.then(function(contents){
+			.then(function(contents: any){
 				return this.load(contents);
 			}.bind(this))
 			// .then(function(doc){
@@ -189,7 +189,7 @@ class InlineView implements IEventEmitter {
 				this.emit(EVENTS.VIEWS.RENDERED, this.section);
 
 			}.bind(this))
-			.catch(function(e){
+			.catch(function(e: any){
 				this.emit(EVENTS.VIEWS.LOAD_ERROR, e);
 			}.bind(this));
 

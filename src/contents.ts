@@ -282,7 +282,7 @@ class Contents implements IEventEmitter {
 			content.style.removeProperty(property);
 		}
 
-		return this.window.getComputedStyle(content)[property];
+		return (this.window.getComputedStyle(content) as Record<string, any>)[property];
 	}
 
 	/**
@@ -518,7 +518,7 @@ class Contents implements IEventEmitter {
 	 */
 	mediaQueryListeners(): void {
 		var sheets = this.document.styleSheets;
-		var mediaChangeHandler = function(m){
+		var mediaChangeHandler = function(m: any){
 			if(m.matches && !this._expanding) {
 				setTimeout(this.expand.bind(this), 1);
 			}
@@ -535,8 +535,8 @@ class Contents implements IEventEmitter {
 			if(!rules) return; // Stylesheets changed
 			for (var j = 0; j < rules.length; j += 1) {
 				//if (rules[j].constructor === CSSMediaRule) {
-				if(rules[j].media){
-					var mql = this.window.matchMedia(rules[j].media.mediaText);
+				if((rules[j] as CSSMediaRule).media){
+					var mql = this.window.matchMedia((rules[j] as CSSMediaRule).media.mediaText);
 					mql.addListener(mediaChangeHandler);
 					//mql.onchange = mediaChangeHandler;
 				}
@@ -715,7 +715,7 @@ class Contents implements IEventEmitter {
 	 * @param {string} src url
 	 */
 	addStylesheet(src: string): Promise<boolean> {
-		return new Promise(function(resolve, reject){
+		return new Promise(function(resolve: any, reject: any){
 			var $stylesheet;
 			var ready = false;
 
@@ -790,7 +790,7 @@ class Contents implements IEventEmitter {
 	 * @param {string} key If the key is the same, the CSS will be replaced instead of inserted
 	 */
 	addStylesheetRules(rules: any, key?: string): void {
-		var styleSheet;
+		var styleSheet: any;
 
 		if(!this.document || !rules || rules.length === 0) return;
 
@@ -844,7 +844,7 @@ class Contents implements IEventEmitter {
 	 */
 	addScript(src: string): Promise<boolean> {
 
-		return new Promise(function(resolve, reject){
+		return new Promise(function(resolve: any, reject: any){
 			var $script;
 			var ready = false;
 
@@ -1222,10 +1222,10 @@ class Contents implements IEventEmitter {
 		let WRITING_MODE = prefixed("writing-mode");
 
 		if (mode && this.documentElement) {
-			this.documentElement.style[WRITING_MODE] = mode;
+			(this.documentElement.style as Record<string, any>)[WRITING_MODE] = mode;
 		}
 
-		return this.window.getComputedStyle(this.documentElement)[WRITING_MODE] || '';
+		return (this.window.getComputedStyle(this.documentElement) as Record<string, any>)[WRITING_MODE] || '';
 	}
 
 	/**
@@ -1254,7 +1254,7 @@ class Contents implements IEventEmitter {
 			name: name,
 			version: version,
 			layoutStyle: this.layoutStyle(),
-			hasFeature: function (feature) {
+			hasFeature: function (feature: any) {
 				switch (feature) {
 					case "dom-manipulation":
 						return true;

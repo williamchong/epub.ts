@@ -6,19 +6,19 @@ import type { IEventEmitter } from "../../types";
 // easing equations from https://github.com/danro/easing-js/blob/master/easing.js
 const PI_D2 = (Math.PI / 2);
 const EASING_EQUATIONS = {
-		easeOutSine: function (pos) {
+		easeOutSine: function (pos: number) {
 				return Math.sin(pos * PI_D2);
 		},
-		easeInOutSine: function (pos) {
+		easeInOutSine: function (pos: number) {
 				return (-0.5 * (Math.cos(Math.PI * pos) - 1));
 		},
-		easeInOutQuint: function (pos) {
+		easeInOutQuint: function (pos: number) {
 				if ((pos /= 0.5) < 1) {
 						return 0.5 * Math.pow(pos, 5);
 				}
 				return 0.5 * (Math.pow((pos - 2), 5) + 2);
 		},
-		easeInCubic: function(pos) {
+		easeInCubic: function(pos: number) {
 			return Math.pow(pos, 3);
   	}
 };
@@ -181,7 +181,7 @@ class Snap implements IEventEmitter {
 	afterDisplayed(view: any): void {
 		let contents = view.contents;
 		["touchstart", "touchmove", "touchend"].forEach((e) => {
-			contents.on(e, (ev) => this.triggerViewEvent(ev, contents));
+			contents.on(e, (ev: any) => this.triggerViewEvent(ev, contents));
 		});
 	}
 

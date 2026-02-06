@@ -71,7 +71,7 @@ class Section {
 			loading.resolve(this.contents);
 		} else {
 			request(this.url)
-				.then(function(xml){
+				.then(function(xml: any){
 					// var directory = new Url(this.url).directory;
 
 					this.document = xml;
@@ -82,7 +82,7 @@ class Section {
 				.then(function(){
 					loading.resolve(this.contents);
 				}.bind(this))
-				.catch(function(error){
+				.catch(function(error: any){
 					loading.reject(error);
 				});
 		}
@@ -109,7 +109,7 @@ class Section {
 		this.output; // TODO: better way to return this from hooks?
 
 		this.load(_request).
-			then(function(contents){
+			then(function(contents: any){
 				var userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
 				var isIE = userAgent.indexOf('Trident') >= 0;
 				var Serializer;
@@ -118,7 +118,7 @@ class Section {
 				} else {
 					Serializer = XMLSerializer;
 				}
-				var serializer = new Serializer();
+				var serializer = new Serializer() as unknown as XMLSerializer;
 				this.output = serializer.serializeToString(contents);
 				return this.output;
 			}.bind(this)).
@@ -128,7 +128,7 @@ class Section {
 			then(function(){
 				rendering.resolve(this.output);
 			}.bind(this))
-			.catch(function(error){
+			.catch(function(error: any){
 				rendering.reject(error);
 			});
 
@@ -142,9 +142,9 @@ class Section {
 	 */
 	find(_query: string): SearchResult[] {
 		var section = this;
-		var matches = [];
+		var matches: any[] = [];
 		var query = _query.toLowerCase();
-		var find = function(node){
+		var find = function(node: any){
 			var text = node.textContent.toLowerCase();
 			var range = section.document.createRange();
 			var cfi;
@@ -203,12 +203,12 @@ class Section {
 		if (typeof(document.createTreeWalker) == "undefined") {
 			return this.find(_query);
 		}
-		let matches = [];
+		let matches: any[] = [];
 		const excerptLimit = 150;
 		const section = this;
 		const query = _query.toLowerCase();
-		const search = function(nodeList){
-			const textWithCase =  nodeList.reduce((acc ,current)=>{
+		const search = function(nodeList: any){
+			const textWithCase =  nodeList.reduce((acc: any ,current: any)=>{
 				return acc + current.textContent;
 			},"");
 			const text = textWithCase.toLowerCase();
@@ -229,11 +229,11 @@ class Section {
 					let startNode = nodeList[startNodeIndex] , endNode = nodeList[endNodeIndex];
 					let range = section.document.createRange();
 					range.setStart(startNode,pos);
-					let beforeEndLengthCount =  nodeList.slice(0, endNodeIndex).reduce((acc,current)=>{return acc+current.textContent.length;},0) ;
+					let beforeEndLengthCount =  nodeList.slice(0, endNodeIndex).reduce((acc: any,current: any)=>{return acc+current.textContent.length;},0) ;
 					range.setEnd(endNode, beforeEndLengthCount > endPos ? endPos : endPos - beforeEndLengthCount );
 					cfi = section.cfiFromRange(range);
 
-					let excerpt = nodeList.slice(0, endNodeIndex+1).reduce((acc,current)=>{return acc+current.textContent ;},"");
+					let excerpt = nodeList.slice(0, endNodeIndex+1).reduce((acc: any,current: any)=>{return acc+current.textContent ;},"");
 					if (excerpt.length > excerptLimit){
 						excerpt = excerpt.substring(pos - excerptLimit/2, pos + excerptLimit/2);
 						excerpt = "..." + excerpt + "...";
@@ -269,7 +269,7 @@ class Section {
 	*/
 	reconcileLayoutSettings(globalLayout: GlobalLayout): Record<string, string> {
 		//-- Get the global defaults
-		var settings = {
+		var settings: Record<string, string> = {
 			layout : globalLayout.layout,
 			spread : globalLayout.spread,
 			orientation : globalLayout.orientation

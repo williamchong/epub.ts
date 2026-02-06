@@ -16,7 +16,7 @@ export default function EventEmitter(target: any): any {
 	proto.off = function (type: string, fn?: (...args: any[]) => void) {
 		if (!this.__listeners || !this.__listeners[type]) return this;
 		if (fn) {
-			this.__listeners[type] = this.__listeners[type].filter(function (f) { return f !== fn; });
+			this.__listeners[type] = this.__listeners[type].filter(function (f: any) { return f !== fn; });
 		} else {
 			delete this.__listeners[type];
 		}

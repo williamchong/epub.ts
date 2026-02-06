@@ -262,7 +262,7 @@ class Spine {
 	}
 
 	destroy(): void {
-		this.each((section) => section.destroy());
+		this.each((section: any) => section.destroy());
 
 		this.spineItems = undefined
 		this.spineByHref = undefined

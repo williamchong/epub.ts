@@ -659,7 +659,7 @@ class Book implements IEventEmitter {
 				this.storage.requester = this.archive.request.bind(this.archive);
 			}
 			// Substitute hook
-			let substituteResources = (output, section) => {
+			let substituteResources = (output: any, section: any) => {
 				section.output = this.resources.substitute(output, section.url);
 			};
 
@@ -714,7 +714,7 @@ class Book implements IEventEmitter {
 	 * @return {Promise} completed loading urls
 	 */
 	replacements(): Promise<any> {
-		this.spine.hooks.serialize.register((output, section) => {
+		this.spine.hooks.serialize.register((output: any, section: any) => {
 			section.output = this.resources.substitute(output, section.url);
 		});
 
@@ -738,7 +738,7 @@ class Book implements IEventEmitter {
 				reject("CFI could not be found");
 			});
 		}
-		return item.load(_request).then(function (contents) {
+		return item.load(_request).then(function (contents: any) {
 			var range = cfi.toRange(item.document);
 			return range;
 		});

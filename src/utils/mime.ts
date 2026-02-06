@@ -140,12 +140,12 @@ var table = {
 };
 
 var mimeTypes = (function() {
-	var type, subtype, val, index, mimeTypes = {};
+	var type, subtype, val, index, mimeTypes: Record<string, string> = {};
 	for (type in table) {
 		if (table.hasOwnProperty(type)) {
-			for (subtype in table[type]) {
-				if (table[type].hasOwnProperty(subtype)) {
-					val = table[type][subtype];
+			for (subtype in (table as Record<string, any>)[type]) {
+				if ((table as Record<string, any>)[type].hasOwnProperty(subtype)) {
+					val = (table as Record<string, any>)[type][subtype];
 					if (typeof val == "string") {
 						mimeTypes[val] = type + "/" + subtype;
 					} else {
@@ -163,7 +163,7 @@ var mimeTypes = (function() {
 var defaultValue = "text/plain";//"application/octet-stream";
 
 function lookup(filename: string): string {
-	return filename && mimeTypes[filename.split(".").pop().toLowerCase()] || defaultValue;
+	return filename && (mimeTypes as Record<string, string>)[filename.split(".").pop().toLowerCase()] || defaultValue;
 };
 
 export default { lookup };

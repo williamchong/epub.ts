@@ -86,7 +86,7 @@ class Mapping {
 		// safeFilter is required so that it can work in IE as filter is a function for IE
 		// and for other browser filter is an object.
 		var filter = {
-			acceptNode: function(node) {
+			acceptNode: function(node: any) {
 				if (node.data.trim().length > 0) {
 					return NodeFilter.FILTER_ACCEPT;
 				} else {

@@ -157,7 +157,7 @@ class Navigation {
 	 */
 	parseNav(navHtml: any): NavItem[] {
 		var navElement = querySelectorByType(navHtml, "nav", "toc");
-		var list = [];
+		var list: NavItem[] = [];
 
 		if (!navElement) return list;
 
@@ -175,7 +175,7 @@ class Navigation {
 	 * @return {array} navigation list
 	 */
 	parseNavList(navListHtml: any, parent?: string): NavItem[] {
-		const result = [];
+		const result: NavItem[] = [];
 
 		if (!navListHtml) return result;
 		if (!navListHtml.children) return result;
@@ -213,7 +213,7 @@ class Navigation {
 		}
 		let text = content.textContent || "";
 
-		let subitems = [];
+		let subitems: NavItem[] = [];
 		let nested = filterChildren(item, "ol", true);
 		if (nested) {
 			subitems = 	this.parseNavList(nested, id);
@@ -236,10 +236,10 @@ class Navigation {
 	 */
 	parseLandmarks(navHtml: any): LandmarkItem[] {
 		var navElement = querySelectorByType(navHtml, "nav", "landmarks");
-		var navItems = navElement ? qsa(navElement, "li") : [];
+		var navItems: any[] = navElement ? qsa(navElement, "li") as any : [];
 		var length = navItems.length;
 		var i;
-		var list = [];
+		var list: LandmarkItem[] = [];
 		var item;
 
 		if(!navItems || length === 0) return list;
@@ -289,8 +289,8 @@ class Navigation {
 		var navPoints = qsa(tocXml, "navPoint");
 		var length = navPoints.length;
 		var i;
-		var toc = {};
-		var list = [];
+		var toc: Record<string, any> = {};
+		var list: NavItem[] = [];
 		var item, parent;
 
 		if(!navPoints || length === 0) return list;
@@ -321,7 +321,7 @@ class Navigation {
 				src = content.getAttribute("src"),
 				navLabel = qs(item, "navLabel"),
 				text = navLabel.textContent ? navLabel.textContent : "",
-				subitems = [],
+				subitems: NavItem[] = [],
 				parentNode = item.parentNode,
 				parent;
 

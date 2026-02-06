@@ -65,7 +65,7 @@ class Locations implements IEventEmitter {
 
 		this.q.pause();
 
-		this.spine.each(function(section) {
+		this.spine.each(function(section: any) {
 			if (section.linear) {
 				this.q.enqueue(this.process.bind(this), section);
 			}
@@ -96,7 +96,7 @@ class Locations implements IEventEmitter {
 	process(section: any): Promise<string[]> {
 
 		return section.load(this.request)
-			.then(function(contents) {
+			.then(function(contents: any) {
 				var completed = new defer();
 				var locations = this.parse(contents, section.cfiBase);
 				this._locations = this._locations.concat(locations);
@@ -110,14 +110,14 @@ class Locations implements IEventEmitter {
 	}
 
 	parse(contents: any, cfiBase: string, chars?: number): string[] {
-		var locations = [];
-		var range;
+		var locations: string[] = [];
+		var range: any;
 		var doc = contents.ownerDocument;
 		var body = qs(doc, "body");
 		var counter = 0;
-		var prev;
+		var prev: any;
 		var _break = chars || this.break;
-		var parser = function(node) {
+		var parser = function(node: any) {
 			var len = node.length;
 			var dist;
 			var pos = 0;
@@ -207,7 +207,7 @@ class Locations implements IEventEmitter {
 		this._locationsWords = [];
 		this._wordCounter = 0;
 
-		this.spine.each(function(section) {
+		this.spine.each(function(section: any) {
 			if (section.linear) {
 				if (start) {
 					if (section.index >= start.spinePos) {
@@ -235,7 +235,7 @@ class Locations implements IEventEmitter {
 		}
 
 		return section.load(this.request)
-			.then(function(contents) {
+			.then(function(contents: any) {
 				var completed = new defer();
 				var locations = this.parseWords(contents, section, wordCount, startCfi);
 				var remainingCount = count - this._locationsWords.length;
@@ -258,17 +258,17 @@ class Locations implements IEventEmitter {
 
 	parseWords(contents: any, section: any, wordCount: number, startCfi?: any): any[] {
 		var cfiBase = section.cfiBase;
-		var locations = [];
+		var locations: any[] = [];
 		var doc = contents.ownerDocument;
 		var body = qs(doc, "body");
 		var prev;
 		var _break = wordCount;
 		var foundStartNode = startCfi ? startCfi.spinePos !== section.index : true;
-		var startNode;
+		var startNode: any;
 		if (startCfi && section.index === startCfi.spinePos) {
 			startNode = startCfi.findNode(startCfi.range ? startCfi.path.steps.concat(startCfi.start.steps) : startCfi.path.steps, contents.ownerDocument);
 		}
-		var parser = function(node) {
+		var parser = function(node: any) {
 			if (!foundStartNode) {
 				if (node === startNode) {
 					foundStartNode = true;

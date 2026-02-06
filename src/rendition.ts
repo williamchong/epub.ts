@@ -343,7 +343,7 @@ class Rendition implements IEventEmitter {
 		var isCfiString = this.epubcfi.isCfiString(target);
 		var displaying = new defer();
 		var displayed = displaying.promise;
-		var section;
+		var section: any;
 		var moveTo;
 
 		this.displaying = displaying;
@@ -373,7 +373,7 @@ class Rendition implements IEventEmitter {
 				 */
 				this.emit(EVENTS.RENDITION.DISPLAYED, section);
 				this.reportLocation();
-			}, (err) => {
+			}, (err: any) => {
 				/**
 				 * Emit that has been an error displaying
 				 * @event displayError
@@ -438,7 +438,7 @@ class Rendition implements IEventEmitter {
 	 */
 	afterDisplayed(view: any): void {
 
-		view.on(EVENTS.VIEWS.MARK_CLICKED, (cfiRange, data) => this.triggerMarkEvent(cfiRange, data, view.contents));
+		view.on(EVENTS.VIEWS.MARK_CLICKED, (cfiRange: any, data: any) => this.triggerMarkEvent(cfiRange, data, view.contents));
 
 		this.hooks.render.trigger(view, this)
 			.then(() => {
@@ -650,7 +650,7 @@ class Rendition implements IEventEmitter {
 
 			// this.mapping = new Mapping(this._layout.props);
 
-			this._layout.on(EVENTS.LAYOUT.UPDATED, (props, changed) => {
+			this._layout.on(EVENTS.LAYOUT.UPDATED, (props: any, changed: any) => {
 				this.emit(EVENTS.RENDITION.LAYOUT, props, changed);
 			})
 		}
@@ -712,7 +712,7 @@ class Rendition implements IEventEmitter {
 			requestAnimationFrame(function reportedLocationAfterRAF() {
 				var location = this.manager.currentLocation();
 				if (location && location.then && typeof location.then === "function") {
-					location.then(function(result) {
+					location.then(function(result: any) {
 						let located = this.located(result);
 
 						if (!located || !located.start || !located.end) {
@@ -777,7 +777,7 @@ class Rendition implements IEventEmitter {
 	currentLocation(): any {
 		var location = this.manager.currentLocation();
 		if (location && location.then && typeof location.then === "function") {
-			location.then(function(result) {
+			location.then(function(result: any) {
 				let located = this.located(result);
 				return located;
 			}.bind(this));
@@ -896,10 +896,10 @@ class Rendition implements IEventEmitter {
 	 */
 	passEvents(contents: any): void {
 		DOM_EVENTS.forEach((e) => {
-			contents.on(e, (ev) => this.triggerViewEvent(ev, contents));
+			contents.on(e, (ev: any) => this.triggerViewEvent(ev, contents));
 		});
 
-		contents.on(EVENTS.CONTENTS.SELECTED, (e) => this.triggerSelectedEvent(e, contents));
+		contents.on(EVENTS.CONTENTS.SELECTED, (e: any) => this.triggerSelectedEvent(e, contents));
 	}
 
 	/**
@@ -952,7 +952,7 @@ class Rendition implements IEventEmitter {
 	 */
 	getRange(cfi: string, ignoreClass?: string): any {
 		var _cfi = new EpubCFI(cfi);
-		var found = this.manager.visible().filter(function (view) {
+		var found = this.manager.visible().filter(function (view: any) {
 			if(_cfi.spinePos === view.index) return true;
 		});
 
@@ -1028,7 +1028,7 @@ class Rendition implements IEventEmitter {
 	 */
 	handleLinks(contents: any): void {
 		if (contents) {
-			contents.on(EVENTS.CONTENTS.LINK_CLICKED, (href) => {
+			contents.on(EVENTS.CONTENTS.LINK_CLICKED, (href: any) => {
 				let relative = this.book.path.relative(href);
 				this.display(relative);
 			});

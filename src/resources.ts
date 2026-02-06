@@ -107,7 +107,7 @@ class Resources {
 
 		// All Assets Urls
 		this.urls = this.assets.
-			map(function(item) {
+			map(function(item: any) {
 				return item.href;
 			}.bind(this));
 
@@ -132,14 +132,14 @@ class Resources {
 		} else {
 			if (this.settings.replacements === "base64") {
 				return this.settings.request(url, 'blob')
-					.then((blob) => {
+					.then((blob: any) => {
 						return blob2base64(blob);
 					})
-					.then((blob) => {
+					.then((blob: any) => {
 						return createBase64Url(blob, mimeType);
 					});
 			} else {
-				return this.settings.request(url, 'blob').then((blob) => {
+				return this.settings.request(url, 'blob').then((blob: any) => {
 					return createBlobUrl(blob, mimeType);
 				})
 			}
@@ -152,7 +152,7 @@ class Resources {
 	 */
 	replacements(): Promise<string[]> {
 		if (this.settings.replacements === "none") {
-			return new Promise(function(resolve) {
+			return new Promise(function(resolve: any) {
 				resolve(this.urls);
 			}.bind(this));
 		}
@@ -161,7 +161,7 @@ class Resources {
 				var absolute = this.settings.resolver(url);
 
 				return this.createUrl(absolute).
-					catch((err) => {
+					catch((err: any): any => {
 						console.error(err);
 						return null;
 					});
@@ -184,12 +184,12 @@ class Resources {
 	 * @return {Promise}
 	 */
 	replaceCss(archive?: any, resolver?: any): Promise<any[]> {
-		var replaced = [];
+		var replaced: any[] = [];
 		archive = archive || this.settings.archive;
 		resolver = resolver || this.settings.resolver;
-		this.cssUrls.forEach(function(href) {
+		this.cssUrls.forEach(function(href: any) {
 			var replacement = this.createCssFile(href, archive, resolver)
-				.then(function (replacementUrl) {
+				.then(function (replacementUrl: any) {
 					// switch the url in the replacementUrls
 					var indexInUrls = this.urls.indexOf(href);
 					if (indexInUrls > -1) {
@@ -244,7 +244,7 @@ class Resources {
 			});
 		}
 
-		return textResponse.then( (text) => {
+		return textResponse.then( (text: any) => {
 			// Replacements in the css text
 			text = substitute(text, relUrls, this.replacementUrls);
 
@@ -256,7 +256,7 @@ class Resources {
 			}
 
 			return newUrl;
-		}, (err) => {
+		}, (err: any) => {
 			// handle response errors
 			return new Promise<void>(function(resolve){
 				resolve();
@@ -276,7 +276,7 @@ class Resources {
 
 		// Get Urls relative to current sections
 		return this.urls.
-			map(function(href) {
+			map(function(href: any) {
 				var resolved = resolver(href);
 				var relative = new Path(absolute).relative(resolved);
 				return relative;
@@ -294,7 +294,7 @@ class Resources {
 			return;
 		}
 		if (this.replacementUrls.length) {
-			return new Promise(function(resolve, reject) {
+			return new Promise(function(resolve: any, reject: any) {
 				resolve(this.replacementUrls[indexInUrls]);
 			}.bind(this));
 		} else {

@@ -152,7 +152,7 @@ class DefaultViewManager implements IEventEmitter {
 	addEventListeners(): void {
 		var scroller;
 
-		window.addEventListener("unload", function(e){
+		window.addEventListener("unload", function(e: any){
 			this.destroy();
 		}.bind(this));
 
@@ -333,7 +333,7 @@ class DefaultViewManager implements IEventEmitter {
 		}
 
 		this.add(section, forceRight)
-			.then(function(view){
+			.then(function(view: any){
 
 				// Move to correct place within the section, if needed
 				if(target) {
@@ -412,11 +412,11 @@ class DefaultViewManager implements IEventEmitter {
 		view.onDisplayed = this.afterDisplayed.bind(this);
 		view.onResize = this.afterResized.bind(this);
 
-		view.on(EVENTS.VIEWS.AXIS, (axis) => {
+		view.on(EVENTS.VIEWS.AXIS, (axis: any) => {
 			this.updateAxis(axis);
 		});
 
-		view.on(EVENTS.VIEWS.WRITING_MODE, (mode) => {
+		view.on(EVENTS.VIEWS.WRITING_MODE, (mode: any) => {
 			this.updateWritingMode(mode);
 		});
 
@@ -430,11 +430,11 @@ class DefaultViewManager implements IEventEmitter {
 		view.onDisplayed = this.afterDisplayed.bind(this);
 		view.onResize = this.afterResized.bind(this);
 
-		view.on(EVENTS.VIEWS.AXIS, (axis) => {
+		view.on(EVENTS.VIEWS.AXIS, (axis: any) => {
 			this.updateAxis(axis);
 		});
 
-		view.on(EVENTS.VIEWS.WRITING_MODE, (mode) => {
+		view.on(EVENTS.VIEWS.WRITING_MODE, (mode: any) => {
 			this.updateWritingMode(mode);
 		});
 
@@ -444,7 +444,7 @@ class DefaultViewManager implements IEventEmitter {
 	prepend(section: any, forceRight?: boolean): Promise<any> {
 		var view = this.createView(section, forceRight);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds) => {
+		view.on(EVENTS.VIEWS.RESIZED, (bounds: any) => {
 			this.counter(bounds);
 		});
 
@@ -453,11 +453,11 @@ class DefaultViewManager implements IEventEmitter {
 		view.onDisplayed = this.afterDisplayed.bind(this);
 		view.onResize = this.afterResized.bind(this);
 
-		view.on(EVENTS.VIEWS.AXIS, (axis) => {
+		view.on(EVENTS.VIEWS.AXIS, (axis: any) => {
 			this.updateAxis(axis);
 		});
 
-		view.on(EVENTS.VIEWS.WRITING_MODE, (mode) => {
+		view.on(EVENTS.VIEWS.WRITING_MODE, (mode: any) => {
 			this.updateWritingMode(mode);
 		});
 
@@ -484,7 +484,7 @@ class DefaultViewManager implements IEventEmitter {
 	// };
 
 	next(): any {
-		var next;
+		var next: any;
 		var left;
 
 		let dir = this.settings.direction;
@@ -574,7 +574,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	prev(): any {
-		var prev;
+		var prev: any;
 		var left;
 		let dir = this.settings.direction;
 
@@ -1011,7 +1011,7 @@ class DefaultViewManager implements IEventEmitter {
 
 		if(this.views) {
 
-			this.views.forEach(function(view){
+			this.views.forEach(function(view: any){
 				if (view) {
 					view.setLayout(layout);
 				}
@@ -1078,11 +1078,11 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	getContents(): any[] {
-		var contents = [];
+		var contents: any[] = [];
 		if (!this.views) {
 			return contents;
 		}
-		this.views.forEach(function(view){
+		this.views.forEach(function(view: any){
 			const viewContents = view && view.contents;
 			if (viewContents) {
 				contents.push(viewContents);

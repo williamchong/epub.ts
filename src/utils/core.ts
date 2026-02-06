@@ -134,7 +134,7 @@ export function defaults(obj: any, ..._sources: any[]): any {
  */
 export function extend(target: any, ...args: any[]): any {
 	var sources = [].slice.call(arguments, 1);
-	sources.forEach(function (source) {
+	sources.forEach(function (source: any) {
 		if(!source) return;
 		Object.getOwnPropertyNames(source).forEach(function(propName) {
 			Object.defineProperty(target, propName, Object.getOwnPropertyDescriptor(source, propName));
@@ -551,7 +551,7 @@ export function qsp(el: any, sel: string, props: Record<string, string>): Elemen
 		return el.querySelector(sel);
 	} else {
 		q = el.getElementsByTagName(sel);
-		filtered = Array.prototype.slice.call(q, 0).filter(function(el) {
+		filtered = Array.prototype.slice.call(q, 0).filter(function(el: any) {
 			for (var prop in props) {
 				if(el.getAttribute(prop) === props[prop]){
 					return true;

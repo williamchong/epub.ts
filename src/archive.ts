@@ -2,6 +2,7 @@ import {defer, isXml, parse} from "./utils/core";
 import request from "./utils/request";
 import mime from "./utils/mime";
 import Path from "./utils/path";
+// @ts-ignore
 import JSZip from "jszip/dist/jszip";
 
 /**
@@ -51,7 +52,7 @@ class Archive {
 	 */
 	openUrl(zipUrl: string, isBase64?: boolean): Promise<any> {
 		return request(zipUrl, "binary")
-			.then(function(data){
+			.then(function(data: any){
 				return this.zip.loadAsync(data, {"base64": isBase64});
 			}.bind(this));
 	}
@@ -79,7 +80,7 @@ class Archive {
 		}
 
 		if (response) {
-			response.then(function (r) {
+			response.then(function (r: any) {
 				let result = this.handleResponse(r, type);
 				deferred.resolve(result);
 			}.bind(this));
@@ -135,7 +136,7 @@ class Archive {
 
 		if(entry) {
 			mimeType = mimeType || mime.lookup(entry.name);
-			return entry.async("uint8array").then(function(uint8array) {
+			return entry.async("uint8array").then(function(uint8array: any) {
 				return new Blob([uint8array], {type : mimeType});
 			});
 		}
@@ -152,7 +153,7 @@ class Archive {
 		var entry = this.zip.file(decodededUrl);
 
 		if(entry) {
-			return entry.async("string").then(function(text) {
+			return entry.async("string").then(function(text: any) {
 				return text;
 			});
 		}
@@ -170,7 +171,7 @@ class Archive {
 
 		if(entry) {
 			mimeType = mimeType || mime.lookup(entry.name);
-			return entry.async("base64").then(function(data) {
+			return entry.async("base64").then(function(data: any) {
 				return "data:" + mimeType + ";base64," + data;
 			});
 		}
@@ -198,7 +199,7 @@ class Archive {
 			response = this.getBase64(url);
 
 			if (response) {
-				response.then(function(tempUrl) {
+				response.then(function(tempUrl: any) {
 
 					this.urlCache[url] = tempUrl;
 					deferred.resolve(tempUrl);
@@ -212,7 +213,7 @@ class Archive {
 			response = this.getBlob(url);
 
 			if (response) {
-				response.then(function(blob) {
+				response.then(function(blob: any) {
 
 					tempUrl = _URL.createObjectURL(blob);
 					this.urlCache[url] = tempUrl;

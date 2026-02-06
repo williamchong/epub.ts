@@ -124,7 +124,7 @@ class Packaging {
 	 * @return {object} manifest
 	 */
 	parseManifest(manifestXml: Element): PackagingManifestObject {
-		var manifest = {};
+		var manifest: Record<string, any> = {};
 
 		//-- Turn items into an array
 		// var selected = manifestXml.querySelectorAll("item");
@@ -132,7 +132,7 @@ class Packaging {
 		var items = Array.prototype.slice.call(selected);
 
 		//-- Create an object with the id as key
-		items.forEach(function(item){
+		items.forEach(function(item: any){
 			var id = item.getAttribute("id"),
 					href = item.getAttribute("href") || "",
 					type = item.getAttribute("media-type") || "",
@@ -161,7 +161,7 @@ class Packaging {
 	 * @return {object} spine
 	 */
 	parseSpine(spineXml: Element, manifest: PackagingManifestObject): PackagingSpineItem[] {
-		var spine = [];
+		var spine: any[] = [];
 
 		var selected = qsa(spineXml, "itemref");
 		var items = Array.prototype.slice.call(selected);
@@ -169,7 +169,7 @@ class Packaging {
 		// var epubcfi = new EpubCFI();
 
 		//-- Add to array to maintain ordering and cross reference with manifest
-		items.forEach(function(item, index){
+		items.forEach(function(item: any, index: any){
 			var idref = item.getAttribute("idref");
 			// var cfiBase = epubcfi.generateChapterComponent(spineNodeIndex, index, Id);
 			var props = item.getAttribute("properties") || "";
@@ -337,13 +337,13 @@ class Packaging {
 		this.metadata = json.metadata;
 
 		let spine = json.readingOrder || json.spine;
-		this.spine = spine.map((item, index) =>{
+		this.spine = spine.map((item: any, index: any) =>{
 			item.index = index;
 			item.linear = item.linear || "yes";
 			return item;
 		});
 
-		json.resources.forEach((item, index) => {
+		json.resources.forEach((item: any, index: any) => {
 			this.manifest[index] = item;
 
 			if (item.rel && item.rel[0] === "cover") {
@@ -353,7 +353,7 @@ class Packaging {
 
 		this.spineNodeIndex = 0;
 
-		this.toc = json.toc.map((item, index) =>{
+		this.toc = json.toc.map((item: any, index: any) =>{
 			item.label = item.title;
 			return item;
 		});

@@ -200,7 +200,7 @@ class IframeView implements IEventEmitter {
 
 		// Render Chain
 		return this.sectionRender
-			.then(function(contents){
+			.then(function(contents: any){
 				return this.load(contents);
 			}.bind(this))
 			.then(function(){
@@ -243,7 +243,7 @@ class IframeView implements IEventEmitter {
 					resolve();
 				});
 
-			}.bind(this), function(e){
+			}.bind(this), function(e: any){
 				this.emit(EVENTS.VIEWS.LOAD_ERROR, e);
 				return new Promise((resolve, reject) => {
 					reject(e);
@@ -436,7 +436,7 @@ class IframeView implements IEventEmitter {
 			return loaded;
 		}
 
-		this.iframe.onload = function(event) {
+		this.iframe.onload = function(event: any) {
 
 			this.onLoad(event, loading);
 
@@ -505,7 +505,7 @@ class IframeView implements IEventEmitter {
 			}
 		});
 
-		this.contents.on(EVENTS.CONTENTS.RESIZE, (e) => {
+		this.contents.on(EVENTS.CONTENTS.RESIZE, (e: any) => {
 			if(this.displayed && this.iframe) {
 				this.expand();
 				if (this.contents) {
@@ -731,7 +731,7 @@ class IframeView implements IEventEmitter {
 		let container = range.commonAncestorContainer;
 		let parent = (container.nodeType === 1) ? container : container.parentNode;
 
-		let emitter = (e) => {
+		let emitter = (e: any) => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -801,12 +801,12 @@ class IframeView implements IEventEmitter {
 	}
 
 	unhighlight(cfiRange: string): void {
-		let item;
+		let item: any;
 		if (cfiRange in this.highlights) {
 			item = this.highlights[cfiRange];
 
 			this.pane.removeMark(item.mark);
-			item.listeners.forEach((l) => {
+			item.listeners.forEach((l: any) => {
 				if (l) {
 					item.element.removeEventListener("click", l);
 					item.element.removeEventListener("touchstart", l);
@@ -817,11 +817,11 @@ class IframeView implements IEventEmitter {
 	}
 
 	ununderline(cfiRange: string): void {
-		let item;
+		let item: any;
 		if (cfiRange in this.underlines) {
 			item = this.underlines[cfiRange];
 			this.pane.removeMark(item.mark);
-			item.listeners.forEach((l) => {
+			item.listeners.forEach((l: any) => {
 				if (l) {
 					item.element.removeEventListener("click", l);
 					item.element.removeEventListener("touchstart", l);
@@ -832,11 +832,11 @@ class IframeView implements IEventEmitter {
 	}
 
 	unmark(cfiRange: string): void {
-		let item;
+		let item: any;
 		if (cfiRange in this.marks) {
 			item = this.marks[cfiRange];
 			this.element.removeChild(item.element);
-			item.listeners.forEach((l) => {
+			item.listeners.forEach((l: any) => {
 				if (l) {
 					item.element.removeEventListener("click", l);
 					item.element.removeEventListener("touchstart", l);

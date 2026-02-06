@@ -153,7 +153,7 @@ class EpubCFI {
 	}
 
 	parseComponent(componentStr: string): EpubCFIComponent {
-		var component = {
+		var component: { steps: any[]; terminal: { offset: any; assertion: any } } = {
 			steps: [],
 			terminal: {
 				offset: null,
@@ -173,7 +173,7 @@ class EpubCFI {
 			steps.shift(); // Ignore the first slash
 		}
 
-		component.steps = steps.map(function(step){
+		component.steps = steps.map(function(step: any){
 			return this.parseStep(step);
 		}.bind(this));
 
@@ -449,7 +449,7 @@ class EpubCFI {
 	}
 
 	pathTo(node: any, offset: number | null, ignoreClass?: string): any {
-		var segment = {
+		var segment: { steps: any[]; terminal: { offset: any; assertion: any } } = {
 			steps: [],
 			terminal: {
 				offset: null,
@@ -707,7 +707,7 @@ class EpubCFI {
 	}
 
 	normalizedMap(children: any, nodeType: number, ignoreClass: string): Record<number, number> {
-		var output = {};
+		var output: Record<number, number> = {};
 		var prevIndex = -1;
 		var i, len = children.length;
 		var currNodeType;
@@ -834,7 +834,7 @@ class EpubCFI {
 
 	textNodes(container: any, ignoreClass?: string): any[] {
 		return Array.prototype.slice.call(container.childNodes).
-			filter(function (node) {
+			filter(function (node: any) {
 				if (node.nodeType === TEXT_NODE) {
 					return true;
 				} else if (ignoreClass && node.classList.contains(ignoreClass)) {
@@ -846,7 +846,7 @@ class EpubCFI {
 
 	walkToNode(steps: EpubCFIStep[], _doc?: Document, ignoreClass?: string): any {
 		var doc = _doc || document;
-		var container = doc.documentElement;
+		var container: any = doc.documentElement;
 		var children;
 		var step;
 		var len = steps.length;
@@ -1001,7 +1001,7 @@ class EpubCFI {
 
 
 		// doc.defaultView.getSelection().addRange(range);
-		return range;
+		return range as Range;
 	}
 
 	/**

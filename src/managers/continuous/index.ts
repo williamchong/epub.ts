@@ -3,7 +3,7 @@ import DefaultViewManager from "../default";
 import Snap from "../helpers/snap";
 import { EVENTS } from "../../utils/constants";
 function debounce(func: Function, wait: number): () => void {
-	var timeout;
+	var timeout: any;
 	return function() {
 		var context = this;
 		var args = arguments;
@@ -82,7 +82,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		this.q.enqueue(() => {
 			return this.check();
-		}).then((result) => {
+		}).then((result: any) => {
 			if (result) {
 				this.fill(full);
 			} else {
@@ -133,15 +133,15 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		this.views.append(view);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds) => {
+		view.on(EVENTS.VIEWS.RESIZED, (bounds: any) => {
 			view.expanded = true;
 		});
 
-		view.on(EVENTS.VIEWS.AXIS, (axis) => {
+		view.on(EVENTS.VIEWS.AXIS, (axis: any) => {
 			this.updateAxis(axis);
 		});
 
-		view.on(EVENTS.VIEWS.WRITING_MODE, (mode) => {
+		view.on(EVENTS.VIEWS.WRITING_MODE, (mode: any) => {
 			this.updateWritingMode(mode);
 		});
 
@@ -155,15 +155,15 @@ class ContinuousViewManager extends DefaultViewManager {
 	append(section: any): any {
 		var view = this.createView(section);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds) => {
+		view.on(EVENTS.VIEWS.RESIZED, (bounds: any) => {
 			view.expanded = true;
 		});
 
-		view.on(EVENTS.VIEWS.AXIS, (axis) => {
+		view.on(EVENTS.VIEWS.AXIS, (axis: any) => {
 			this.updateAxis(axis);
 		});
 
-		view.on(EVENTS.VIEWS.WRITING_MODE, (mode) => {
+		view.on(EVENTS.VIEWS.WRITING_MODE, (mode: any) => {
 			this.updateWritingMode(mode);
 		});
 
@@ -177,16 +177,16 @@ class ContinuousViewManager extends DefaultViewManager {
 	prepend(section: any): any {
 		var view = this.createView(section);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds) => {
+		view.on(EVENTS.VIEWS.RESIZED, (bounds: any) => {
 			this.counter(bounds);
 			view.expanded = true;
 		});
 
-		view.on(EVENTS.VIEWS.AXIS, (axis) => {
+		view.on(EVENTS.VIEWS.AXIS, (axis: any) => {
 			this.updateAxis(axis);
 		});
 
-		view.on(EVENTS.VIEWS.WRITING_MODE, (mode) => {
+		view.on(EVENTS.VIEWS.WRITING_MODE, (mode: any) => {
 			this.updateWritingMode(mode);
 		});
 
@@ -212,7 +212,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		var visible = [];
 		var offset = typeof _offset != "undefined" ? _offset : (this.settings.offset || 0);
 		var isVisible;
-		var view;
+		var view: any;
 
 		var updating = new defer();
 		var promises = [];
@@ -226,9 +226,9 @@ class ContinuousViewManager extends DefaultViewManager {
 
 				if (!view.displayed) {
 					let displayed = view.display(this.request)
-						.then(function (view) {
+						.then(function (view: any) {
 							view.show();
-						}, (err) => {
+						}, (err: any) => {
 							view.hide();
 						});
 					promises.push(displayed);
@@ -250,7 +250,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		if(promises.length){
 			return Promise.all(promises)
-				.catch((err) => {
+				.catch((err: any) => {
 					updating.reject(err);
 				});
 		} else {
@@ -262,7 +262,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	check(_offsetLeft?: number, _offsetTop?: number): Promise<any> {
 		var checking = new defer();
-		var newViews = [];
+		var newViews: any[] = [];
 
 		var horizontal = (this.settings.axis === "horizontal");
 		var delta = this.settings.offset || 0;
@@ -344,7 +344,7 @@ class ContinuousViewManager extends DefaultViewManager {
 				.then(() => {
 					// Check to see if anything new is on screen after rendering
 					return this.update(delta);
-				}, (err) => {
+				}, (err: any) => {
 					return err;
 				});
 		} else {
@@ -419,7 +419,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	addEventListeners(stage?: any): void {
 
-		window.addEventListener("unload", function(e){
+		window.addEventListener("unload", function(e: any){
 			this.ignore = true;
 			// this.scrollTo(0,0);
 			this.destroy();

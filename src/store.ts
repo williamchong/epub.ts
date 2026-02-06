@@ -49,11 +49,11 @@ class Store implements IEventEmitter {
 	 */
 	checkRequirements(): void {
 		try {
-			let store;
+			let store: any;
 			if (typeof localforage === "undefined") {
 				store = localforage;
 			}
-			this.storage = store.createInstance({
+			this.storage = store!.createInstance({
 					name: this.name
 			});
 		} catch (e) {
@@ -102,15 +102,15 @@ class Store implements IEventEmitter {
 	 * @return {Promise<object>} store objects
 	 */
 	add(resources: any, force?: boolean): Promise<any[]> {
-		let mapped = resources.resources.map((item) => {
+		let mapped = resources.resources.map((item: any) => {
 			let { href } = item;
 			let url = this.resolver(href);
 			let encodedUrl = window.encodeURIComponent(url);
 
-			return this.storage.getItem(encodedUrl).then((item) => {
+			return this.storage.getItem(encodedUrl).then((item: any) => {
 				if (!item || force) {
 					return this.requester(url, "binary")
-						.then((data) => {
+						.then((data: any) => {
 							return this.storage.setItem(encodedUrl, data);
 						});
 				} else {
@@ -132,9 +132,9 @@ class Store implements IEventEmitter {
 	put(url: string, withCredentials?: boolean, headers?: object): Promise<any> {
 		let encodedUrl = window.encodeURIComponent(url);
 
-		return this.storage.getItem(encodedUrl).then((result) => {
+		return this.storage.getItem(encodedUrl).then((result: any) => {
 			if (!result) {
-				return this.requester(url, "binary", withCredentials, headers).then((data) => {
+				return this.requester(url, "binary", withCredentials, headers).then((data: any) => {
 					return this.storage.setItem(encodedUrl, data);
 				});
 			}
@@ -153,7 +153,7 @@ class Store implements IEventEmitter {
 	request(url: string, type?: string, withCredentials?: boolean, headers?: object): Promise<any> {
 		if (this.online) {
 			// From network
-			return this.requester(url, type, withCredentials, headers).then((data) => {
+			return this.requester(url, type, withCredentials, headers).then((data: any) => {
 				// save to store if not present
 				this.put(url);
 				return data;
@@ -244,7 +244,7 @@ class Store implements IEventEmitter {
 	getBlob(url: string, mimeType?: string): Promise<Blob | undefined> {
 		let encodedUrl = window.encodeURIComponent(url);
 
-		return this.storage.getItem(encodedUrl).then(function(uint8array) {
+		return this.storage.getItem(encodedUrl).then(function(uint8array: any) {
 			if(!uint8array) return;
 
 			mimeType = mimeType || mime.lookup(url);
@@ -265,7 +265,7 @@ class Store implements IEventEmitter {
 
 		mimeType = mimeType || mime.lookup(url);
 
-		return this.storage.getItem(encodedUrl).then(function(uint8array) {
+		return this.storage.getItem(encodedUrl).then(function(uint8array: any) {
 			var deferred = new defer();
 			var reader = new FileReader();
 			var blob;
@@ -295,7 +295,7 @@ class Store implements IEventEmitter {
 
 		mimeType = mimeType || mime.lookup(url);
 
-		return this.storage.getItem(encodedUrl).then((uint8array) => {
+		return this.storage.getItem(encodedUrl).then((uint8array: any) => {
 			var deferred = new defer();
 			var reader = new FileReader();
 			var blob;
@@ -335,7 +335,7 @@ class Store implements IEventEmitter {
 			response = this.getBase64(url);
 
 			if (response) {
-				response.then(function(tempUrl) {
+				response.then(function(tempUrl: any) {
 
 					this.urlCache[url] = tempUrl;
 					deferred.resolve(tempUrl);
@@ -349,7 +349,7 @@ class Store implements IEventEmitter {
 			response = this.getBlob(url);
 
 			if (response) {
-				response.then(function(blob) {
+				response.then(function(blob: any) {
 
 					tempUrl = _URL.createObjectURL(blob);
 					this.urlCache[url] = tempUrl;

@@ -1,7 +1,7 @@
 import {uuid, isNumber, isElement, windowBounds, extend} from "../../utils/core";
 import type { StageOptions } from "../../types";
 function throttle(func: Function, wait: number): () => void {
-	var timeout = null;
+	var timeout: any = null;
 	var previous = 0;
 	return function() {
 		var now = Date.now();
@@ -98,23 +98,23 @@ class Stage {
 
 		if (overflow) {
 			if (overflow === "scroll" && axis === "vertical") {
-				container.style["overflow-y"] = overflow;
-				container.style["overflow-x"] = "hidden";
+				container.style.overflowY = overflow;
+				container.style.overflowX = "hidden";
 			} else if (overflow === "scroll" && axis === "horizontal") {
-				container.style["overflow-y"] = "hidden";
-				container.style["overflow-x"] = overflow;
+				container.style.overflowY = "hidden";
+				container.style.overflowX = overflow;
 			} else {
-				container.style["overflow"] = overflow;
+				container.style.overflow = overflow;
 			}
 		}
 
 		if (direction) {
 			container.dir = direction;
-			container.style["direction"] = direction;
+			container.style.direction = direction;
 		}
 
 		if (direction && this.settings.fullsize) {
-			document.body.style["direction"] = direction;
+			document.body.style.direction = direction;
 		}
 
 		return container;
@@ -240,20 +240,20 @@ class Stage {
 		this.containerStyles = window.getComputedStyle(this.container);
 
 		this.containerPadding = {
-			left: parseFloat(this.containerStyles["padding-left"]) || 0,
-			right: parseFloat(this.containerStyles["padding-right"]) || 0,
-			top: parseFloat(this.containerStyles["padding-top"]) || 0,
-			bottom: parseFloat(this.containerStyles["padding-bottom"]) || 0
+			left: parseFloat(this.containerStyles.paddingLeft) || 0,
+			right: parseFloat(this.containerStyles.paddingRight) || 0,
+			top: parseFloat(this.containerStyles.paddingTop) || 0,
+			bottom: parseFloat(this.containerStyles.paddingBottom) || 0
 		};
 
 		// Bounds not set, get them from window
 		let _windowBounds = windowBounds();
 		let bodyStyles = window.getComputedStyle(document.body);
 		let bodyPadding = {
-			left: parseFloat(bodyStyles["padding-left"]) || 0,
-			right: parseFloat(bodyStyles["padding-right"]) || 0,
-			top: parseFloat(bodyStyles["padding-top"]) || 0,
-			bottom: parseFloat(bodyStyles["padding-bottom"]) || 0
+			left: parseFloat(bodyStyles.paddingLeft) || 0,
+			right: parseFloat(bodyStyles.paddingRight) || 0,
+			top: parseFloat(bodyStyles.paddingTop) || 0,
+			bottom: parseFloat(bodyStyles.paddingBottom) || 0
 		};
 
 		if (!_width) {
@@ -347,11 +347,11 @@ class Stage {
 	direction(dir: string): void {
 		if (this.container) {
 			this.container.dir = dir;
-			this.container.style["direction"] = dir;
+			this.container.style.direction = dir;
 		}
 
 		if (this.settings.fullsize) {
-			document.body.style["direction"] = dir;
+			document.body.style.direction = dir;
 		}
 		this.settings.dir = dir;
 	}
@@ -359,13 +359,13 @@ class Stage {
 	overflow(overflow: string): void {
 		if (this.container) {
 			if (overflow === "scroll" && this.settings.axis === "vertical") {
-				this.container.style["overflow-y"] = overflow;
-				this.container.style["overflow-x"] = "hidden";
+				this.container.style.overflowY = overflow;
+				this.container.style.overflowX = "hidden";
 			} else if (overflow === "scroll" && this.settings.axis === "horizontal") {
-				this.container.style["overflow-y"] = "hidden";
-				this.container.style["overflow-x"] = overflow;
+				this.container.style.overflowY = "hidden";
+				this.container.style.overflowX = overflow;
 			} else {
-				this.container.style["overflow"] = overflow;
+				this.container.style.overflow = overflow;
 			}
 		}
 		this.settings.overflow = overflow;

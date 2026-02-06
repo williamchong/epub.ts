@@ -96,7 +96,7 @@ export function replaceLinks(contents: any, fn: (path: string) => void): void {
 			link.setAttribute("target", "_blank");
 
 		}else{
-			var linkUrl;
+			var linkUrl: any;
 			try {
 				linkUrl = new Url(href, location);	
 			} catch(error) {

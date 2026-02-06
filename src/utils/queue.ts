@@ -78,7 +78,7 @@ class Queue {
 	 * @return {Promise}
 	 */
 	dequeue(): any {
-		var inwait, task, result;
+		var inwait: any, task, result;
 
 		if(this._q.length && !this.paused) {
 			inwait = this._q.shift();
@@ -110,7 +110,7 @@ class Queue {
 
 		} else {
 			inwait = new defer();
-			inwait.deferred.resolve();
+			inwait.resolve();
 			return inwait.promise;
 		}
 

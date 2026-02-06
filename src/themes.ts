@@ -95,7 +95,7 @@ class Themes {
 	 */
 	registerCss (name: string, css: string): void {
 		this._themes[name] = { "serialized" : css };
-		if (this._injected[name] || name == 'default') {
+		if ((this._injected as Record<string, any>)[name] || name == 'default') {
 			this.update(name);
 		}
 	}
@@ -108,7 +108,7 @@ class Themes {
 	registerUrl (name: string, input: string): void {
 		var url = new Url(input);
 		this._themes[name] = { "url": url.toString() };
-		if (this._injected[name] || name == 'default') {
+		if ((this._injected as Record<string, any>)[name] || name == 'default') {
 			this.update(name);
 		}
 	}
@@ -121,7 +121,7 @@ class Themes {
 	registerRules (name: string, rules: object): void {
 		this._themes[name] = { "rules": rules };
 		// TODO: serialize css rules
-		if (this._injected[name] || name == 'default') {
+		if ((this._injected as Record<string, any>)[name] || name == 'default') {
 			this.update(name);
 		}
 	}
@@ -138,7 +138,7 @@ class Themes {
 		this.update(name);
 
 		contents = this.rendition.getContents();
-		contents.forEach( (content) => {
+		contents.forEach( (content: any) => {
 			content.removeClass(prev);
 			content.addClass(name);
 		});
@@ -150,7 +150,7 @@ class Themes {
 	 */
 	update (name: string): void {
 		var contents = this.rendition.getContents();
-		contents.forEach( (content) => {
+		contents.forEach( (content: any) => {
 			this.add(name, content);
 		});
 	}
@@ -160,7 +160,7 @@ class Themes {
 	 * @param {Contents} contents
 	 */
 	inject (contents: any): void {
-		var links = [];
+		var links: any[] = [];
 		var themes = this._themes;
 		var theme;
 
@@ -216,7 +216,7 @@ class Themes {
 			priority: priority === true
 		};
 
-		contents.forEach( (content) => {
+		contents.forEach( (content: any) => {
 			content.css(name, this._overrides[name].value, this._overrides[name].priority);
 		});
 	}
@@ -226,7 +226,7 @@ class Themes {
 
 		delete this._overrides[name];
 
-		contents.forEach( (content) => {
+		contents.forEach( (content: any) => {
 			content.css(name);
 		});
 	}

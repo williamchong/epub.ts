@@ -53,7 +53,7 @@ class Hook {
 	trigger(): Promise<any[]> {
 		var args = arguments;
 		var context = this.context;
-		var promises = [];
+		var promises: any[] = [];
 
 		this.hooks.forEach(function(task) {
 			try {
