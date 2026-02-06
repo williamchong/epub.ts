@@ -1,5 +1,26 @@
 import {uuid, isNumber, isElement, windowBounds, extend} from "../../utils/core";
-import throttle from 'lodash/throttle'
+function throttle(func, wait) {
+	var timeout = null;
+	var previous = 0;
+	return function() {
+		var now = Date.now();
+		var remaining = wait - (now - previous);
+		if (remaining <= 0 || remaining > wait) {
+			if (timeout) {
+				clearTimeout(timeout);
+				timeout = null;
+			}
+			previous = now;
+			func.apply(this, arguments);
+		} else if (!timeout) {
+			timeout = setTimeout(() => {
+				previous = Date.now();
+				timeout = null;
+				func.apply(this, arguments);
+			}, remaining);
+		}
+	};
+}
 
 class Stage {
 	constructor(_options) {

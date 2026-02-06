@@ -1,4 +1,4 @@
-import path from "path-webpack";
+import path from "./utils/path-utils";
 import {qs} from "./utils/core";
 
 /**
