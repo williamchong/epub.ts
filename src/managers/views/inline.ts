@@ -78,7 +78,7 @@ class InlineView implements IEventEmitter {
 	}
 
 	container(axis?: string): HTMLElement {
-		var element = document.createElement("div");
+		const element = document.createElement("div");
 
 		element.classList.add("epub-view");
 
@@ -197,8 +197,8 @@ class InlineView implements IEventEmitter {
 
 	// Determine locks base on settings
 	size(_width?: number, _height?: number): void {
-		var width = _width || this.settings.width;
-		var height = _height || this.settings.height;
+		const width = _width || this.settings.width;
+		const height = _height || this.settings.height;
 
 		if(this.layout.name === "pre-paginated") {
 			// TODO: check if these are different than the size set in chapter
@@ -213,8 +213,8 @@ class InlineView implements IEventEmitter {
 
 	// Lock an axis to element dimensions, taking borders into account
 	lock(what: string, width: number, height: number): void {
-		var elBorders = borders(this.element);
-		var iframeBorders;
+		const elBorders = borders(this.element);
+		let iframeBorders;
 
 		if(this.frame) {
 			iframeBorders = borders(this.frame);
@@ -245,11 +245,11 @@ class InlineView implements IEventEmitter {
 	}
 
 	// Resize a single axis based on content dimensions
-	expand(force?: boolean): void {
-		var width = this.lockedWidth;
-		var height = this.lockedHeight;
+	expand(_force?: boolean): void {
+		let width = this.lockedWidth;
+		let height = this.lockedHeight;
 
-		var textWidth, textHeight;
+		let textWidth, textHeight;
 
 		if(!this.frame || this._expanding) return;
 
@@ -272,11 +272,11 @@ class InlineView implements IEventEmitter {
 		this._expanding = false;
 	}
 
-	contentWidth(min?: number): number {
+	contentWidth(_min?: number): number {
 		return this.frame.scrollWidth;
 	}
 
-	contentHeight(min?: number): number {
+	contentHeight(_min?: number): number {
 		return this.frame.scrollHeight;
 	}
 
@@ -299,7 +299,7 @@ class InlineView implements IEventEmitter {
 
 		this.elementBounds = bounds(this.element);
 
-		let size = {
+		const size = {
 			width: this.elementBounds.width,
 			height: this.elementBounds.height,
 			widthDelta: this.elementBounds.width - this.prevBounds.width,
@@ -314,10 +314,10 @@ class InlineView implements IEventEmitter {
 
 
 	load(contents: string): Promise<any> {
-		var loading = new defer();
-		var loaded = loading.promise;
-		var doc = parse(contents, "text/html");
-		var body = qs(doc, "body");
+		const loading = new defer();
+		const loaded = loading.promise;
+		const doc = parse(contents, "text/html");
+		const body = qs(doc, "body");
 
 		/*
 		var srcs = doc.querySelectorAll("[src]");
@@ -365,12 +365,12 @@ class InlineView implements IEventEmitter {
 		//TODO: Add content listeners for expanding
 	}
 
-	removeListeners(layoutFunc?: any): void {
+	removeListeners(_layoutFunc?: any): void {
 		//TODO: remove content listeners for expanding
 	}
 
 	display(request: any): Promise<any> {
-		var displayed = new defer();
+		const displayed = new defer();
 
 		if (!this.displayed) {
 
@@ -418,8 +418,8 @@ class InlineView implements IEventEmitter {
 	}
 
 	locationOf(target: any): { left: number; top: number } {
-		var parentPos = this.frame.getBoundingClientRect();
-		var targetPos = this.contents.locationOf(target, this.settings.ignoreClass);
+		const parentPos = this.frame.getBoundingClientRect();
+		const targetPos = this.contents.locationOf(target, this.settings.ignoreClass);
 
 		return {
 			"left": window.scrollX + parentPos.left + targetPos.left,
@@ -427,11 +427,11 @@ class InlineView implements IEventEmitter {
 		};
 	}
 
-	onDisplayed(view: any): void {
+	onDisplayed(_view: any): void {
 		// Stub, override with a custom functions
 	}
 
-	onResize(view: any, e?: any): void {
+	onResize(_view: any, _e?: any): void {
 		// Stub, override with a custom functions
 	}
 

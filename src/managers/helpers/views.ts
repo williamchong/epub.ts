@@ -72,7 +72,7 @@ class Views {
 	}
 
 	remove(view: IframeView): void {
-		var index = this._views.indexOf(view);
+		const index = this._views.indexOf(view);
 
 		if(index > -1) {
 			this._views.splice(index, 1);
@@ -102,12 +102,12 @@ class Views {
 
 	clear(): void {
 		// Remove all views
-		var view: IframeView;
-		var len = this.length;
+		let view: IframeView;
+		const len = this.length;
 
 		if(!this.length) return;
 
-		for (var i = 0; i < len; i++) {
+		for (let i = 0; i < len; i++) {
 			view = this._views[i];
 			this.destroy(view);
 		}
@@ -118,10 +118,10 @@ class Views {
 
 	find(section: Section): IframeView | undefined {
 
-		var view: IframeView;
-		var len = this.length;
+		let view: IframeView;
+		const len = this.length;
 
-		for (var i = 0; i < len; i++) {
+		for (let i = 0; i < len; i++) {
 			view = this._views[i];
 			if(view.displayed && view.section.index == section.index) {
 				return view;
@@ -131,11 +131,11 @@ class Views {
 	}
 
 	displayed(): IframeView[] {
-		var displayed: IframeView[] = [];
-		var view: IframeView;
-		var len = this.length;
+		const displayed: IframeView[] = [];
+		let view: IframeView;
+		const len = this.length;
 
-		for (var i = 0; i < len; i++) {
+		for (let i = 0; i < len; i++) {
 			view = this._views[i];
 			if(view.displayed){
 				displayed.push(view);
@@ -145,10 +145,10 @@ class Views {
 	}
 
 	show(): void {
-		var view;
-		var len = this.length;
+		let view;
+		const len = this.length;
 
-		for (var i = 0; i < len; i++) {
+		for (let i = 0; i < len; i++) {
 			view = this._views[i];
 			if(view.displayed){
 				view.show();
@@ -158,10 +158,10 @@ class Views {
 	}
 
 	hide(): void {
-		var view;
-		var len = this.length;
+		let view;
+		const len = this.length;
 
-		for (var i = 0; i < len; i++) {
+		for (let i = 0; i < len; i++) {
 			view = this._views[i];
 			if(view.displayed){
 				view.hide();

@@ -63,9 +63,9 @@ class Section {
 	 * @return {document} a promise with the xml document
 	 */
 	load(_request?: RequestFunction): Promise<Element> {
-		var request = _request || this.request || Request;
-		var loading = new defer();
-		var loaded = loading.promise;
+		const request = _request || this.request || Request;
+		const loading = new defer();
+		const loaded = loading.promise;
 
 		if(this.contents) {
 			loading.resolve(this.contents);
@@ -104,21 +104,21 @@ class Section {
 	 * @return {string} output a serialized XML Document
 	 */
 	render(_request?: RequestFunction): Promise<string> {
-		var rendering = new defer();
-		var rendered = rendering.promise;
+		const rendering = new defer();
+		const rendered = rendering.promise;
 		this.output; // TODO: better way to return this from hooks?
 
 		this.load(_request).
 			then(function(contents: Element){
-				var userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
-				var isIE = userAgent.indexOf('Trident') >= 0;
-				var Serializer;
+				const userAgent = (typeof navigator !== "undefined" && navigator.userAgent) || "";
+				const isIE = userAgent.indexOf("Trident") >= 0;
+				let Serializer;
 				if (typeof XMLSerializer === "undefined" || isIE) {
 					Serializer = XMLDOMSerializer;
 				} else {
 					Serializer = XMLSerializer;
 				}
-				var serializer = new Serializer() as unknown as XMLSerializer;
+				const serializer = new Serializer() as unknown as XMLSerializer;
 				this.output = serializer.serializeToString(contents);
 				return this.output;
 			}.bind(this)).
@@ -141,17 +141,17 @@ class Section {
 	 * @return {object[]} A list of matches, with form {cfi, excerpt}
 	 */
 	find(_query: string): SearchResult[] {
-		var section = this;
-		var matches: SearchResult[] = [];
-		var query = _query.toLowerCase();
-		var find = function(node: Node){
-			var text = node.textContent!.toLowerCase();
-			var range: Range;
-			var cfi;
-			var pos;
-			var last = -1;
-			var excerpt;
-			var limit = 150;
+		const section = this;
+		const matches: SearchResult[] = [];
+		const query = _query.toLowerCase();
+		const find = function(node: Node){
+			const text = node.textContent!.toLowerCase();
+			let range: Range;
+			let cfi;
+			let pos;
+			let last = -1;
+			let excerpt;
+			const limit = 150;
 
 			while (pos != -1) {
 				// Search for the query
@@ -203,7 +203,7 @@ class Section {
 		if (typeof(document.createTreeWalker) == "undefined") {
 			return this.find(_query);
 		}
-		let matches: SearchResult[] = [];
+		const matches: SearchResult[] = [];
 		const excerptLimit = 150;
 		const section = this;
 		const query = _query.toLowerCase();
@@ -217,7 +217,6 @@ class Section {
 				const startNodeIndex = 0 , endPos = pos + query.length;
 				let endNodeIndex = 0 , l = 0;
 				if (pos < (nodeList[startNodeIndex] as Text).length){
-					let cfi;
 					while( endNodeIndex < nodeList.length - 1 ){
 						l += (nodeList[endNodeIndex] as Text).length;
 						if ( endPos <= l){
@@ -226,12 +225,12 @@ class Section {
 						endNodeIndex += 1;
 					}
 
-					let startNode = nodeList[startNodeIndex] , endNode = nodeList[endNodeIndex];
-					let range = section.document!.createRange();
+					const startNode = nodeList[startNodeIndex] , endNode = nodeList[endNodeIndex];
+					const range = section.document!.createRange();
 					range.setStart(startNode,pos);
-					let beforeEndLengthCount =  nodeList.slice(0, endNodeIndex).reduce((acc: number,current: Node)=>{return acc+(current.textContent ?? "").length;},0) ;
+					const beforeEndLengthCount =  nodeList.slice(0, endNodeIndex).reduce((acc: number,current: Node)=>{return acc+(current.textContent ?? "").length;},0) ;
 					range.setEnd(endNode, beforeEndLengthCount > endPos ? endPos : endPos - beforeEndLengthCount );
-					cfi = section.cfiFromRange(range);
+					const cfi = section.cfiFromRange(range);
 
 					let excerpt = nodeList.slice(0, endNodeIndex+1).reduce((acc: string,current: Node)=>{return acc+(current.textContent ?? "") ;},"");
 					if (excerpt.length > excerptLimit){
@@ -248,7 +247,7 @@ class Section {
 
 		const treeWalker = document.createTreeWalker(section.document!, NodeFilter.SHOW_TEXT, null);
 		let node: Node | null , nodeList: Node[] = [];
-		while (node = treeWalker.nextNode()) {
+		while ((node = treeWalker.nextNode())) {
 			nodeList.push(node);
 			if (nodeList.length == maxSeqEle){
 				search(nodeList.slice(0 , maxSeqEle));
@@ -269,7 +268,7 @@ class Section {
 	*/
 	reconcileLayoutSettings(globalLayout: GlobalLayout): Record<string, string> {
 		//-- Get the global defaults
-		var settings: Record<string, string> = {
+		const settings: Record<string, string> = {
 			layout : globalLayout.layout,
 			spread : globalLayout.spread,
 			orientation : globalLayout.orientation
@@ -277,9 +276,9 @@ class Section {
 
 		//-- Get the chapter's display type
 		this.properties.forEach(function(prop){
-			var rendition = prop.replace("rendition:", "");
-			var split = rendition.indexOf("-");
-			var property, value;
+			const rendition = prop.replace("rendition:", "");
+			const split = rendition.indexOf("-");
+			let property, value;
 
 			if(split != -1){
 				property = rendition.slice(0, split);

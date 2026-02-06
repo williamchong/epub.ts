@@ -125,14 +125,14 @@ class Resources {
 	 * @return {Promise<string>} Promise resolves with url string
 	 */
 	createUrl (url: string): Promise<string> {
-		var parsedUrl = new Url(url);
-		var mimeType = mime.lookup(parsedUrl.filename);
+		const parsedUrl = new Url(url);
+		const mimeType = mime.lookup(parsedUrl.filename);
 
 		if (this.settings.archive) {
 			return this.settings.archive.createUrl(url, {"base64": (this.settings.replacements === "base64")});
 		} else {
 			if (this.settings.replacements === "base64") {
-				return this.settings.request(url, 'blob')
+				return this.settings.request(url, "blob")
 					.then((blob: Blob) => {
 						return blob2base64(blob);
 					})
@@ -140,7 +140,7 @@ class Resources {
 						return createBase64Url(base64, mimeType)!;
 					});
 			} else {
-				return this.settings.request(url, 'blob').then((blob: Blob) => {
+				return this.settings.request(url, "blob").then((blob: Blob) => {
 					return createBlobUrl(blob, mimeType);
 				})
 			}
@@ -158,12 +158,13 @@ class Resources {
 			}.bind(this));
 		}
 
-		var replacements = this.urls.map( (url) => {
-				var absolute = this.settings.resolver(url);
+		const replacements = this.urls.map( (url) => {
+				const absolute = this.settings.resolver(url);
 
 				return this.createUrl(absolute).
-					catch((err: Error): string | null => {
-						console.error(err);
+					catch((_err: Error): string | null => {
+						// eslint-disable-next-line no-console
+						console.error(_err);
 						return null;
 					});
 			});
@@ -185,14 +186,14 @@ class Resources {
 	 * @return {Promise}
 	 */
 	replaceCss(archive?: Archive, resolver?: (href: string, absolute?: boolean) => string): Promise<(string | void)[]> {
-		var replaced: Promise<string | void>[] = [];
+		const replaced: Promise<string | void>[] = [];
 		archive = archive || this.settings.archive;
 		resolver = resolver || this.settings.resolver;
 		this.cssUrls.forEach(function(href: string) {
-			var replacement = this.createCssFile(href, archive, resolver)
+			const replacement = this.createCssFile(href, archive, resolver)
 				.then(function (replacementUrl: string) {
 					// switch the url in the replacementUrls
-					var indexInUrls = this.urls.indexOf(href);
+					const indexInUrls = this.urls.indexOf(href);
 					if (indexInUrls > -1) {
 						this.replacementUrls[indexInUrls] = replacementUrl;
 					}
@@ -211,7 +212,7 @@ class Resources {
 	 * @return {Promise}  returns a BlobUrl to the new CSS file or a data url
 	 */
 	createCssFile(href: string): Promise<string | void> {
-		var newUrl;
+		let newUrl;
 
 		if (path.isAbsolute(href)) {
 			return new Promise<void>(function(resolve){
@@ -219,10 +220,10 @@ class Resources {
 			});
 		}
 
-		var absolute = this.settings.resolver(href);
+		const absolute = this.settings.resolver(href);
 
 		// Get the text of the css file from the archive
-		var textResponse;
+		let textResponse;
 
 		if (this.settings.archive) {
 			textResponse = this.settings.archive.getText(absolute);
@@ -231,9 +232,9 @@ class Resources {
 		}
 
 		// Get asset links relative to css file
-		var relUrls = this.urls.map( (assetHref) => {
-			var resolved = this.settings.resolver(assetHref);
-			var relative = new Path(absolute).relative(resolved);
+		const relUrls = this.urls.map( (assetHref) => {
+			const resolved = this.settings.resolver(assetHref);
+			const relative = new Path(absolute).relative(resolved);
 
 			return relative;
 		});
@@ -257,7 +258,7 @@ class Resources {
 			}
 
 			return newUrl;
-		}, (err: Error) => {
+		}, (_err: Error) => {
 			// handle response errors
 			return new Promise<void>(function(resolve){
 				resolve();
@@ -278,8 +279,8 @@ class Resources {
 		// Get Urls relative to current sections
 		return this.urls.
 			map(function(href: string) {
-				var resolved = resolver(href);
-				var relative = new Path(absolute).relative(resolved);
+				const resolved = resolver(href);
+				const relative = new Path(absolute).relative(resolved);
 				return relative;
 			}.bind(this));
 	}
@@ -290,12 +291,12 @@ class Resources {
 	 * @return {string} url
 	 */
 	get(path: string): Promise<string> | undefined {
-		var indexInUrls = this.urls.indexOf(path);
+		const indexInUrls = this.urls.indexOf(path);
 		if (indexInUrls === -1) {
 			return;
 		}
 		if (this.replacementUrls.length) {
-			return new Promise(function(resolve: (value: string) => void, reject: (reason?: any) => void) {
+			return new Promise(function(resolve: (value: string) => void, _reject: (reason?: any) => void) {
 				resolve(this.replacementUrls[indexInUrls]);
 			}.bind(this));
 		} else {
@@ -311,7 +312,7 @@ class Resources {
 	 * @return {string}         content with urls substituted
 	 */
 	substitute(content: string, url?: string): string {
-		var relUrls;
+		let relUrls;
 		if (url) {
 			relUrls = this.relativeTo(url);
 		} else {

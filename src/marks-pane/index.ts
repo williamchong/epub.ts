@@ -13,10 +13,10 @@ function svgCreate(name: string): SVGElement {
 
 function proxyMouse(target: HTMLElement | HTMLIFrameElement, tracked: Mark[]): void {
 	function dispatch(e: any): void {
-		for (var i = tracked.length - 1; i >= 0; i--) {
-			var t = tracked[i];
-			var x = e.clientX;
-			var y = e.clientY;
+		for (let i = tracked.length - 1; i >= 0; i--) {
+			const t = tracked[i];
+			let x = e.clientX;
+			let y = e.clientY;
 
 			if (e.touches && e.touches.length) {
 				x = e.touches[0].clientX;
@@ -32,28 +32,28 @@ function proxyMouse(target: HTMLElement | HTMLIFrameElement, tracked: Mark[]): v
 		}
 	}
 
-	var eventTarget;
+	let eventTarget;
 	if (target.nodeName === "iframe" || target.nodeName === "IFRAME") {
 		try {
 			eventTarget = (target as HTMLIFrameElement).contentDocument;
-		} catch (err) {
+		} catch (_err) {
 			eventTarget = target;
 		}
 	} else {
 		eventTarget = target;
 	}
 
-	for (var ev of ["mouseup", "mousedown", "click", "touchstart"]) {
+	for (const ev of ["mouseup", "mousedown", "click", "touchstart"]) {
 		eventTarget!.addEventListener(ev, (e) => dispatch(e), false);
 	}
 }
 
 function cloneEvent(e: any): MouseEvent {
-	var opts = Object.assign({}, e, { bubbles: false });
+	const opts = Object.assign({}, e, { bubbles: false });
 	try {
 		return new MouseEvent(e.type, opts);
-	} catch (err) {
-		var copy = document.createEvent("MouseEvents");
+	} catch (_err) {
+		const copy = document.createEvent("MouseEvents");
 		copy.initMouseEvent(e.type, false, opts.cancelable, opts.view,
 			opts.detail, opts.screenX, opts.screenY,
 			opts.clientX, opts.clientY, opts.ctrlKey,
@@ -64,23 +64,23 @@ function cloneEvent(e: any): MouseEvent {
 }
 
 function hitTest(item: Mark, target: HTMLElement | HTMLIFrameElement, x: number, y: number): boolean {
-	var offset = target.getBoundingClientRect();
+	const offset = target.getBoundingClientRect();
 
 	function rectContains(r: DOMRect, x: number, y: number): boolean {
-		var top = r.top - offset.top;
-		var left = r.left - offset.left;
-		var bottom = top + r.height;
-		var right = left + r.width;
+		const top = r.top - offset.top;
+		const left = r.left - offset.left;
+		const bottom = top + r.height;
+		const right = left + r.width;
 		return (top <= y && left <= x && bottom > y && right > x);
 	}
 
-	var rect = item.getBoundingClientRect();
+	const rect = item.getBoundingClientRect();
 	if (!rectContains(rect, x, y)) {
 		return false;
 	}
 
-	var rects = item.getClientRects();
-	for (var i = 0, len = rects.length; i < len; i++) {
+	const rects = item.getClientRects();
+	for (let i = 0, len = rects.length; i < len; i++) {
 		if (rectContains(rects[i], x, y)) {
 			return true;
 		}
@@ -91,8 +91,8 @@ function hitTest(item: Mark, target: HTMLElement | HTMLIFrameElement, x: number,
 // -- Geometry helpers --
 
 function coords(el: Element, container: Element): { top: number; left: number; height: number; width: number } {
-	var offset = container.getBoundingClientRect();
-	var rect = el.getBoundingClientRect();
+	const offset = container.getBoundingClientRect();
+	const rect = el.getBoundingClientRect();
 
 	return {
 		top: rect.top - offset.top,
@@ -143,7 +143,7 @@ export class Pane {
 	}
 
 	addMark(mark: Mark): Mark {
-		var g = svgCreate("g");
+		const g = svgCreate("g");
 		this.element.appendChild(g);
 		mark.bind(g, this.container);
 
@@ -154,18 +154,18 @@ export class Pane {
 	}
 
 	removeMark(mark: Mark): void {
-		var idx = this.marks.indexOf(mark);
+		const idx = this.marks.indexOf(mark);
 		if (idx === -1) {
 			return;
 		}
-		var el = mark.unbind();
+		const el = mark.unbind();
 		this.element.removeChild(el!);
 		this.marks.splice(idx, 1);
 	}
 
 	render(): void {
 		setCoords(this.element, coords(this.target, this.container));
-		for (var m of this.marks) {
+		for (const m of this.marks) {
 			m.render();
 		}
 	}
@@ -186,7 +186,7 @@ export class Mark {
 	}
 
 	unbind(): SVGElement | null {
-		var el = this.element;
+		const el = this.element;
 		this.element = null;
 		return el;
 	}
@@ -203,8 +203,8 @@ export class Mark {
 	}
 
 	getClientRects(): DOMRect[] {
-		var rects: DOMRect[] = [];
-		var el = this.element!.firstChild as any;
+		const rects: DOMRect[] = [];
+		let el = this.element!.firstChild as any;
 		while (el) {
 			rects.push(el.getBoundingClientRect());
 			el = el.nextSibling;
@@ -213,10 +213,10 @@ export class Mark {
 	}
 
 	filteredRanges(): DOMRect[] {
-		var rects = Array.from(this.range.getClientRects());
+		const rects = Array.from(this.range.getClientRects());
 
 		return rects.filter((box) => {
-			for (var i = 0; i < rects.length; i++) {
+			for (let i = 0; i < rects.length; i++) {
 				if (rects[i] === box) {
 					return true;
 				}
@@ -246,13 +246,13 @@ export class Highlight extends Mark {
 	bind(element: SVGElement, container: HTMLElement): void {
 		super.bind(element, container);
 
-		for (var attr in this.data) {
+		for (const attr in this.data) {
 			if (this.data.hasOwnProperty(attr)) {
 				this.element!.dataset[attr] = this.data[attr];
 			}
 		}
 
-		for (var attr in this.attributes) {
+		for (const attr in this.attributes) {
 			if (this.attributes.hasOwnProperty(attr)) {
 				this.element!.setAttribute(attr, this.attributes[attr]);
 			}
@@ -268,14 +268,14 @@ export class Highlight extends Mark {
 			this.element!.removeChild(this.element!.firstChild);
 		}
 
-		var docFrag = this.element!.ownerDocument!.createDocumentFragment();
-		var filtered = this.filteredRanges();
-		var offset = this.element!.getBoundingClientRect();
-		var container = this.container.getBoundingClientRect();
+		const docFrag = this.element!.ownerDocument!.createDocumentFragment();
+		const filtered = this.filteredRanges();
+		const offset = this.element!.getBoundingClientRect();
+		const container = this.container.getBoundingClientRect();
 
-		for (var i = 0, len = filtered.length; i < len; i++) {
-			var r = filtered[i];
-			var el = svgCreate("rect");
+		for (let i = 0, len = filtered.length; i < len; i++) {
+			const r = filtered[i];
+			const el = svgCreate("rect");
 			el.setAttribute("x", (r.left - offset.left + container.left) as any);
 			el.setAttribute("y", (r.top - offset.top + container.top) as any);
 			el.setAttribute("height", r.height as any);
@@ -297,22 +297,22 @@ export class Underline extends Highlight {
 			this.element!.removeChild(this.element!.firstChild);
 		}
 
-		var docFrag = this.element!.ownerDocument!.createDocumentFragment();
-		var filtered = this.filteredRanges();
-		var offset = this.element!.getBoundingClientRect();
-		var container = this.container.getBoundingClientRect();
+		const docFrag = this.element!.ownerDocument!.createDocumentFragment();
+		const filtered = this.filteredRanges();
+		const offset = this.element!.getBoundingClientRect();
+		const container = this.container.getBoundingClientRect();
 
-		for (var i = 0, len = filtered.length; i < len; i++) {
-			var r = filtered[i];
+		for (let i = 0, len = filtered.length; i < len; i++) {
+			const r = filtered[i];
 
-			var rect = svgCreate("rect");
+			const rect = svgCreate("rect");
 			rect.setAttribute("x", (r.left - offset.left + container.left) as any);
 			rect.setAttribute("y", (r.top - offset.top + container.top) as any);
 			rect.setAttribute("height", r.height as any);
 			rect.setAttribute("width", r.width as any);
 			rect.setAttribute("fill", "none");
 
-			var line = svgCreate("line");
+			const line = svgCreate("line");
 			line.setAttribute("x1", (r.left - offset.left + container.left) as any);
 			line.setAttribute("x2", (r.left - offset.left + container.left + r.width) as any);
 			line.setAttribute("y1", (r.top - offset.top + container.top + r.height - 1) as any);

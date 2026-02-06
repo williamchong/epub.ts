@@ -2,7 +2,7 @@ import EpubCFI from "./epubcfi";
 import Hook from "./utils/hook";
 import Section from "./section";
 import {replaceBase, replaceCanonical, replaceMeta} from "./utils/replacements";
-import type { PackagingSpineItem, PackagingManifestObject, PackagingObject, SpineItem } from "./types";
+import type { PackagingManifestObject, PackagingObject, SpineItem } from "./types";
 
 /**
  * A collection of Spine Items
@@ -41,7 +41,7 @@ class Spine {
 		this.items = [];
 		this.manifest = {};
 		this.spineNodeIndex = 0;
-		this.baseUrl = '';
+		this.baseUrl = "";
 		this.length = 0;
 	}
 
@@ -60,8 +60,7 @@ class Spine {
 		this.length = this.items.length;
 
 		this.items.forEach( (item, index) => {
-			var manifestItem = this.manifest[item.idref!];
-			var spineItem;
+			const manifestItem = this.manifest[item.idref!];
 
 			item.index = index;
 			item.cfiBase = this.epubcfi.generateChapterComponent(this.spineNodeIndex, item.index, item.id);
@@ -85,7 +84,7 @@ class Spine {
 				item.prev = function() {
 					let prevIndex = item.index;
 					while (prevIndex > 0) {
-						let prev = this.get(prevIndex-1);
+						const prev = this.get(prevIndex-1);
 						if (prev && prev.linear) {
 							return prev;
 						}
@@ -96,7 +95,7 @@ class Spine {
 				item.next = function() {
 					let nextIndex = item.index;
 					while (nextIndex < this.spineItems.length-1) {
-						let next = this.get(nextIndex+1);
+						const next = this.get(nextIndex+1);
 						if (next && next.linear) {
 							return next;
 						}
@@ -114,7 +113,7 @@ class Spine {
 			}
 
 
-			spineItem = new Section(item, this.hooks);
+			const spineItem = new Section(item, this.hooks);
 
 			this.append(spineItem);
 
@@ -134,18 +133,18 @@ class Spine {
 	 * @example spine.get("#id1234");
 	 */
 	get(target?: string | number): Section | null {
-		var index = 0;
+		let index = 0;
 
 		if (typeof target === "undefined") {
 			while (index < this.spineItems.length) {
-				let next = this.spineItems[index];
+				const next = this.spineItems[index];
 				if (next && next.linear) {
 					break;
 				}
 				index += 1;
 			}
 		} else if(this.epubcfi.isCfiString(target)) {
-			let cfi = new EpubCFI(target as string);
+			const cfi = new EpubCFI(target as string);
 			index = cfi.spinePos;
 		} else if(typeof target === "number" || isNaN(Number(target)) === false){
 			index = Number(target);
@@ -166,7 +165,7 @@ class Spine {
 	 * @param  {Section} section
 	 */
 	append(section: Section): number {
-		var index = this.spineItems.length;
+		const index = this.spineItems.length;
 		section.index = index;
 
 		this.spineItems.push(section);
@@ -210,7 +209,7 @@ class Spine {
 	 * @param  {Section} section
 	 */
 	remove(section: Section): Section[] | undefined {
-		var index = this.spineItems.indexOf(section);
+		const index = this.spineItems.indexOf(section);
 
 		if(index > -1) {
 			delete this.spineByHref[section.href];
@@ -236,7 +235,7 @@ class Spine {
 		let index = 0;
 
 		do {
-			let next = this.get(index);
+			const next = this.get(index);
 
 			if (next && next.linear) {
 				return next;
@@ -253,7 +252,7 @@ class Spine {
 		let index = this.spineItems.length-1;
 
 		do {
-			let prev = this.get(index);
+			const prev = this.get(index);
 			if (prev && prev.linear) {
 				return prev;
 			}

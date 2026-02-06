@@ -50,7 +50,7 @@ class Locations implements IEventEmitter {
 
 		this._wordCounter = 0;
 
-		this._currentCfi ='';
+		this._currentCfi ="";
 		this.processingTimeout = undefined;
 	}
 
@@ -99,8 +99,8 @@ class Locations implements IEventEmitter {
 
 		return section.load(this.request)
 			.then(function(contents: Element) {
-				var completed = new defer();
-				var locations = this.parse(contents, section.cfiBase);
+				const completed = new defer();
+				const locations = this.parse(contents, section.cfiBase);
 				this._locations = this._locations.concat(locations);
 
 				section.unload();
@@ -112,17 +112,17 @@ class Locations implements IEventEmitter {
 	}
 
 	parse(contents: Element, cfiBase: string, chars?: number): string[] {
-		var locations: string[] = [];
-		var range: any;
-		var doc = contents.ownerDocument;
-		var body = qs(doc, "body");
-		var counter = 0;
-		var prev: any;
-		var _break = chars || this.break;
-		var parser = function(node: Node) {
-			var len = (node as Text).length;
-			var dist;
-			var pos = 0;
+		const locations: string[] = [];
+		let range: any;
+		const doc = contents.ownerDocument;
+		const body = qs(doc, "body");
+		let counter = 0;
+		let prev: any;
+		const _break = chars || this.break;
+		const parser = function(node: Node) {
+			const len = (node as Text).length;
+			let dist;
+			let pos = 0;
 
 			if ((node.textContent ?? "").trim().length === 0) {
 				return false; // continue
@@ -173,7 +173,7 @@ class Locations implements IEventEmitter {
 					range.endContainer = node;
 					range.endOffset = pos;
 					// cfi = section.cfiFromRange(range);
-					let cfi = new EpubCFI(range, cfiBase).toString();
+					const cfi = new EpubCFI(range, cfiBase).toString();
 					locations.push(cfi);
 					counter = 0;
 				}
@@ -187,7 +187,7 @@ class Locations implements IEventEmitter {
 		if (range && range.startContainer && prev) {
 			range.endContainer = prev;
 			range.endOffset = prev.length;
-			let cfi = new EpubCFI(range, cfiBase).toString();
+			const cfi = new EpubCFI(range, cfiBase).toString();
 			locations.push(cfi);
 			counter = 0;
 		}
@@ -204,7 +204,7 @@ class Locations implements IEventEmitter {
 	 * @return {object} locations
 	 */
 	generateFromWords(startCfi?: string, wordCount?: number, count?: number): Promise<any[]> {
-		var start = startCfi ? new EpubCFI(startCfi) : undefined;
+		const start = startCfi ? new EpubCFI(startCfi) : undefined;
 		this.q.pause();
 		this._locationsWords = [];
 		this._wordCounter = 0;
@@ -238,9 +238,9 @@ class Locations implements IEventEmitter {
 
 		return section.load(this.request)
 			.then(function(contents: Element) {
-				var completed = new defer();
-				var locations = this.parseWords(contents, section, wordCount, startCfi);
-				var remainingCount = count! - this._locationsWords.length;
+				const completed = new defer();
+				const locations = this.parseWords(contents, section, wordCount, startCfi);
+				const remainingCount = count! - this._locationsWords.length;
 				this._locationsWords = this._locationsWords.concat(locations.length >= count! ? locations.slice(0, remainingCount) : locations);
 
 				section.unload();
@@ -259,18 +259,18 @@ class Locations implements IEventEmitter {
 	}
 
 	parseWords(contents: Element, section: Section, wordCount: number, startCfi?: EpubCFI): { cfi: string; wordCount: number }[] {
-		var cfiBase = section.cfiBase;
-		var locations: { cfi: string; wordCount: number }[] = [];
-		var doc = contents.ownerDocument;
-		var body = qs(doc, "body");
-		var prev;
-		var _break = wordCount;
-		var foundStartNode = startCfi ? startCfi.spinePos !== section.index : true;
-		var startNode: Node | undefined;
+		const cfiBase = section.cfiBase;
+		const locations: { cfi: string; wordCount: number }[] = [];
+		const doc = contents.ownerDocument;
+		const body = qs(doc, "body");
+		let _prev;
+		const _break = wordCount;
+		let foundStartNode = startCfi ? startCfi.spinePos !== section.index : true;
+		let startNode: Node | undefined;
 		if (startCfi && section.index === startCfi.spinePos) {
 			startNode = startCfi.findNode(startCfi.range ? startCfi.path.steps.concat(startCfi.start!.steps) : startCfi.path.steps, contents.ownerDocument!);
 		}
-		var parser = function(node: Node) {
+		const parser = function(node: Node) {
 			if (!foundStartNode) {
 				if (node === startNode) {
 					foundStartNode = true;
@@ -283,9 +283,9 @@ class Locations implements IEventEmitter {
 					return false;
 				}
 			}
-			var len  = this.countWords(node.textContent ?? "");
-			var dist;
-			var pos = 0;
+			const len  = this.countWords(node.textContent ?? "");
+			let dist;
+			let pos = 0;
 
 			if (len === 0) {
 				return false; // continue
@@ -315,12 +315,12 @@ class Locations implements IEventEmitter {
 					// Advance pos
 					pos += dist;
 
-					let cfi = new EpubCFI(node, cfiBase);
+					const cfi = new EpubCFI(node, cfiBase);
 					locations.push({ cfi: cfi.toString(), wordCount: this._wordCounter });
 					this._wordCounter = 0;
 				}
 			}
-			prev = node;
+			_prev = node;
 		};
 
 		sprint(body!, parser.bind(this));
@@ -334,7 +334,6 @@ class Locations implements IEventEmitter {
 	 * @return {number}
 	 */
 	locationFromCfi(cfi: string | EpubCFI): number {
-		let loc;
 		if (EpubCFI.prototype.isCfiString(cfi)) {
 			cfi = new EpubCFI(cfi);
 		}
@@ -343,7 +342,7 @@ class Locations implements IEventEmitter {
 			return -1;
 		}
 
-		loc = locationOf(cfi, this._locations, this.epubcfi.compare);
+		const loc = locationOf(cfi, this._locations, this.epubcfi.compare);
 
 		if (loc > this.total) {
 			return this.total;
@@ -362,7 +361,7 @@ class Locations implements IEventEmitter {
 			return null;
 		}
 		// Find closest cfi
-		var loc = this.locationFromCfi(cfi);
+		const loc = this.locationFromCfi(cfi);
 		// Get percentage in total
 		return this.percentageFromLocation(loc);
 	}
@@ -386,7 +385,7 @@ class Locations implements IEventEmitter {
 	 * @return {EpubCFI} cfi
 	 */
 	cfiFromLocation(loc: string | number): string | number {
-		var cfi: string | number = -1;
+		let cfi: string | number = -1;
 		// check that pg is an int
 		if(typeof loc != "number"){
 			loc = parseInt(loc);
@@ -405,19 +404,19 @@ class Locations implements IEventEmitter {
 	 * @return {EpubCFI} cfi
 	 */
 	cfiFromPercentage(percentage: number): string | number {
-		let loc;
 		if (percentage > 1) {
-			console.warn("Normalize cfiFromPercentage value to between 0 - 1");
+		// eslint-disable-next-line no-console
+		console.warn("Normalize cfiFromPercentage value to between 0 - 1");
 		}
 
 		// Make sure 1 goes to very end
 		if (percentage >= 1) {
-			let cfi = new EpubCFI(this._locations[this.total]);
+			const cfi = new EpubCFI(this._locations[this.total]);
 			cfi.collapse();
 			return cfi.toString();
 		}
 
-		loc = Math.ceil(this.total * percentage);
+		const loc = Math.ceil(this.total * percentage);
 		return this.cfiFromLocation(loc);
 	}
 
@@ -448,7 +447,7 @@ class Locations implements IEventEmitter {
 	}
 
 	setCurrent(curr: string | number): void {
-		var loc;
+		let loc;
 
 		if(typeof curr == "string"){
 			this._currentCfi = curr;

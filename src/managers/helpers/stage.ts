@@ -1,11 +1,11 @@
 import {uuid, isNumber, isElement, windowBounds, extend} from "../../utils/core";
 import type { StageOptions } from "../../types";
 function throttle(func: Function, wait: number): () => void {
-	var timeout: ReturnType<typeof setTimeout> | null = null;
-	var previous = 0;
+	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let previous = 0;
 	return function() {
-		var now = Date.now();
-		var remaining = wait - (now - previous);
+		const now = Date.now();
+		const remaining = wait - (now - previous);
 		if (remaining <= 0 || remaining > wait) {
 			if (timeout) {
 				clearTimeout(timeout);
@@ -54,9 +54,9 @@ class Stage {
 	create(options: StageOptions): HTMLDivElement {
 		let height: string | number | undefined  = options.height;// !== false ? options.height : "100%";
 		let width: string | number | undefined   = options.width;// !== false ? options.width : "100%";
-		let overflow  = options.overflow || false;
-		let axis = options.axis || "vertical";
-		let direction = options.direction;
+		const overflow  = options.overflow || false;
+		const axis = options.axis || "vertical";
+		const direction = options.direction;
 
 		extend(this.settings, options);
 
@@ -69,7 +69,7 @@ class Stage {
 		}
 
 		// Create new container element
-		let container = document.createElement("div");
+		const container = document.createElement("div");
 
 		container.id = this.id;
 		container.classList.add("epub-container");
@@ -121,7 +121,7 @@ class Stage {
 	}
 
 	wrap(container: HTMLElement): HTMLDivElement {
-		var wrapper = document.createElement("div");
+		const wrapper = document.createElement("div");
 
 		wrapper.style.visibility = "hidden";
 		wrapper.style.overflow = "hidden";
@@ -134,7 +134,7 @@ class Stage {
 
 
 	getElement(_element: HTMLElement | string): HTMLElement {
-		var element: HTMLElement | null = null;
+		let element: HTMLElement | null = null;
 
 		if(isElement(_element)) {
 			element = _element as HTMLElement;
@@ -151,8 +151,8 @@ class Stage {
 
 	attachTo(what: HTMLElement | string): HTMLElement | void {
 
-		var element = this.getElement(what);
-		var base;
+		const element = this.getElement(what);
+		let base;
 
 		if(!element){
 			return;
@@ -193,9 +193,9 @@ class Stage {
 	}
 
 	size(width?: number | string | null, height?: number | string | null): { width: number; height: number } {
-		var bounds;
-		let _width = width || this.settings.width;
-		let _height = height || this.settings.height;
+		let bounds;
+		const _width = width || this.settings.width;
+		const _height = height || this.settings.height;
 
 		// If width or height are set to false, inherit them from containing element
 		if(width === null) {
@@ -247,9 +247,9 @@ class Stage {
 		};
 
 		// Bounds not set, get them from window
-		let _windowBounds = windowBounds();
-		let bodyStyles = window.getComputedStyle(document.body);
-		let bodyPadding = {
+		const _windowBounds = windowBounds();
+		const bodyStyles = window.getComputedStyle(document.body);
+		const bodyPadding = {
 			left: parseFloat(bodyStyles.paddingLeft) || 0,
 			right: parseFloat(bodyStyles.paddingRight) || 0,
 			top: parseFloat(bodyStyles.paddingTop) || 0,
@@ -294,7 +294,7 @@ class Stage {
 	}
 
 	getSheet(): CSSStyleSheet {
-		var style = document.createElement("style");
+		const style = document.createElement("style");
 
 		// WebKit hack --> https://davidwalsh.name/add-rules-stylesheets
 		style.appendChild(document.createTextNode(""));
@@ -305,15 +305,15 @@ class Stage {
 	}
 
 	addStyleRules(selector: string, rulesArray: Record<string, string>[]): void {
-		var scope = "#" + this.id + " ";
-		var rules = "";
+		const scope = "#" + this.id + " ";
+		let rules = "";
 
 		if(!this.sheet){
 			this.sheet = this.getSheet();
 		}
 
 		rulesArray.forEach(function(set) {
-			for (var prop in set) {
+			for (const prop in set) {
 				if(set.hasOwnProperty(prop)) {
 					rules += prop + ":" + set[prop] + ";";
 				}
@@ -372,14 +372,14 @@ class Stage {
 	}
 
 	destroy(): void {
-		var base;
+		let _base;
 
 		if (this.element) {
 
 			if(this.settings.hidden) {
-				base = this.wrapper;
+				_base = this.wrapper;
 			} else {
-				base = this.container;
+				_base = this.container;
 			}
 
 			if(this.element.contains(this.container)) {

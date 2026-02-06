@@ -56,7 +56,7 @@ class Store implements IEventEmitter {
 			this.storage = store!.createInstance({
 					name: this.name
 			});
-		} catch (e) {
+		} catch (_e) {
 			throw new Error("localForage lib not loaded");
 		}
 	}
@@ -67,8 +67,8 @@ class Store implements IEventEmitter {
 	 */
 	addListeners(): void {
 		this._status = this.status.bind(this);
-		window.addEventListener('online',  this._status as EventListener);
-	  window.addEventListener('offline', this._status as EventListener);
+		window.addEventListener("online",  this._status as EventListener);
+	  window.addEventListener("offline", this._status as EventListener);
 	}
 
 	/**
@@ -76,8 +76,8 @@ class Store implements IEventEmitter {
 	 * @private
 	 */
 	removeListeners(): void {
-		window.removeEventListener('online',  this._status as EventListener);
-	  window.removeEventListener('offline', this._status as EventListener);
+		window.removeEventListener("online",  this._status as EventListener);
+	  window.removeEventListener("offline", this._status as EventListener);
 		this._status = undefined;
 	}
 
@@ -85,8 +85,8 @@ class Store implements IEventEmitter {
 	 * Update the online / offline status
 	 * @private
 	 */
-	status(event: Event): void {
-		let online = navigator.onLine;
+	status(_event: Event): void {
+		const online = navigator.onLine;
 		this.online = online;
 		if (online) {
 			this.emit("online", this);
@@ -102,10 +102,10 @@ class Store implements IEventEmitter {
 	 * @return {Promise<object>} store objects
 	 */
 	add(resources: { resources: Array<{ href: string }> }, force?: boolean): Promise<any[]> {
-		let mapped = resources.resources.map((item: { href: string }) => {
-			let { href } = item;
-			let url = this.resolver(href);
-			let encodedUrl = window.encodeURIComponent(url);
+		const mapped = resources.resources.map((item: { href: string }) => {
+			const { href } = item;
+			const url = this.resolver(href);
+			const encodedUrl = window.encodeURIComponent(url);
 
 			return this.storage.getItem(encodedUrl).then((item: any) => {
 				if (!item || force) {
@@ -130,7 +130,7 @@ class Store implements IEventEmitter {
 	 * @return {Promise<Blob>}
 	 */
 	put(url: string, withCredentials?: boolean, headers?: Record<string, string>): Promise<any> {
-		let encodedUrl = window.encodeURIComponent(url);
+		const encodedUrl = window.encodeURIComponent(url);
 
 		return this.storage.getItem(encodedUrl).then((result: any) => {
 			if (!result) {
@@ -172,9 +172,8 @@ class Store implements IEventEmitter {
 	 * @return {Promise<Blob | string | JSON | Document | XMLDocument>}
 	 */
 	retrieve(url: string, type?: string): Promise<any> {
-		var deferred = new defer();
-		var response;
-		var path = new Path(url);
+		let response;
+		const path = new Path(url);
 
 		// If type isn't set, determine it from the file extension
 		if(!type) {
@@ -189,8 +188,8 @@ class Store implements IEventEmitter {
 
 
 		return response.then((r) => {
-			var deferred = new defer();
-			var result;
+			const deferred = new defer();
+			let result;
 			if (r) {
 				result = this.handleResponse(r, type);
 				deferred.resolve(result);
@@ -212,7 +211,7 @@ class Store implements IEventEmitter {
 	 * @return {any} the parsed result
 	 */
 	handleResponse(response: any, type?: string): any {
-		var r;
+		let r;
 
 		if(type == "json") {
 			r = JSON.parse(response);
@@ -242,7 +241,7 @@ class Store implements IEventEmitter {
 	 * @return {Blob}
 	 */
 	getBlob(url: string, mimeType?: string): Promise<Blob | undefined> {
-		let encodedUrl = window.encodeURIComponent(url);
+		const encodedUrl = window.encodeURIComponent(url);
 
 		return this.storage.getItem(encodedUrl).then(function(uint8array: any) {
 			if(!uint8array) return;
@@ -261,18 +260,17 @@ class Store implements IEventEmitter {
 	 * @return {string}
 	 */
 	getText(url: string, mimeType?: string): Promise<any> {
-		let encodedUrl = window.encodeURIComponent(url);
+		const encodedUrl = window.encodeURIComponent(url);
 
 		mimeType = mimeType || mime.lookup(url);
 
 		return this.storage.getItem(encodedUrl).then(function(uint8array: any) {
-			var deferred = new defer();
-			var reader = new FileReader();
-			var blob;
+			const deferred = new defer();
+			const reader = new FileReader();
 
 			if(!uint8array) return;
 
-			blob = new Blob([uint8array], {type : mimeType});
+			const blob = new Blob([uint8array], {type : mimeType});
 
 			reader.addEventListener("loadend", () => {
 				deferred.resolve(reader.result);
@@ -291,18 +289,17 @@ class Store implements IEventEmitter {
 	 * @return {string} base64 encoded
 	 */
 	getBase64(url: string, mimeType?: string): Promise<any> {
-		let encodedUrl = window.encodeURIComponent(url);
+		const encodedUrl = window.encodeURIComponent(url);
 
 		mimeType = mimeType || mime.lookup(url);
 
 		return this.storage.getItem(encodedUrl).then((uint8array: any) => {
-			var deferred = new defer();
-			var reader = new FileReader();
-			var blob;
+			const deferred = new defer();
+			const reader = new FileReader();
 
 			if(!uint8array) return;
 
-			blob = new Blob([uint8array], {type : mimeType});
+			const blob = new Blob([uint8array], {type : mimeType});
 
 			reader.addEventListener("loadend", () => {
 				deferred.resolve(reader.result);
@@ -320,11 +317,11 @@ class Store implements IEventEmitter {
 	 * @return {Promise} url promise with Url string
 	 */
 	createUrl(url: string, options?: { base64?: boolean }): Promise<string> {
-		var deferred = new defer();
-		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
-		var tempUrl;
-		var response;
-		var useBase64 = options && options.base64;
+		const deferred = new defer();
+		const _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
+		let tempUrl;
+		let response;
+		const useBase64 = options && options.base64;
 
 		if(url in this.urlCache) {
 			deferred.resolve(this.urlCache[url]);
@@ -376,14 +373,14 @@ class Store implements IEventEmitter {
 	 * @param  {string} url url of the item in the store
 	 */
 	revokeUrl(url: string): void {
-		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
-		var fromCache = this.urlCache[url];
+		const _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
+		const fromCache = this.urlCache[url];
 		if(fromCache) _URL.revokeObjectURL(fromCache);
 	}
 
 	destroy(): void {
-		var _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
-		for (let fromCache in this.urlCache) {
+		const _URL = window.URL || (window as any).webkitURL || (window as any).mozURL;
+		for (const fromCache in this.urlCache) {
 			_URL.revokeObjectURL(fromCache);
 		}
 		this.urlCache = {};

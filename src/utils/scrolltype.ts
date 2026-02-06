@@ -1,14 +1,14 @@
 // Detect RTL scroll type
 // Based on https://github.com/othree/jquery.rtl-scroll-type/blob/master/src/jquery.rtl-scroll.js
 export default function scrollType(): string {
-	var type = "reverse";
-	var definer = createDefiner();
+	let type = "reverse";
+	const definer = createDefiner();
 	document.body.appendChild(definer);
 
 	if (definer.scrollLeft > 0) {
 		type = "default";
 	} else {
-		if (typeof Element !== 'undefined' && typeof Element.prototype.scrollIntoView === 'function') {
+		if (typeof Element !== "undefined" && typeof Element.prototype.scrollIntoView === "function") {
 			definer.children[0].children[1].scrollIntoView();
 			if (definer.scrollLeft < 0) {
 				type = "negative";
@@ -26,7 +26,7 @@ export default function scrollType(): string {
 }
 
 export function createDefiner(): HTMLDivElement {
-	var definer = document.createElement('div');
+	const definer = document.createElement("div");
 	definer.dir="rtl";
 
 	definer.style.position = "fixed";
@@ -36,14 +36,14 @@ export function createDefiner(): HTMLDivElement {
 	definer.style.left = "0px";
 	definer.style.overflow = "hidden";
 
-	var innerDiv = document.createElement('div');
+	const innerDiv = document.createElement("div");
 	innerDiv.style.width = "2px";
 
-	var spanA = document.createElement('span');
+	const spanA = document.createElement("span");
 	spanA.style.width = "1px";
 	spanA.style.display = "inline-block";
 
-	var spanB = document.createElement('span');
+	const spanB = document.createElement("span");
 	spanB.style.width = "1px";
 	spanB.style.display = "inline-block";
 

@@ -1,5 +1,5 @@
 import {defer, requestAnimationFrame} from "./core";
-import type { Deferred } from "../types";
+
 
 /**
  * Queue for handling tasks one at a time
@@ -27,10 +27,10 @@ class Queue {
 	 * @return {Promise}
 	 */
 	enqueue(..._args: any[]): Promise<any> {
-		var deferred, promise;
-		var queued;
-		var task = [].shift.call(arguments);
-		var args = arguments;
+		let deferred, promise;
+		let queued;
+		const task = [].shift.call(arguments);
+		const args = arguments;
 
 		// Handle single args without context
 		// if(args && !Array.isArray(args)) {
@@ -78,7 +78,7 @@ class Queue {
 	 * @return {Promise}
 	 */
 	dequeue(): any {
-		var inwait: any, task, result;
+		let inwait: any, task, result;
 
 		if(this._q.length && !this.paused) {
 			inwait = this._q.shift();
@@ -226,10 +226,10 @@ class Task {
 	constructor(task: Function, args: any[], context: any){
 
 		return function(){
-			var toApply = (arguments as any) || [];
+			const toApply = (arguments as any) || [];
 
 			return new Promise( (resolve, reject) => {
-				var callback = function(value: any, err: any){
+				const callback = function(value: any, err: any){
 					if (!value && err) {
 						reject(err);
 					} else {

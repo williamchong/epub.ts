@@ -125,20 +125,18 @@ class Layout implements IEventEmitter {
 	 */
 	calculate(_width: number, _height: number, _gap?: number): void {
 
-		var divisor = 1;
-		var gap = _gap || 0;
+		let divisor = 1;
+		let gap = _gap || 0;
 
 		//-- Check the width and create even width columns
 		// var fullWidth = Math.floor(_width);
-		var width = _width;
-		var height = _height;
+		let width = _width;
+		const height = _height;
 
-		var section = Math.floor(width / 12);
+		const section = Math.floor(width / 12);
 
-		var columnWidth;
-		var spreadWidth;
-		var pageWidth;
-		var delta;
+		let columnWidth;
+		let pageWidth;
 
 		if (this._spread && width >= this._minSpreadWidth) {
 			divisor = 2;
@@ -170,9 +168,9 @@ class Layout implements IEventEmitter {
 			width = columnWidth;
 		}
 
-		spreadWidth = (columnWidth * divisor) + gap;
+		const spreadWidth = (columnWidth * divisor) + gap;
 
-		delta = width;
+		const delta = width;
 
 		this.width = width;
 		this.height = height;
@@ -213,7 +211,7 @@ class Layout implements IEventEmitter {
 	 * @return {Promise}
 	 */
 	format(contents: Contents, section?: Section, axis?: string): void {
-		var formating;
+		let formating;
 
 		if (this.name === "pre-paginated") {
 			formating = contents.fit(this.columnWidth, this.height, section);
@@ -274,7 +272,7 @@ class Layout implements IEventEmitter {
 		});
 
 		if(Object.keys(propsRecord).length > 0) {
-			let newProps = extend(this.props, props);
+			const newProps = extend(this.props, props);
 			this.emit(EVENTS.LAYOUT.UPDATED, newProps, props);
 		}
 	}

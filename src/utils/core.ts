@@ -12,8 +12,8 @@ import { DOMParser as XMLDOMParser } from "@xmldom/xmldom";
 export const requestAnimationFrame = (typeof window != "undefined") ? ((window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame) : false;
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
-const COMMENT_NODE = 8;
-const DOCUMENT_NODE = 9;
+const _COMMENT_NODE = 8;
+const _DOCUMENT_NODE = 9;
 const _URL = typeof URL != "undefined" ? URL : (typeof window != "undefined" ? ((window as any).URL || (window as any).webkitURL || (window as any).mozURL) : undefined);
 
 /**
@@ -23,9 +23,9 @@ const _URL = typeof URL != "undefined" ? URL : (typeof window != "undefined" ? (
  * @memberof Core
  */
 export function uuid(): string {
-	var d = new Date().getTime();
-	var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-		var r = (d + Math.random()*16)%16 | 0;
+	let d = new Date().getTime();
+	const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+		const r = (d + Math.random()*16)%16 | 0;
 		d = Math.floor(d/16);
 		return (c=="x" ? r : (r&0x7|0x8)).toString(16);
 	});
@@ -72,7 +72,7 @@ export function isNumber(n: unknown): boolean {
  * @memberof Core
  */
 export function isFloat(n: unknown): boolean {
-	let f = parseFloat(n as string);
+	const f = parseFloat(n as string);
 
 	if (isNumber(n) === false) {
 		return false;
@@ -92,16 +92,16 @@ export function isFloat(n: unknown): boolean {
  * @memberof Core
  */
 export function prefixed(unprefixed: string): string {
-	var vendors = ["Webkit", "webkit", "Moz", "O", "ms" ];
-	var prefixes = ["-webkit-", "-webkit-", "-moz-", "-o-", "-ms-"];
-	var lower = unprefixed.toLowerCase();
-	var length = vendors.length;
+	const vendors = ["Webkit", "webkit", "Moz", "O", "ms" ];
+	const prefixes = ["-webkit-", "-webkit-", "-moz-", "-o-", "-ms-"];
+	const lower = unprefixed.toLowerCase();
+	const length = vendors.length;
 
 	if (typeof(document) === "undefined" || typeof((document.body.style as any)[lower]) != "undefined") {
 		return unprefixed;
 	}
 
-	for (var i = 0; i < length; i++) {
+	for (let i = 0; i < length; i++) {
 		if (typeof((document.body.style as any)[prefixes[i] + lower]) != "undefined") {
 			return prefixes[i] + lower;
 		}
@@ -117,9 +117,9 @@ export function prefixed(unprefixed: string): string {
  * @memberof Core
  */
 export function defaults(obj: any, ..._sources: any[]): any {
-	for (var i = 1, length = arguments.length; i < length; i++) {
-		var source = arguments[i];
-		for (var prop in source) {
+	for (let i = 1, length = arguments.length; i < length; i++) {
+		const source = arguments[i];
+		for (const prop in source) {
 			if (obj[prop] === void 0) obj[prop] = source[prop];
 		}
 	}
@@ -132,8 +132,8 @@ export function defaults(obj: any, ..._sources: any[]): any {
  * @returns {object}
  * @memberof Core
  */
-export function extend(target: any, ...args: any[]): any {
-	var sources = [].slice.call(arguments, 1);
+export function extend(target: any, ..._args: any[]): any {
+	const sources = [].slice.call(arguments, 1);
 	sources.forEach(function (source: any) {
 		if(!source) return;
 		Object.getOwnPropertyNames(source).forEach(function(propName) {
@@ -153,7 +153,7 @@ export function extend(target: any, ...args: any[]): any {
  * @memberof Core
  */
 export function insert(item: any, array: any[], compareFunction?: (a: any, b: any) => number): number {
-	var location = locationOf(item, array, compareFunction);
+	const location = locationOf(item, array, compareFunction);
 	array.splice(location, 0, item);
 
 	return location;
@@ -170,10 +170,9 @@ export function insert(item: any, array: any[], compareFunction?: (a: any, b: an
  * @memberof Core
  */
 export function locationOf(item: any, array: any[], compareFunction?: (a: any, b: any) => number, _start?: number, _end?: number): number {
-	var start = _start || 0;
-	var end = _end || array.length;
-	var pivot = parseInt(start + (end - start) / 2 as any);
-	var compared;
+	const start = _start || 0;
+	const end = _end || array.length;
+	const pivot = parseInt(start + (end - start) / 2 as any);
 	if(!compareFunction){
 		compareFunction = function(a, b) {
 			if(a > b) return 1;
@@ -185,7 +184,7 @@ export function locationOf(item: any, array: any[], compareFunction?: (a: any, b
 		return pivot;
 	}
 
-	compared = compareFunction(array[pivot], item);
+	const compared = compareFunction(array[pivot], item);
 	if(end-start === 1) {
 		return compared >= 0 ? pivot : pivot + 1;
 	}
@@ -211,10 +210,9 @@ export function locationOf(item: any, array: any[], compareFunction?: (a: any, b
  * @memberof Core
  */
 export function indexOfSorted(item: any, array: any[], compareFunction?: (a: any, b: any) => number, _start?: number, _end?: number): number {
-	var start = _start || 0;
-	var end = _end || array.length;
-	var pivot = parseInt(start + (end - start) / 2 as any);
-	var compared;
+	const start = _start || 0;
+	const end = _end || array.length;
+	const pivot = parseInt(start + (end - start) / 2 as any);
 	if(!compareFunction){
 		compareFunction = function(a, b) {
 			if(a > b) return 1;
@@ -226,7 +224,7 @@ export function indexOfSorted(item: any, array: any[], compareFunction?: (a: any
 		return -1; // Not found
 	}
 
-	compared = compareFunction(array[pivot], item);
+	const compared = compareFunction(array[pivot], item);
 	if(end-start === 1) {
 		return compared === 0 ? pivot : -1;
 	}
@@ -248,12 +246,12 @@ export function indexOfSorted(item: any, array: any[], compareFunction?: (a: any
  */
 export function bounds(el: Element): { width: number; height: number } {
 
-	var style = window.getComputedStyle(el);
-	var widthProps = ["width", "paddingRight", "paddingLeft", "marginRight", "marginLeft", "borderRightWidth", "borderLeftWidth"];
-	var heightProps = ["height", "paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"];
+	const style = window.getComputedStyle(el);
+	const widthProps = ["width", "paddingRight", "paddingLeft", "marginRight", "marginLeft", "borderRightWidth", "borderLeftWidth"];
+	const heightProps = ["height", "paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"];
 
-	var width = 0;
-	var height = 0;
+	let width = 0;
+	let height = 0;
 
 	widthProps.forEach(function(prop){
 		width += parseFloat((style as any)[prop]) || 0;
@@ -279,12 +277,12 @@ export function bounds(el: Element): { width: number; height: number } {
  */
 export function borders(el: Element): { width: number; height: number } {
 
-	var style = window.getComputedStyle(el);
-	var widthProps = ["paddingRight", "paddingLeft", "marginRight", "marginLeft", "borderRightWidth", "borderLeftWidth"];
-	var heightProps = ["paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"];
+	const style = window.getComputedStyle(el);
+	const widthProps = ["paddingRight", "paddingLeft", "marginRight", "marginLeft", "borderRightWidth", "borderLeftWidth"];
+	const heightProps = ["paddingTop", "paddingBottom", "marginTop", "marginBottom", "borderTopWidth", "borderBottomWidth"];
 
-	var width = 0;
-	var height = 0;
+	let width = 0;
+	let height = 0;
 
 	widthProps.forEach(function(prop){
 		width += parseFloat((style as any)[prop]) || 0;
@@ -310,9 +308,9 @@ export function borders(el: Element): { width: number; height: number } {
  */
 export function nodeBounds(node: Node): DOMRect {
 	let elPos;
-	let doc = node.ownerDocument;
+	const doc = node.ownerDocument;
 	if(node.nodeType == Node.TEXT_NODE){
-		let elRange = doc!.createRange();
+		const elRange = doc!.createRange();
 		elRange.selectNodeContents(node);
 		elPos = elRange.getBoundingClientRect();
 	} else {
@@ -328,8 +326,8 @@ export function nodeBounds(node: Node): DOMRect {
  */
 export function windowBounds(): { top: number; left: number; right: number; bottom: number; width: number; height: number } {
 
-	var width = window.innerWidth;
-	var height = window.innerHeight;
+	const width = window.innerWidth;
+	const height = window.innerHeight;
 
 	return {
 		top: 0,
@@ -350,11 +348,11 @@ export function windowBounds(): { top: number; left: number; right: number; bott
  * @memberof Core
  */
 export function indexOfNode(node: Node, typeId: number): number {
-	var parent = node.parentNode!;
-	var children = parent.childNodes;
-	var sib;
-	var index = -1;
-	for (var i = 0; i < children.length; i++) {
+	const parent = node.parentNode!;
+	const children = parent.childNodes;
+	let sib;
+	let index = -1;
+	for (let i = 0; i < children.length; i++) {
 		sib = children[i];
 		if (sib.nodeType === typeId) {
 			index++;
@@ -414,10 +412,9 @@ export function createBlob(content: BlobPart, mime: string): Blob {
  * @memberof Core
  */
 export function createBlobUrl(content: BlobPart, mime: string): string {
-	var tempUrl;
-	var blob = createBlob(content, mime);
+	const blob = createBlob(content, mime);
 
-	tempUrl = _URL.createObjectURL(blob);
+	const tempUrl = _URL.createObjectURL(blob);
 
 	return tempUrl;
 }
@@ -439,17 +436,14 @@ export function revokeBlobUrl(url: string): void {
  * @memberof Core
  */
 export function createBase64Url(content: string, mime: string): string | undefined {
-	var data;
-	var datauri;
-
 	if (typeof(content) !== "string") {
 		// Only handles strings
 		return;
 	}
 
-	data = btoa(content);
+	const data = btoa(content);
 
-	datauri = "data:" + mime + ";base64," + data;
+	const datauri = "data:" + mime + ";base64," + data;
 
 	return datauri;
 }
@@ -473,8 +467,7 @@ export function type(obj: unknown): string {
  * @memberof Core
  */
 export function parse(markup: string, mime: string, forceXMLDom?: boolean): Document {
-	var doc;
-	var Parser;
+	let Parser;
 
 	if (typeof DOMParser === "undefined" || forceXMLDom) {
 		Parser = XMLDOMParser;
@@ -488,7 +481,7 @@ export function parse(markup: string, mime: string, forceXMLDom?: boolean): Docu
 		markup = markup.slice(1);
 	}
 
-	doc = new Parser().parseFromString(markup, mime as DOMParserSupportedType);
+	const doc = new Parser().parseFromString(markup, mime as DOMParserSupportedType);
 
 	return doc;
 }
@@ -501,7 +494,7 @@ export function parse(markup: string, mime: string, forceXMLDom?: boolean): Docu
  * @memberof Core
  */
 export function qs(el: Document | Element, sel: string): Element | undefined {
-	var elements;
+	let elements;
 	if (!el) {
 		throw new Error("No Element Provided");
 	}
@@ -541,10 +534,10 @@ export function qsa(el: Document | Element, sel: string): NodeListOf<Element> | 
  * @memberof Core
  */
 export function qsp(el: Document | Element, sel: string, props: Record<string, string>): Element | undefined {
-	var q, filtered;
+	let q, filtered;
 	if (typeof el.querySelector != "undefined") {
 		sel += "[";
-		for (var prop in props) {
+		for (const prop in props) {
 			sel += prop + "~='" + props[prop] + "'";
 		}
 		sel += "]";
@@ -552,7 +545,7 @@ export function qsp(el: Document | Element, sel: string, props: Record<string, s
 	} else {
 		q = el.getElementsByTagName(sel);
 		filtered = Array.prototype.slice.call(q, 0).filter(function(el: Element) {
-			for (var prop in props) {
+			for (const prop in props) {
 				if(el.getAttribute(prop) === props[prop]){
 					return true;
 				}
@@ -573,7 +566,7 @@ export function qsp(el: Document | Element, sel: string, props: Record<string, s
  * @param  {function} func function to run on each element
  */
 export function sprint(root: Node, func: (node: Node) => void): void {
-	var doc = root.ownerDocument || root;
+	const doc = root.ownerDocument || root;
 	if (typeof((doc as Document).createTreeWalker) !== "undefined") {
 		treeWalker(root, func, NodeFilter.SHOW_TEXT);
 	} else {
@@ -594,7 +587,7 @@ export function sprint(root: Node, func: (node: Node) => void): void {
  * @param  {function | object} filter function or object to filter with
  */
 export function treeWalker(root: Node, func: (node: Node) => void, filter: number): void {
-	var treeWalker = document.createTreeWalker(root, filter, null);
+	const treeWalker = document.createTreeWalker(root, filter, null);
 	let node;
 	while ((node = treeWalker.nextNode())) {
 		func(node);
@@ -613,7 +606,7 @@ export function walk(node: Node, callback: (node: Node) => boolean, _unused?: bo
 	let child: Node | null = node.firstChild;
 	if(child){
 		do{
-			let walked = walk(child,callback);
+			const walked = walk(child,callback);
 			if(walked){
 				return true;
 			}
@@ -629,8 +622,8 @@ export function walk(node: Node, callback: (node: Node) => boolean, _unused?: bo
  * @memberof Core
  */
 export function blob2base64(blob: Blob): Promise<string | ArrayBuffer> {
-	return new Promise(function(resolve, reject) {
-		var reader = new FileReader();
+	return new Promise(function(resolve, _reject) {
+		const reader = new FileReader();
 		reader.readAsDataURL(blob);
 		reader.onloadend = function() {
 			resolve(reader.result!);
@@ -673,14 +666,14 @@ export class defer {
  * @memberof Core
  */
 export function querySelectorByType(html: Document | Element, element: string, type: string): Element | undefined {
-	var query;
+	let query;
 	if (typeof html.querySelector != "undefined") {
 		query = html.querySelector(`${element}[*|type="${type}"]`);
 	}
 	// Handle IE not supporting namespaced epub:type in querySelector
 	if(!query || (query as any).length === 0) {
 		query = qsa(html, element);
-		for (var i = 0; i < query.length; i++) {
+		for (let i = 0; i < query.length; i++) {
 			if(query[i].getAttributeNS("http://www.idpf.org/2007/ops", "type") === type ||
 				 query[i].getAttribute("epub:type") === type) {
 				return query[i];
@@ -698,10 +691,10 @@ export function querySelectorByType(html: Document | Element, element: string, t
  * @memberof Core
  */
 export function findChildren(el: Element): Element[] {
-	var result = [];
-	var childNodes = el.childNodes;
-	for (var i = 0; i < childNodes.length; i++) {
-		let node = childNodes[i];
+	const result = [];
+	const childNodes = el.childNodes;
+	for (let i = 0; i < childNodes.length; i++) {
+		const node = childNodes[i];
 		if (node.nodeType === 1) {
 			result.push(node as Element);
 		}
@@ -716,7 +709,7 @@ export function findChildren(el: Element): Element[] {
  * @memberof Core
  */
 export function parents(node: Node | null | undefined): Node[] {
-	var nodes: Node[] = [];
+	const nodes: Node[] = [];
 	for (let current: Node | null = node ?? null; current; current = current.parentNode) {
 		nodes.unshift(current);
 	}
@@ -732,10 +725,10 @@ export function parents(node: Node | null | undefined): Node[] {
  * @memberof Core
  */
 export function filterChildren(el: Element, nodeName: string, single?: boolean): Element | Element[] | undefined {
-	var result = [];
-	var childNodes = el.childNodes;
-	for (var i = 0; i < childNodes.length; i++) {
-		let node = childNodes[i];
+	const result = [];
+	const childNodes = el.childNodes;
+	for (let i = 0; i < childNodes.length; i++) {
+		const node = childNodes[i];
 		if (node.nodeType === 1 && node.nodeName.toLowerCase() === nodeName) {
 			if (single) {
 				return node as Element;
@@ -758,7 +751,7 @@ export function filterChildren(el: Element, nodeName: string, single?: boolean):
  */
 export function getParentByTagName(node: Node, tagname: string): Element | undefined {
 	let parent;
-	if (node === null || tagname === '') return;
+	if (node === null || tagname === "") return;
 	parent = node.parentNode;
 	while (parent && parent.nodeType === 1) {
 		if ((parent as Element).tagName.toLowerCase() === tagname) {
@@ -831,26 +824,26 @@ export class RangeObject {
 	}
 
 	selectNode(referenceNode: Node): void {
-		let parent = referenceNode.parentNode!;
-		let index = Array.prototype.indexOf.call(parent.childNodes, referenceNode);
+		const parent = referenceNode.parentNode!;
+		const index = Array.prototype.indexOf.call(parent.childNodes, referenceNode);
 		this.setStart(parent, index);
 		this.setEnd(parent, index + 1);
 	}
 
 	selectNodeContents(referenceNode: Node): void {
-		let endIndex = (referenceNode.nodeType === 3) ?
+		const endIndex = (referenceNode.nodeType === 3) ?
 				(referenceNode.textContent ?? "").length : referenceNode.childNodes.length;
 		this.setStart(referenceNode, 0);
 		this.setEnd(referenceNode, endIndex);
 	}
 
 	_commonAncestorContainer(startContainer?: Node, endContainer?: Node): Node | undefined {
-		var startParents = parents(startContainer ?? this.startContainer);
-		var endParents = parents(endContainer ?? this.endContainer);
+		const startParents = parents(startContainer ?? this.startContainer);
+		const endParents = parents(endContainer ?? this.endContainer);
 
 		if (startParents[0] != endParents[0]) return undefined;
 
-		for (var i = 0; i < startParents.length; i++) {
+		for (let i = 0; i < startParents.length; i++) {
 			if (startParents[i] != endParents[i]) {
 				return startParents[i - 1];
 			}

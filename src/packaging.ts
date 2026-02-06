@@ -19,9 +19,9 @@ class Packaging {
 
 	constructor(packageDocument?: Document) {
 		this.manifest = {};
-		this.navPath = '';
-		this.ncxPath = '';
-		this.coverPath = '';
+		this.navPath = "";
+		this.ncxPath = "";
+		this.coverPath = "";
 		this.spineNodeIndex = 0;
 		this.spine = [];
 		this.metadata = {} as PackagingMetadataObject;
@@ -37,23 +37,21 @@ class Packaging {
 	 * @return {object} parsed package parts
 	 */
 	parse(packageDocument: Document): PackagingObject {
-		var metadataNode, manifestNode, spineNode;
-
 		if(!packageDocument) {
 			throw new Error("Package File Not Found");
 		}
 
-		metadataNode = qs(packageDocument, "metadata");
+		const metadataNode = qs(packageDocument, "metadata");
 		if(!metadataNode) {
 			throw new Error("No Metadata Found");
 		}
 
-		manifestNode = qs(packageDocument, "manifest");
+		const manifestNode = qs(packageDocument, "manifest");
 		if(!manifestNode) {
 			throw new Error("No Manifest Found");
 		}
 
-		spineNode = qs(packageDocument, "spine");
+		const spineNode = qs(packageDocument, "spine");
 		if(!spineNode) {
 			throw new Error("No Spine Found");
 		}
@@ -90,7 +88,7 @@ class Packaging {
 	 * @return {object} metadata
 	 */
 	parseMetadata(xml: Element): PackagingMetadataObject {
-		var metadata = {} as PackagingMetadataObject;
+		const metadata = {} as PackagingMetadataObject;
 
 		metadata.title = this.getElementText(xml, "title");
 		metadata.creator = this.getElementText(xml, "creator");
@@ -124,16 +122,16 @@ class Packaging {
 	 * @return {object} manifest
 	 */
 	parseManifest(manifestXml: Element): PackagingManifestObject {
-		var manifest: PackagingManifestObject = {};
+		const manifest: PackagingManifestObject = {};
 
 		//-- Turn items into an array
 		// var selected = manifestXml.querySelectorAll("item");
-		var selected = qsa(manifestXml, "item");
-		var items = Array.prototype.slice.call(selected);
+		const selected = qsa(manifestXml, "item");
+		const items = Array.prototype.slice.call(selected);
 
 		//-- Create an object with the id as key
 		items.forEach(function(item: Element){
-			var id = item.getAttribute("id") ?? "",
+			const id = item.getAttribute("id") ?? "",
 					href = item.getAttribute("href") || "",
 					type = item.getAttribute("media-type") || "",
 					overlay = item.getAttribute("media-overlay") || "",
@@ -160,24 +158,24 @@ class Packaging {
 	 * @param  {Packaging.manifest} manifest
 	 * @return {object} spine
 	 */
-	parseSpine(spineXml: Element, manifest: PackagingManifestObject): PackagingSpineItem[] {
-		var spine: PackagingSpineItem[] = [];
+	parseSpine(spineXml: Element, _manifest: PackagingManifestObject): PackagingSpineItem[] {
+		const spine: PackagingSpineItem[] = [];
 
-		var selected = qsa(spineXml, "itemref");
-		var items = Array.prototype.slice.call(selected);
+		const selected = qsa(spineXml, "itemref");
+		const items = Array.prototype.slice.call(selected);
 
 		// var epubcfi = new EpubCFI();
 
 		//-- Add to array to maintain ordering and cross reference with manifest
 		items.forEach(function(item: Element, index: number){
-			var idref = item.getAttribute("idref");
+			const idref = item.getAttribute("idref");
 			// var cfiBase = epubcfi.generateChapterComponent(spineNodeIndex, index, Id);
-			var props = item.getAttribute("properties") || "";
-			var propArray = props.length ? props.split(" ") : [];
+			const props = item.getAttribute("properties") || "";
+			const propArray = props.length ? props.split(" ") : [];
 			// var manifestProps = manifest[Id].properties;
 			// var manifestPropArray = manifestProps.length ? manifestProps.split(" ") : [];
 
-			var itemref = {
+			const itemref = {
 				"id" : item.getAttribute("id") ?? undefined,
 				"idref" : idref!,
 				"linear" : item.getAttribute("linear") || "yes",
@@ -200,11 +198,11 @@ class Packaging {
 	 * @return {string} Unique Identifier text
 	 */
 	findUniqueIdentifier(packageXml: Document): string {
-		var uniqueIdentifierId = packageXml.documentElement.getAttribute("unique-identifier");
+		const uniqueIdentifierId = packageXml.documentElement.getAttribute("unique-identifier");
 		if (! uniqueIdentifierId) {
 			return "";
 		}
-		var identifier = packageXml.getElementById(uniqueIdentifierId);
+		const identifier = packageXml.getElementById(uniqueIdentifierId);
 		if (! identifier) {
 			return "";
 		}
@@ -226,7 +224,7 @@ class Packaging {
 		// Find item with property "nav"
 		// Should catch nav regardless of order
 		// var node = manifestNode.querySelector("item[properties$='nav'], item[properties^='nav '], item[properties*=' nav ']");
-		var node = qsp(manifestNode, "item", {"properties":"nav"});
+		const node = qsp(manifestNode, "item", {"properties":"nav"});
 		return node ? node.getAttribute("href") || "" : "";
 	}
 
@@ -240,8 +238,8 @@ class Packaging {
 	 */
 	findNcxPath(manifestNode: Element, spineNode: Element): string {
 		// var node = manifestNode.querySelector("item[media-type='application/x-dtbncx+xml']");
-		var node = qsp(manifestNode, "item", {"media-type":"application/x-dtbncx+xml"});
-		var tocId;
+		let node = qsp(manifestNode, "item", {"media-type":"application/x-dtbncx+xml"});
+		let tocId;
 
 		// If we can't find the toc by media-type then try to look for id of the item in the spine attributes as
 		// according to http://www.idpf.org/epub/20/spec/OPF_2.0.1_draft.htm#Section2.4.1.2,
@@ -266,21 +264,21 @@ class Packaging {
 	 * @return {string} href
 	 */
 	findCoverPath(packageXml: Document): string {
-		var pkg = qs(packageXml, "package");
-		var epubVersion = pkg?.getAttribute("version");
+		const pkg = qs(packageXml, "package");
+		const _epubVersion = pkg?.getAttribute("version");
 
 		// Try parsing cover with epub 3.
 		// var node = packageXml.querySelector("item[properties='cover-image']");
-		var node = qsp(packageXml, "item", {"properties":"cover-image"});
+		const node = qsp(packageXml, "item", {"properties":"cover-image"});
 		if (node) return node.getAttribute("href") ?? "";
 
 		// Fallback to epub 2.
-		var metaCover = qsp(packageXml, "meta", {"name":"cover"});
+		const metaCover = qsp(packageXml, "meta", {"name":"cover"});
 
 		if (metaCover) {
-			var coverId = metaCover.getAttribute("content");
+			const coverId = metaCover.getAttribute("content");
 			// var cover = packageXml.querySelector("item[id='" + coverId + "']");
-			var cover = packageXml.getElementById(coverId!);
+			const cover = packageXml.getElementById(coverId!);
 			return cover ? cover.getAttribute("href") ?? "" : "";
 		}
 		else {
@@ -296,12 +294,11 @@ class Packaging {
 	 * @return {string} text
 	 */
 	getElementText(xml: Element, tag: string): string {
-		var found = xml.getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", tag);
-		var el;
+		const found = xml.getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", tag);
 
 		if(!found || found.length === 0) return "";
 
-		el = found[0];
+		const el = found[0];
 
 		if(el.childNodes.length){
 			return el.childNodes[0].nodeValue ?? "";
@@ -319,7 +316,7 @@ class Packaging {
 	 * @return {string} text
 	 */
 	getPropertyText(xml: Element, property: string): string {
-		var el = qsp(xml, "meta", {"property":property});
+		const el = qsp(xml, "meta", {"property":property});
 
 		if(el && el.childNodes.length){
 			return el.childNodes[0].nodeValue ?? "";
@@ -336,7 +333,7 @@ class Packaging {
 	load(json: Record<string, any>): PackagingObject & { toc: NavItem[] } {
 		this.metadata = json.metadata;
 
-		let spine = json.readingOrder || json.spine;
+		const spine = json.readingOrder || json.spine;
 		this.spine = spine.map((item: PackagingSpineItem, index: number) =>{
 			item.index = index;
 			item.linear = item.linear || "yes";

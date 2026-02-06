@@ -15,15 +15,12 @@ class Path {
 	extension: string;
 
 	constructor(pathString: string) {
-		var protocol;
-		var parsed;
-
-		protocol = pathString.indexOf("://");
+		const protocol = pathString.indexOf("://");
 		if (protocol > -1) {
 			pathString = new URL(pathString).pathname;
 		}
 
-		parsed = this.parse(pathString);
+		const parsed = this.parse(pathString);
 
 		this.path = pathString;
 
@@ -84,7 +81,7 @@ class Path {
 	 * @returns {string} relative
 	 */
 	relative (what: string): string {
-		var isAbsolute = what && (what.indexOf("://") > -1);
+		const isAbsolute = what && (what.indexOf("://") > -1);
 
 		if (isAbsolute) {
 			return what;

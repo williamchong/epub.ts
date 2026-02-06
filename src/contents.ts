@@ -13,7 +13,7 @@ const isChrome = hasNavigator && /Chrome/.test(navigator.userAgent);
 const isWebkit = hasNavigator && !isChrome && /AppleWebKit/.test(navigator.userAgent);
 
 const ELEMENT_NODE = 1;
-const TEXT_NODE = 3;
+const _TEXT_NODE = 3;
 
 /**
 	* Handles DOM manipulation, queries and events for View contents
@@ -85,7 +85,7 @@ class Contents implements IEventEmitter {
 		*/
 	width(w?: number | string): number {
 		// var frame = this.documentElement;
-		var frame = this.content;
+		const frame = this.content;
 
 		if (w && isNumber(w)) {
 			w = w + "px";
@@ -108,7 +108,7 @@ class Contents implements IEventEmitter {
 		*/
 	height(h?: number | string): number {
 		// var frame = this.documentElement;
-		var frame = this.content;
+		const frame = this.content;
 
 		if (h && isNumber(h)) {
 			h = h + "px";
@@ -130,7 +130,7 @@ class Contents implements IEventEmitter {
 		*/
 	contentWidth(w?: number | string): number {
 
-		var content = this.content || this.document.body;
+		const content = this.content || this.document.body;
 
 		if (w && isNumber(w)) {
 			w = w + "px";
@@ -152,7 +152,7 @@ class Contents implements IEventEmitter {
 		*/
 	contentHeight(h?: number | string): number {
 
-		var content = this.content || this.document.body;
+		const content = this.content || this.document.body;
 
 		if (h && isNumber(h)) {
 			h = h + "px";
@@ -171,17 +171,16 @@ class Contents implements IEventEmitter {
 		* @returns {number} width
 		*/
 	textWidth(): number {
-		let rect;
 		let width;
-		let range = this.document.createRange();
-		let content = this.content || this.document.body;
-		let border = borders(content);
+		const range = this.document.createRange();
+		const content = this.content || this.document.body;
+		const border = borders(content);
 
 		// Select the contents of frame
 		range.selectNodeContents(content);
 
 		// get the width of the text content
-		rect = range.getBoundingClientRect();
+		const rect = range.getBoundingClientRect();
 		width = rect.width;
 
 		if (border && border.width) {
@@ -196,15 +195,13 @@ class Contents implements IEventEmitter {
 		* @returns {number} height
 		*/
 	textHeight(): number {
-		let rect;
-		let height;
-		let range = this.document.createRange();
-		let content = this.content || this.document.body;
+		const range = this.document.createRange();
+		const content = this.content || this.document.body;
 
 		range.selectNodeContents(content);
 
-		rect = range.getBoundingClientRect();
-		height = rect.bottom;
+		const rect = range.getBoundingClientRect();
+		const height = rect.bottom;
 
 		return Math.round(height);
 	}
@@ -214,7 +211,7 @@ class Contents implements IEventEmitter {
 		* @returns {number} width
 		*/
 	scrollWidth(): number {
-		var width = this.documentElement.scrollWidth;
+		const width = this.documentElement.scrollWidth;
 
 		return width;
 	}
@@ -224,7 +221,7 @@ class Contents implements IEventEmitter {
 		* @returns {number} height
 		*/
 	scrollHeight(): number {
-		var height = this.documentElement.scrollHeight;
+		const height = this.documentElement.scrollHeight;
 
 		return height;
 	}
@@ -275,7 +272,7 @@ class Contents implements IEventEmitter {
 		* @param {boolean} [priority] set as "important"
 		*/
 	css(property: string, value?: string, priority?: boolean): string {
-		var content = this.content || this.document.body;
+		const content = this.content || this.document.body;
 
 		if (value) {
 			content.style.setProperty(property, value, priority ? "important" : "");
@@ -297,10 +294,10 @@ class Contents implements IEventEmitter {
 		* @param {string} [options.scalable]
 		*/
 	viewport(options?: Partial<Record<keyof ViewportSettings, string | number>>): ViewportSettings {
-		var _width, _height, _scale, _minimum, _maximum, _scalable;
+		let _width, _height, _scale, _minimum, _maximum, _scalable;
 		// var width, height, scale, minimum, maximum, scalable;
-		var $viewport = this.document.querySelector("meta[name='viewport']");
-		var parsed: Partial<ViewportSettings> = {
+		let $viewport = this.document.querySelector("meta[name='viewport']");
+		const parsed: Partial<ViewportSettings> = {
 			"width": undefined,
 			"height": undefined,
 			"scale": undefined,
@@ -308,21 +305,21 @@ class Contents implements IEventEmitter {
 			"maximum": undefined,
 			"scalable": undefined
 		};
-		var newContent: string[] = [];
-		var settings: Record<string, string | number> = {};
+		const newContent: string[] = [];
+		let settings: Record<string, string | number> = {};
 
 		/*
 		* check for the viewport size
 		* <meta name="viewport" content="width=1024,height=697" />
 		*/
 		if($viewport && $viewport.hasAttribute("content")) {
-			let content = $viewport.getAttribute("content") ?? "";
-			let _width = content.match(/width\s*=\s*([^,]*)/);
-			let _height = content.match(/height\s*=\s*([^,]*)/);
-			let _scale = content.match(/initial-scale\s*=\s*([^,]*)/);
-			let _minimum = content.match(/minimum-scale\s*=\s*([^,]*)/);
-			let _maximum = content.match(/maximum-scale\s*=\s*([^,]*)/);
-			let _scalable = content.match(/user-scalable\s*=\s*([^,]*)/);
+			const content = $viewport.getAttribute("content") ?? "";
+			const _width = content.match(/width\s*=\s*([^,]*)/);
+			const _height = content.match(/height\s*=\s*([^,]*)/);
+			const _scale = content.match(/initial-scale\s*=\s*([^,]*)/);
+			const _minimum = content.match(/minimum-scale\s*=\s*([^,]*)/);
+			const _maximum = content.match(/maximum-scale\s*=\s*([^,]*)/);
+			const _scalable = content.match(/user-scalable\s*=\s*([^,]*)/);
 
 			if(_width && _width.length && typeof _width[1] !== "undefined"){
 				parsed.width = _width[1];
@@ -453,8 +450,8 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	resizeCheck(): void {
-		let width = this.textWidth();
-		let height = this.textHeight();
+		const width = this.textWidth();
+		const height = this.textHeight();
 
 		if (width != this._size.width || height != this._size.height) {
 
@@ -473,7 +470,7 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	resizeListeners(): void {
-		var width, height;
+		let _width, _height;
 		// Test size again
 		clearTimeout(this.expanding);
 		requestAnimationFrame(this.resizeCheck.bind(this));
@@ -501,15 +498,15 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	transitionListeners(): void {
-		let body = this.content;
+		const body = this.content;
 
-		body.style['transitionProperty'] = "font, font-size, font-size-adjust, font-stretch, font-variation-settings, font-weight, width, height";
-		body.style['transitionDuration'] = "0.001ms";
-		body.style['transitionTimingFunction'] = "linear";
-		body.style['transitionDelay'] = "0";
+		body.style["transitionProperty"] = "font, font-size, font-size-adjust, font-stretch, font-variation-settings, font-weight, width, height";
+		body.style["transitionDuration"] = "0.001ms";
+		body.style["transitionTimingFunction"] = "linear";
+		body.style["transitionDelay"] = "0";
 
 		this._resizeCheck = this.resizeCheck.bind(this);
-		this.document.addEventListener('transitionend', this._resizeCheck!);
+		this.document.addEventListener("transitionend", this._resizeCheck!);
 	}
 
 	/**
@@ -518,26 +515,26 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	mediaQueryListeners(): void {
-		var sheets = this.document.styleSheets;
-		var mediaChangeHandler = function(m: MediaQueryListEvent){
+		const sheets = this.document.styleSheets;
+		const mediaChangeHandler = function(m: MediaQueryListEvent){
 			if(m.matches && !this._expanding) {
 				setTimeout(this.expand.bind(this), 1);
 			}
 		}.bind(this);
 
-		for (var i = 0; i < sheets.length; i += 1) {
-			var rules;
+		for (let i = 0; i < sheets.length; i += 1) {
+			let rules;
 			// Firefox errors if we access cssRules cross-domain
 			try {
 				rules = sheets[i].cssRules;
-			} catch (e) {
+			} catch (_e) {
 				return;
 			}
 			if(!rules) return; // Stylesheets changed
-			for (var j = 0; j < rules.length; j += 1) {
+			for (let j = 0; j < rules.length; j += 1) {
 				//if (rules[j].constructor === CSSMediaRule) {
 				if((rules[j] as CSSMediaRule).media){
-					var mql = this.window.matchMedia((rules[j] as CSSMediaRule).media.mediaText);
+					const mql = this.window.matchMedia((rules[j] as CSSMediaRule).media.mediaText);
 					mql.addListener(mediaChangeHandler);
 					//mql.onchange = mediaChangeHandler;
 				}
@@ -551,7 +548,7 @@ class Contents implements IEventEmitter {
 	 */
 	resizeObservers(): void {
 		// create an observer instance
-		this.observer = new ResizeObserver((e) => {
+		this.observer = new ResizeObserver((_e) => {
 			requestAnimationFrame(this.resizeCheck.bind(this));
 		});
 
@@ -565,12 +562,12 @@ class Contents implements IEventEmitter {
 	 */
 	mutationObservers(): void {
 		// create an observer instance
-		this.observer = new MutationObserver((mutations) => {
+		this.observer = new MutationObserver((_mutations) => {
 			this.resizeCheck();
 		});
 
 		// configuration of the observer:
-		let config = { attributes: true, childList: true, characterData: true, subtree: true };
+		const config = { attributes: true, childList: true, characterData: true, subtree: true };
 
 		// pass in the target node, as well as the observer options
 		this.observer.observe(this.document, config);
@@ -581,9 +578,9 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	imageLoadListeners(): void {
-		var images = this.document.querySelectorAll("img");
-		var img;
-		for (var i = 0; i < images.length; i++) {
+		const images = this.document.querySelectorAll("img");
+		let img;
+		for (let i = 0; i < images.length; i++) {
 			img = images[i];
 
 			if (typeof img.naturalWidth !== "undefined" &&
@@ -624,13 +621,13 @@ class Contents implements IEventEmitter {
 	 * @returns { {left: Number, top: Number }
 	 */
 	locationOf(target: string, ignoreClass?: string): { left: number; top: number } {
-		var position;
-		var targetPos = {"left": 0, "top": 0};
+		let position;
+		const targetPos = {"left": 0, "top": 0};
 
 		if(!this.document) return targetPos;
 
 		if(this.epubcfi.isCfiString(target)) {
-			let range = new EpubCFI(target).toRange(this.document, ignoreClass);
+			const range = new EpubCFI(target).toRange(this.document, ignoreClass);
 
 			if(range) {
 				try {
@@ -648,6 +645,7 @@ class Contents implements IEventEmitter {
 						range.setEnd(range.startContainer, pos);
 					}
 				} catch (e) {
+					// eslint-disable-next-line no-console
 					console.error("setting end offset to start container length failed", e);
 				}
 
@@ -661,8 +659,8 @@ class Contents implements IEventEmitter {
 
 					// Construct a new non-collapsed range
 					if (isWebkit) {
-						let container = range.startContainer;
-						let newRange = new Range();
+						const container = range.startContainer;
+						const newRange = new Range();
 						try {
 							if (container.nodeType === ELEMENT_NODE) {
 								position = (container as Element).getBoundingClientRect();
@@ -678,6 +676,7 @@ class Contents implements IEventEmitter {
 								position = (container.parentNode as Element).getBoundingClientRect();
 							}
 						} catch (e) {
+							// eslint-disable-next-line no-console
 							console.error(e, e.stack);
 						}
 					} else {
@@ -689,12 +688,12 @@ class Contents implements IEventEmitter {
 		} else if(typeof target === "string" &&
 			target.indexOf("#") > -1) {
 
-			let id = target.substring(target.indexOf("#")+1);
-			let el = this.document.getElementById(id);
+			const id = target.substring(target.indexOf("#")+1);
+			const el = this.document.getElementById(id);
 			if(el) {
 				if (isWebkit) {
 					// Webkit reports incorrect bounding rects in Columns
-					let newRange = new Range();
+					const newRange = new Range();
 					newRange.selectNode(el);
 					position = newRange.getBoundingClientRect();
 				} else {
@@ -716,9 +715,9 @@ class Contents implements IEventEmitter {
 	 * @param {string} src url
 	 */
 	addStylesheet(src: string): Promise<boolean> {
-		return new Promise(function(resolve: (value: boolean) => void, reject: (reason?: unknown) => void){
-			var $stylesheet;
-			var ready = false;
+		return new Promise(function(resolve: (value: boolean) => void, _reject: (reason?: unknown) => void){
+			let $stylesheet;
+			let ready = false;
 
 			if(!this.document) {
 				resolve(false);
@@ -752,8 +751,8 @@ class Contents implements IEventEmitter {
 	}
 
 	_getStylesheetNode(key?: string): HTMLStyleElement | false {
-		var styleEl: HTMLStyleElement;
-		key = "epubjs-inserted-css-" + (key || '');
+		let styleEl: HTMLStyleElement;
+		key = "epubjs-inserted-css-" + (key || "");
 
 		if(!this.document) return false;
 
@@ -776,7 +775,7 @@ class Contents implements IEventEmitter {
 	addStylesheetCss(serializedCss: string, key?: string): boolean {
 		if(!this.document || !serializedCss) return false;
 
-		var styleEl = this._getStylesheetNode(key);
+		const styleEl = this._getStylesheetNode(key);
 		if (!styleEl) return false;
 		styleEl.innerHTML = serializedCss;
 
@@ -791,24 +790,23 @@ class Contents implements IEventEmitter {
 	 * @param {string} key If the key is the same, the CSS will be replaced instead of inserted
 	 */
 	addStylesheetRules(rules: any, key?: string): void {
-		var styleSheet: CSSStyleSheet;
-
 		if(!this.document || !rules || rules.length === 0) return;
 
 		// Grab style sheet
-		styleSheet = (this._getStylesheetNode(key) as HTMLStyleElement).sheet as CSSStyleSheet;
+		const styleSheet: CSSStyleSheet = (this._getStylesheetNode(key) as HTMLStyleElement).sheet as CSSStyleSheet;
 
 		if (Object.prototype.toString.call(rules) === "[object Array]") {
-			for (var i = 0, rl = rules.length; i < rl; i++) {
-				var j = 1, rule = rules[i], selector = rules[i][0], propStr = "";
+			for (let i = 0, rl = rules.length; i < rl; i++) {
+				let j = 1, rule = rules[i], propStr = "";
+				const selector = rules[i][0];
 				// If the second argument of a rule is an array of arrays, correct our variables.
 				if (Object.prototype.toString.call(rule[1][0]) === "[object Array]") {
 					rule = rule[1];
 					j = 0;
 				}
 
-				for (var pl = rule.length; j < pl; j++) {
-					var prop = rule[j];
+				for (let pl = rule.length; j < pl; j++) {
+					const prop = rule[j];
 					propStr += prop[0] + ":" + prop[1] + (prop[2] ? " !important" : "") + ";\n";
 				}
 
@@ -824,14 +822,14 @@ class Contents implements IEventEmitter {
 						const _rules = Object.keys(item);
 						const result = _rules.map((rule) => {
 							return `${rule}:${item[rule]}`;
-						}).join(';');
+						}).join(";");
 						styleSheet.insertRule(`${selector}{${result}}`, styleSheet.cssRules.length);
 					});
 				} else {
 					const _rules = Object.keys(definition);
 					const result = _rules.map((rule) => {
 						return `${rule}:${definition[rule]}`;
-					}).join(';');
+					}).join(";");
 					styleSheet.insertRule(`${selector}{${result}}`, styleSheet.cssRules.length);
 				}
 			});
@@ -845,16 +843,15 @@ class Contents implements IEventEmitter {
 	 */
 	addScript(src: string): Promise<boolean> {
 
-		return new Promise(function(resolve: (value: boolean) => void, reject: (reason?: unknown) => void){
-			var $script;
-			var ready = false;
+		return new Promise(function(resolve: (value: boolean) => void, _reject: (reason?: unknown) => void){
+			let ready = false;
 
 			if(!this.document) {
 				resolve(false);
 				return;
 			}
 
-			$script = this.document.createElement("script");
+			const $script = this.document.createElement("script");
 			$script.type = "text/javascript";
 			$script.async = true;
 			$script.src = src;
@@ -877,11 +874,9 @@ class Contents implements IEventEmitter {
 	 * @param {string} className
 	 */
 	addClass(className: string): void {
-		var content;
-
 		if(!this.document) return;
 
-		content = this.content || this.document.body;
+		const content = this.content || this.document.body;
 
 		if (content) {
 			content.classList.add(className);
@@ -894,11 +889,9 @@ class Contents implements IEventEmitter {
 	 * @param {string} removeClass
 	 */
 	removeClass(className: string): void {
-		var content;
-
 		if(!this.document) return;
 
-		content = this.content || this.document.body;
+		const content = this.content || this.document.body;
 
 		if (content) {
 			content.classList.remove(className);
@@ -973,12 +966,12 @@ class Contents implements IEventEmitter {
 	 * Handle getting text on selection
 	 * @private
 	 */
-	onSelectionChange(e: Event): void {
+	onSelectionChange(_e: Event): void {
 		if (this.selectionEndTimeout) {
 			clearTimeout(this.selectionEndTimeout);
 		}
 		this.selectionEndTimeout = setTimeout(function() {
-			var selection = this.window.getSelection();
+			const selection = this.window.getSelection();
 			this.triggerSelectedEvent(selection);
 		}.bind(this), 250);
 	}
@@ -988,7 +981,7 @@ class Contents implements IEventEmitter {
 	 * @private
 	 */
 	triggerSelectedEvent(selection: Selection): void {
-		var range, cfirange;
+		let range, cfirange;
 
 		if (selection && selection.rangeCount > 0) {
 			range = selection.getRangeAt(0);
@@ -1008,7 +1001,7 @@ class Contents implements IEventEmitter {
 	 * @returns {Range} range
 	 */
 	range(_cfi: string, ignoreClass?: string): Range {
-		var cfi = new EpubCFI(_cfi);
+		const cfi = new EpubCFI(_cfi);
 		return cfi.toRange(this.document, ignoreClass)!;
 	}
 
@@ -1034,7 +1027,7 @@ class Contents implements IEventEmitter {
 
 	// TODO: find where this is used - remove?
 	map(layout: LayoutProps): EpubCFIPair[] {
-		var map = new Mapping(layout);
+		const map = new Mapping(layout);
 		return map.section(undefined as any);
 	}
 
@@ -1044,7 +1037,7 @@ class Contents implements IEventEmitter {
 	 * @param {number} [height]
 	 */
 	size(width?: number, height?: number): void {
-		var viewport: Partial<Record<keyof ViewportSettings, string | number>> = { scale: 1.0, scalable: "no" };
+		const viewport: Partial<Record<keyof ViewportSettings, string | number>> = { scale: 1.0, scalable: "no" };
 
 		this.layoutStyle("scrolling");
 
@@ -1074,13 +1067,13 @@ class Contents implements IEventEmitter {
 	 * @param {number} gap
 	 */
 	columns(width: number, height: number, columnWidth: number, gap: number, dir?: string): void {
-		let COLUMN_AXIS = prefixed("column-axis");
-		let COLUMN_GAP = prefixed("column-gap");
-		let COLUMN_WIDTH = prefixed("column-width");
-		let COLUMN_FILL = prefixed("column-fill");
+		const COLUMN_AXIS = prefixed("column-axis");
+		const COLUMN_GAP = prefixed("column-gap");
+		const COLUMN_WIDTH = prefixed("column-width");
+		const COLUMN_FILL = prefixed("column-fill");
 
-		let writingMode = this.writingMode();
-		let axis = (writingMode.indexOf("vertical") === 0) ? "vertical" : "horizontal";
+		const writingMode = this.writingMode();
+		const axis = (writingMode.indexOf("vertical") === 0) ? "vertical" : "horizontal";
 
 		this.layoutStyle("paginated");
 
@@ -1135,8 +1128,8 @@ class Contents implements IEventEmitter {
 	 * @param {number} offsetY
 	 */
 	scaler(scale: number, offsetX?: number, offsetY?: number): void {
-		var scaleStr = "scale(" + scale + ")";
-		var translateStr = "";
+		const scaleStr = "scale(" + scale + ")";
+		let translateStr = "";
 		// this.css("position", "absolute"));
 		this.css("transform-origin", "top left");
 
@@ -1153,12 +1146,12 @@ class Contents implements IEventEmitter {
 	 * @param {number} height
 	 */
 	fit(width: number, height: number, section?: Section): void {
-		var viewport = this.viewport();
-		var viewportWidth = parseInt(viewport.width);
-		var viewportHeight = parseInt(viewport.height);
-		var widthScale = width / viewportWidth;
-		var heightScale = height / viewportHeight;
-		var scale = widthScale < heightScale ? widthScale : heightScale;
+		const viewport = this.viewport();
+		const viewportWidth = parseInt(viewport.width);
+		const viewportHeight = parseInt(viewport.height);
+		const widthScale = width / viewportWidth;
+		const heightScale = height / viewportHeight;
+		const scale = widthScale < heightScale ? widthScale : heightScale;
 
 		// the translate does not work as intended, elements can end up unaligned
 		// var offsetY = (height - (viewportHeight * scale)) / 2;
@@ -1184,7 +1177,7 @@ class Contents implements IEventEmitter {
 		this.css("background-color", "transparent");
 		if (section && section.properties.includes("page-spread-left")) {
 			// set margin since scale is weird
-			var marginLeft = width - (viewportWidth * scale);
+			const marginLeft = width - (viewportWidth * scale);
 			this.css("margin-left", marginLeft + "px");
 		}
 	}
@@ -1200,7 +1193,7 @@ class Contents implements IEventEmitter {
 	}
 
 	mapPage(cfiBase: string, layout: LayoutProps, start: number, end: number, dev?: boolean): EpubCFIPair | undefined {
-		var mapping = new Mapping(layout, undefined, undefined, dev);
+		const mapping = new Mapping(layout, undefined, undefined, dev);
 
 		return mapping.page(this, cfiBase, start, end);
 	}
@@ -1220,13 +1213,13 @@ class Contents implements IEventEmitter {
 	 * @param {string} [mode="horizontal-tb"] "horizontal-tb" | "vertical-rl" | "vertical-lr"
 	 */
 	writingMode(mode?: string): string {
-		let WRITING_MODE = prefixed("writing-mode");
+		const WRITING_MODE = prefixed("writing-mode");
 
 		if (mode && this.documentElement) {
 			(this.documentElement.style as Record<string, any>)[WRITING_MODE] = mode;
 		}
 
-		return (this.window.getComputedStyle(this.documentElement) as Record<string, any>)[WRITING_MODE] || '';
+		return (this.window.getComputedStyle(this.documentElement) as Record<string, any>)[WRITING_MODE] || "";
 	}
 
 	/**

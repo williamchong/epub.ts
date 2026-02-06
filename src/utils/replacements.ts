@@ -1,18 +1,16 @@
-import { qs, qsa } from "./core";
+import { qs } from "./core";
 import Url from "./url";
-import Path from "./path";
 
 export function replaceBase(doc: Document, section: { url: string }): void {
-	var base;
-	var head;
-	var url = section.url;
-	var absolute = (url.indexOf("://") > -1);
+	let base;
+	let url = section.url;
+	const absolute = (url.indexOf("://") > -1);
 
 	if(!doc){
 		return;
 	}
 
-	head = qs(doc, "head");
+	const head = qs(doc, "head");
 	base = qs(head!, "base");
 
 	if(!base) {
@@ -29,15 +27,14 @@ export function replaceBase(doc: Document, section: { url: string }): void {
 }
 
 export function replaceCanonical(doc: Document, section: { canonical: string }): void {
-	var head;
-	var link;
-	var url = section.canonical;
+	let link;
+	const url = section.canonical;
 
 	if(!doc){
 		return;
 	}
 
-	head = qs(doc, "head");
+	const head = qs(doc, "head");
 	link = qs(head!, "link[rel='canonical']");
 
 	if (link) {
@@ -51,14 +48,13 @@ export function replaceCanonical(doc: Document, section: { canonical: string }):
 }
 
 export function replaceMeta(doc: Document, section: { idref: string }): void {
-	var head;
-	var meta;
-	var id = section.idref;
+	let meta;
+	const id = section.idref;
 	if(!doc){
 		return;
 	}
 
-	head = qs(doc, "head");
+	const head = qs(doc, "head");
 	meta = qs(head!, "link[property='dc.identifier']");
 
 	if (meta) {
@@ -74,32 +70,32 @@ export function replaceMeta(doc: Document, section: { idref: string }): void {
 // TODO: move me to Contents
 export function replaceLinks(contents: Element, fn: (path: string) => void): void {
 
-	var links = contents.querySelectorAll("a[href]");
+	const links = contents.querySelectorAll("a[href]");
 
 	if (!links.length) {
 		return;
 	}
 
-	var base = qs(contents.ownerDocument, "base");
-	var location = base ? base.getAttribute("href") ?? undefined : undefined;
-	var replaceLink = function(link: Element){
-		var href = link.getAttribute("href") ?? "";
+	const base = qs(contents.ownerDocument, "base");
+	const location = base ? base.getAttribute("href") ?? undefined : undefined;
+	const replaceLink = function(link: Element){
+		const href = link.getAttribute("href") ?? "";
 
 		if(href.indexOf("mailto:") === 0){
 			return;
 		}
 
-		var absolute = (href.indexOf("://") > -1);
+		const absolute = (href.indexOf("://") > -1);
 
 		if(absolute){
 
 			link.setAttribute("target", "_blank");
 
 		}else{
-			var linkUrl: Url | undefined;
+			let linkUrl: Url | undefined;
 			try {
 				linkUrl = new Url(href, location);
-			} catch(error) {
+			} catch(_error) {
 				// NOOP
 			}
 
@@ -118,7 +114,7 @@ export function replaceLinks(contents: Element, fn: (path: string) => void): voi
 		}
 	}.bind(this);
 
-	for (var i = 0; i < links.length; i++) {
+	for (let i = 0; i < links.length; i++) {
 		replaceLink(links[i]);
 	}
 

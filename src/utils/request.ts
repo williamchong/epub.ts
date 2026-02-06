@@ -2,18 +2,18 @@ import {defer, isXml, parse} from "./core";
 import Path from "./path";
 
 function request(url: string, type?: string, withCredentials?: boolean, headers?: Record<string, string>): Promise<any> {
-	var supportsURL = (typeof window != "undefined") ? window.URL : false; // TODO: fallback for url if window isn't defined
-	var BLOB_RESPONSE: XMLHttpRequestResponseType = supportsURL ? "blob" : "arraybuffer";
+	const supportsURL = (typeof window != "undefined") ? window.URL : false; // TODO: fallback for url if window isn't defined
+	const BLOB_RESPONSE: XMLHttpRequestResponseType = supportsURL ? "blob" : "arraybuffer";
 
-	var deferred = new defer();
+	const deferred = new defer();
 
-	var xhr = new XMLHttpRequest();
+	const xhr = new XMLHttpRequest();
 
 	//-- Check from PDF.js:
 	//   https://github.com/mozilla/pdf.js/blob/master/web/compatibility.js
-	var xhrPrototype = XMLHttpRequest.prototype;
+	const xhrPrototype = XMLHttpRequest.prototype;
 
-	var header;
+	let header;
 
 	if (!("overrideMimeType" in xhrPrototype)) {
 		// IE10 might have response, but not overrideMimeType
@@ -74,14 +74,14 @@ function request(url: string, type?: string, withCredentials?: boolean, headers?
 
 	function handler() {
 		if (this.readyState === XMLHttpRequest.DONE) {
-			var responseXML = false;
+			let responseXML = false;
 
 			if(this.responseType === "" || this.responseType === "document") {
 				responseXML = this.responseXML;
 			}
 
 			if (this.status === 200 || this.status === 0 || responseXML) { //-- Firefox is reporting 0 for blob urls
-				var r;
+				let r;
 
 				if (!this.response && !responseXML) {
 					deferred.reject({

@@ -10,7 +10,7 @@ import type Layout from "../../layout";
 import type Section from "../../section";
 import type Contents from "../../contents";
 import type IframeView from "../views/iframe";
-import type { IEventEmitter, ManagerOptions, ViewSettings, ViewLocation, RequestFunction, SizeObject, ReframeBounds, LayoutProps, SpineItem } from "../../types";
+import type { IEventEmitter, ManagerOptions, ViewSettings, ViewLocation, RequestFunction, SizeObject, ReframeBounds, LayoutProps } from "../../types";
 
 class DefaultViewManager implements IEventEmitter {
 	name: string;
@@ -90,7 +90,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	render(element: HTMLElement, size: SizeObject): void {
-		let tag = element.tagName;
+		const tag = element.tagName;
 
 		if (typeof this.settings.fullsize === "undefined" &&
 				tag && (tag.toLowerCase() == "body" ||
@@ -154,9 +154,9 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	addEventListeners(): void {
-		var scroller;
+		let scroller;
 
-		window.addEventListener("unload", function(e: Event){
+		window.addEventListener("unload", function(_e: Event){
 			this.destroy();
 		}.bind(this));
 
@@ -171,7 +171,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	removeEventListeners(): void {
-		var scroller;
+		let scroller;
 
 		if(!this.settings.fullsize) {
 			scroller = this.container;
@@ -207,8 +207,8 @@ class DefaultViewManager implements IEventEmitter {
 		*/
 	}
 
-	onOrientationChange(e?: Event): void {
-		let {orientation} = window;
+	onOrientationChange(_e?: Event): void {
+		const {orientation} = window;
 
 		if(this.optsSettings.resizeOnOrientationChange) {
 			this.resize();
@@ -232,12 +232,12 @@ class DefaultViewManager implements IEventEmitter {
 
 	}
 
-	onResized(e?: Event): void {
+	onResized(_e?: Event): void {
 		this.resize();
 	}
 
 	resize(width?: number, height?: number, epubcfi?: string): void {
-		let stageSize = this.stage.size(width, height);
+		const stageSize = this.stage.size(width, height);
 
 		// For Safari, wait for orientation to catch up
 		// if the window is a square
@@ -296,8 +296,8 @@ class DefaultViewManager implements IEventEmitter {
 
 	display(section: Section, target?: string): Promise<any> {
 
-		var displaying = new defer();
-		var displayed = displaying.promise;
+		const displaying = new defer();
+		const displayed = displaying.promise;
 
 		// Check if moving to target is needed
 		if (target === section.href || isNumber(target)) {
@@ -305,22 +305,22 @@ class DefaultViewManager implements IEventEmitter {
 		}
 
 		// Check to make sure the section we want isn't already shown
-		var visible = this.views.find(section);
+		const visible = this.views.find(section);
 
 		// View is already shown, just move to correct location in view
 		if(visible && section && this.layout.name !== "pre-paginated") {
-			let offset = visible.offset();
+			const offset = visible.offset();
 
 			if (this.settings.direction === "ltr") {
 				this.scrollTo(offset.left, offset.top, true);
 			} else {
-				let width = visible.width();
+				const width = visible.width();
 				this.scrollTo(offset.left + width, offset.top, true);
 			}
 
 			if(target) {
-				let offset = visible.locationOf(target);
-				let width = visible.width();
+				const offset = visible.locationOf(target);
+				const width = visible.width();
 				this.moveTo(offset, width);
 			}
 
@@ -341,8 +341,8 @@ class DefaultViewManager implements IEventEmitter {
 
 				// Move to correct place within the section, if needed
 				if(target) {
-					let offset = view.locationOf(target);
-					let width = view.width();
+					const offset = view.locationOf(target);
+					const width = view.width();
 					this.moveTo(offset, width);
 				}
 
@@ -377,7 +377,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	moveTo(offset: { left: number; top: number }, width?: number): void {
-		var distX = 0,
+		let distX = 0,
 				distY = 0;
 
 		if(!this.isPaginated) {
@@ -395,7 +395,7 @@ class DefaultViewManager implements IEventEmitter {
 				distY = this.container.scrollHeight - this.layout.delta;
 			}
 		}
-		if(this.settings.direction === 'rtl'){
+		if(this.settings.direction === "rtl"){
 			/***
 				the `floor` function above (L343) is on positive values, so we should add one `layout.delta`
 				to distX or use `Math.ceil` function, or multiply offset.left by -1
@@ -408,7 +408,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	add(section: Section, forceRight?: boolean): Promise<any> {
-		var view = this.createView(section, forceRight);
+		const view = this.createView(section, forceRight);
 
 		this.views.append(view);
 
@@ -428,7 +428,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	append(section: Section, forceRight?: boolean): Promise<any> {
-		var view = this.createView(section, forceRight);
+		const view = this.createView(section, forceRight);
 		this.views.append(view);
 
 		view.onDisplayed = this.afterDisplayed.bind(this);
@@ -446,7 +446,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	prepend(section: Section, forceRight?: boolean): Promise<any> {
-		var view = this.createView(section, forceRight);
+		const view = this.createView(section, forceRight);
 
 		view.on(EVENTS.VIEWS.RESIZED, (bounds: ReframeBounds) => {
 			this.counter(bounds);
@@ -488,10 +488,10 @@ class DefaultViewManager implements IEventEmitter {
 	// };
 
 	next(): any {
-		var next: any;
-		var left;
+		let next: any;
+		let left;
 
-		let dir = this.settings.direction;
+		const dir = this.settings.direction;
 
 		if(!this.views.length) return;
 
@@ -532,7 +532,7 @@ class DefaultViewManager implements IEventEmitter {
 
 			this.scrollTop = this.container.scrollTop;
 
-			let top  = this.container.scrollTop + this.container.offsetHeight;
+			const top  = this.container.scrollTop + this.container.offsetHeight;
 
 			if(top < this.container.scrollHeight) {
 				this.scrollBy(0, this.layout.height, true);
@@ -578,9 +578,9 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	prev(): any {
-		var prev: any;
-		var left;
-		let dir = this.settings.direction;
+		let prev: any;
+		let left;
+		const dir = this.settings.direction;
 
 		if(!this.views.length) return;
 
@@ -623,7 +623,7 @@ class DefaultViewManager implements IEventEmitter {
 
 			this.scrollTop = this.container.scrollTop;
 
-			let top = this.container.scrollTop;
+			const top = this.container.scrollTop;
 
 			if(top > 0) {
 				this.scrollBy(0, -(this.layout.height), true);
@@ -649,7 +649,7 @@ class DefaultViewManager implements IEventEmitter {
 
 			return this.prepend(prev, forceRight)
 				.then(function(){
-					var left;
+					let left;
 					if (this.layout.name === "pre-paginated" && this.layout.divisor > 1) {
 						left = prev.prev();
 						if (left) {
@@ -678,7 +678,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	current(): IframeView | null {
-		var visible = this.visible();
+		const visible = this.visible();
 		if(visible.length){
 			// Current is the last visible view
 			return visible[visible.length-1];
@@ -708,25 +708,25 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	scrolledLocation(): ViewLocation[] {
-		let visible = this.visible();
-		let container = this.container.getBoundingClientRect();
-		let pageHeight = (container.height < window.innerHeight) ? container.height : window.innerHeight;
-		let pageWidth = (container.width < window.innerWidth) ? container.width : window.innerWidth;
-		let vertical = (this.settings.axis === "vertical");
-		let rtl =  (this.settings.direction === "rtl");
+		const visible = this.visible();
+		const container = this.container.getBoundingClientRect();
+		const pageHeight = (container.height < window.innerHeight) ? container.height : window.innerHeight;
+		const pageWidth = (container.width < window.innerWidth) ? container.width : window.innerWidth;
+		const vertical = (this.settings.axis === "vertical");
+		const _rtl =  (this.settings.direction === "rtl");
 		
 		let offset = 0;
-		let used = 0;
+		const used = 0;
 
 		if(this.settings.fullsize) {
 			offset = vertical ? window.scrollY : window.scrollX;
 		}
 
-		let sections = visible.map((view) => {
-			let {index, href} = view.section;
-			let position = view.position();
-			let width = view.width();
-			let height = view.height();
+		const sections = visible.map((view) => {
+			const {index, href} = view.section;
+			const position = view.position();
+			const width = view.width();
+			const height = view.height();
 
 			let startPos;
 			let endPos;
@@ -751,18 +751,18 @@ class DefaultViewManager implements IEventEmitter {
 
 			// Reverse page counts for horizontal rtl
 			if (this.settings.direction === "rtl" && !vertical) {
-				let tempStartPage = currPage;
+				const tempStartPage = currPage;
 				currPage = totalPages - endPage;
 				endPage = totalPages - tempStartPage;
 			}
 
 			pages = [];
-			for (var i = currPage; i <= endPage; i++) {
-				let pg = i + 1;
+			for (let i = currPage; i <= endPage; i++) {
+				const pg = i + 1;
 				pages.push(pg);
 			}
 
-			let mapping = this.mapping.page(view.contents, view.section.cfiBase, startPos, endPos);
+			const mapping = this.mapping.page(view.contents, view.section.cfiBase, startPos, endPos);
 
 			return {
 				index,
@@ -777,8 +777,8 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	paginatedLocation(): ViewLocation[] {
-		let visible = this.visible();
-		let container = this.container.getBoundingClientRect();
+		const visible = this.visible();
+		const container = this.container.getBoundingClientRect();
 
 		let left = 0;
 		let used = 0;
@@ -787,11 +787,11 @@ class DefaultViewManager implements IEventEmitter {
 			left = window.scrollX;
 		}
 
-		let sections = visible.map((view) => {
-			let {index, href} = view.section;
+		const sections = visible.map((view) => {
+			const {index, href} = view.section;
 			let offset;
-			let position = view.position();
-			let width = view.width();
+			const position = view.position();
+			const width = view.width();
 
 			// Find mapping
 			let start;
@@ -812,11 +812,11 @@ class DefaultViewManager implements IEventEmitter {
 
 			used += pageWidth;
 
-			let mapping = this.mapping.page(view.contents, view.section.cfiBase, start, end);
+			const mapping = this.mapping.page(view.contents, view.section.cfiBase, start, end);
 
-			let totalPages = this.layout.count(width).pages;
+			const totalPages = this.layout.count(width).pages;
 			let startPage = Math.floor(start / this.layout.pageWidth);
-			let pages = [];
+			const pages = [];
 			let endPage = Math.floor(end / this.layout.pageWidth);
 
 			// start page should not be negative
@@ -827,14 +827,14 @@ class DefaultViewManager implements IEventEmitter {
 
 			// Reverse page counts for rtl
 			if (this.settings.direction === "rtl") {
-				let tempStartPage = startPage;
+				const tempStartPage = startPage;
 				startPage = totalPages - endPage;
 				endPage = totalPages - tempStartPage;
 			}
 
 
-			for (var i = startPage + 1; i <= endPage; i++) {
-				let pg = i;
+			for (let i = startPage + 1; i <= endPage; i++) {
+				const pg = i;
 				pages.push(pg);
 			}
 
@@ -851,8 +851,8 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	isVisible(view: IframeView, offsetPrev: number, offsetNext: number, _container?: { left: number; right: number; top: number; bottom: number; width: number; height: number }): boolean {
-		var position = view.position();
-		var container = _container || this.bounds();
+		const position = view.position();
+		const container = _container || this.bounds();
 
 		if(this.settings.axis === "horizontal" &&
 			position.right > container.left - offsetPrev &&
@@ -872,14 +872,14 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	visible(): IframeView[] {
-		var container = this.bounds();
-		var views = this.views.displayed();
-		var viewsLength = views.length;
-		var visible = [];
-		var isVisible;
-		var view;
+		const container = this.bounds();
+		const views = this.views.displayed();
+		const viewsLength = views.length;
+		const visible = [];
+		let isVisible;
+		let view;
 
-		for (var i = 0; i < viewsLength; i++) {
+		for (let i = 0; i < viewsLength; i++) {
 			view = views[i];
 			isVisible = this.isVisible(view, 0, 0, container);
 
@@ -892,7 +892,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	scrollBy(x: number, y: number, silent?: boolean): void {
-		let dir = this.settings.direction === "rtl" ? -1 : 1;
+		const dir = this.settings.direction === "rtl" ? -1 : 1;
 
 		if(silent) {
 			this.ignore = true;
@@ -959,9 +959,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	bounds(): { left: number; right: number; top: number; bottom: number; width: number; height: number } {
-		var bounds;
-
-		bounds = this.stage.bounds();
+		const bounds = this.stage.bounds();
 
 		return bounds as { left: number; right: number; top: number; bottom: number; width: number; height: number };
 	}
@@ -1055,7 +1053,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	updateFlow(flow: string, defaultScrolledOverflow: string = "auto"): void {
-		let isPaginated = (flow === "paginated" || flow === "auto");
+		const isPaginated = (flow === "paginated" || flow === "auto");
 
 		this.isPaginated = isPaginated;
 
@@ -1082,7 +1080,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	getContents(): Contents[] {
-		var contents: Contents[] = [];
+		const contents: Contents[] = [];
 		if (!this.views) {
 			return contents;
 		}

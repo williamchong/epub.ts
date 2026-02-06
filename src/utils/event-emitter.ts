@@ -4,7 +4,7 @@
  * Supports on(type, fn), off(type, fn), emit(type, ...args).
  */
 export default function EventEmitter(target: any): any {
-	var proto = typeof target === "function" ? target.prototype : target;
+	const proto = typeof target === "function" ? target.prototype : target;
 
 	proto.on = function (type: string, fn: (...args: any[]) => void) {
 		if (!this.__listeners) this.__listeners = {};
@@ -25,9 +25,9 @@ export default function EventEmitter(target: any): any {
 
 	proto.emit = function (type: string) {
 		if (!this.__listeners || !this.__listeners[type]) return;
-		var args = Array.prototype.slice.call(arguments, 1);
-		var listeners = this.__listeners[type].slice();
-		for (var i = 0; i < listeners.length; i++) {
+		const args = Array.prototype.slice.call(arguments, 1);
+		const listeners = this.__listeners[type].slice();
+		for (let i = 0; i < listeners.length; i++) {
 			listeners[i].apply(this, args);
 		}
 	};

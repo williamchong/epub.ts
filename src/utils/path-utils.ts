@@ -11,11 +11,11 @@ function assertPath(path: any): void {
 }
 
 function normalizeStringPosix(path: string, allowAboveRoot: boolean): string {
-	var res = "";
-	var lastSlash = -1;
-	var dots = 0;
-	var code;
-	for (var i = 0; i <= path.length; ++i) {
+	let res = "";
+	let lastSlash = -1;
+	let dots = 0;
+	let code;
+	for (let i = 0; i <= path.length; ++i) {
 		if (i < path.length)
 			code = path.charCodeAt(i);
 		else if (code === 47)
@@ -30,8 +30,8 @@ function normalizeStringPosix(path: string, allowAboveRoot: boolean): string {
 					res.charCodeAt(res.length - 1) !== 46 ||
 					res.charCodeAt(res.length - 2) !== 46) {
 					if (res.length > 2) {
-						var start = res.length - 1;
-						var j = start;
+						const start = res.length - 1;
+						let j = start;
 						for (; j >= 0; --j) {
 							if (res.charCodeAt(j) === 47)
 								break;
@@ -76,11 +76,11 @@ function normalizeStringPosix(path: string, allowAboveRoot: boolean): string {
 }
 
 export function resolve(..._args: string[]): string {
-	var resolvedPath = "";
-	var resolvedAbsolute = false;
+	let resolvedPath = "";
+	let resolvedAbsolute = false;
 
-	for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-		var path;
+	for (let i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+		let path;
 		if (i >= 0)
 			path = arguments[i];
 		else {
@@ -124,25 +124,25 @@ export function relative(from: string, to: string): string {
 	if (from === to)
 		return "";
 
-	var fromStart = 1;
+	let fromStart = 1;
 	for (; fromStart < from.length; ++fromStart) {
 		if (from.charCodeAt(fromStart) !== 47)
 			break;
 	}
-	var fromEnd = from.length;
-	var fromLen = (fromEnd - fromStart);
+	const fromEnd = from.length;
+	const fromLen = (fromEnd - fromStart);
 
-	var toStart = 1;
+	let toStart = 1;
 	for (; toStart < to.length; ++toStart) {
 		if (to.charCodeAt(toStart) !== 47)
 			break;
 	}
-	var toEnd = to.length;
-	var toLen = (toEnd - toStart);
+	const toEnd = to.length;
+	const toLen = (toEnd - toStart);
 
-	var length = (fromLen < toLen ? fromLen : toLen);
-	var lastCommonSep = -1;
-	var i = 0;
+	const length = (fromLen < toLen ? fromLen : toLen);
+	let lastCommonSep = -1;
+	let i = 0;
 	for (; i <= length; ++i) {
 		if (i === length) {
 			if (toLen > length) {
@@ -160,15 +160,15 @@ export function relative(from: string, to: string): string {
 			}
 			break;
 		}
-		var fromCode = from.charCodeAt(fromStart + i);
-		var toCode = to.charCodeAt(toStart + i);
+		const fromCode = from.charCodeAt(fromStart + i);
+		const toCode = to.charCodeAt(toStart + i);
 		if (fromCode !== toCode)
 			break;
 		else if (fromCode === 47)
 			lastCommonSep = i;
 	}
 
-	var out = "";
+	let out = "";
 	for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
 		if (i === fromEnd || from.charCodeAt(i) === 47) {
 			if (out.length === 0)
@@ -192,11 +192,11 @@ export function dirname(path: string): string {
 	assertPath(path);
 	if (path.length === 0)
 		return ".";
-	var code = path.charCodeAt(0);
-	var hasRoot = (code === 47);
-	var end = -1;
-	var matchedSlash = true;
-	for (var i = path.length - 1; i >= 1; --i) {
+	let code = path.charCodeAt(0);
+	const hasRoot = (code === 47);
+	let end = -1;
+	let matchedSlash = true;
+	for (let i = path.length - 1; i >= 1; --i) {
 		code = path.charCodeAt(i);
 		if (code === 47) {
 			if (!matchedSlash) {
@@ -223,24 +223,24 @@ export function isAbsolute(path: string): boolean {
 export function parse(path: string): ParsedPath {
 	assertPath(path);
 
-	var ret = { root: "", dir: "", base: "", ext: "", name: "" };
+	const ret = { root: "", dir: "", base: "", ext: "", name: "" };
 	if (path.length === 0)
 		return ret;
-	var code = path.charCodeAt(0);
-	var isAbs = (code === 47);
-	var start;
+	let code = path.charCodeAt(0);
+	const isAbs = (code === 47);
+	let start;
 	if (isAbs) {
 		ret.root = "/";
 		start = 1;
 	} else {
 		start = 0;
 	}
-	var startDot = -1;
-	var startPart = 0;
-	var end = -1;
-	var matchedSlash = true;
-	var i = path.length - 1;
-	var preDotState = 0;
+	let startDot = -1;
+	let startPart = 0;
+	let end = -1;
+	let matchedSlash = true;
+	let i = path.length - 1;
+	let preDotState = 0;
 
 	for (; i >= start; --i) {
 		code = path.charCodeAt(i);
@@ -296,5 +296,5 @@ export function parse(path: string): ParsedPath {
 	return ret;
 }
 
-var pathUtils = { resolve, relative, dirname, isAbsolute, parse };
+const pathUtils = { resolve, relative, dirname, isAbsolute, parse };
 export default pathUtils;

@@ -21,9 +21,9 @@ class Url {
 	extension: string;
 
 	constructor(urlString: string, baseString?: string | false) {
-		var absolute = (urlString.indexOf("://") > -1);
-		var pathname = urlString;
-		var basePath;
+		const absolute = (urlString.indexOf("://") > -1);
+		let pathname = urlString;
+		let basePath;
 
 		this.Url = undefined;
 		this.href = urlString;
@@ -59,8 +59,8 @@ class Url {
 				this.hash = this.Url.hash;
 				this.search = this.Url.search;
 
-				pathname = this.Url.pathname + (this.Url.search ? this.Url.search : '');
-			} catch (e) {
+				pathname = this.Url.pathname + (this.Url.search ? this.Url.search : "");
+			} catch (_e) {
 				// Skip URL parsing
 				this.Url = undefined;
 				// resolve the pathname from the base
@@ -92,14 +92,13 @@ class Url {
 	 * @returns {string} url
 	 */
 	resolve (what: string): string {
-		var isAbsolute = (what.indexOf("://") > -1);
-		var fullpath;
+		const isAbsolute = (what.indexOf("://") > -1);
 
 		if (isAbsolute) {
 			return what;
 		}
 
-		fullpath = path.resolve(this.directory, what);
+		const fullpath = path.resolve(this.directory, what);
 		return this.origin + fullpath;
 	}
 

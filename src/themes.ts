@@ -39,7 +39,7 @@ class Themes {
 	 * @example themes.register("light", { "body": { "color": "purple"}})
 	 * @example themes.register({ "light" : {...}, "dark" : {...}})
 	 */
-	register (...args: any[]): void {
+	register (..._args: any[]): void {
 		if (arguments.length === 0) {
 			return;
 		}
@@ -80,9 +80,9 @@ class Themes {
 	 * @param {object} themes
 	 */
 	registerThemes (themes: Record<string, string | Record<string, Record<string, string>>>): void {
-		for (var theme in themes) {
+		for (const theme in themes) {
 			if (themes.hasOwnProperty(theme)) {
-				var value = themes[theme];
+				const value = themes[theme];
 				if (typeof(value) === "string") {
 					this.registerUrl(theme, value);
 				} else {
@@ -99,7 +99,7 @@ class Themes {
 	 */
 	registerCss (name: string, css: string): void {
 		this._themes[name] = { "serialized" : css };
-		if ((this._injected as unknown as Record<string, boolean>)[name] || name == 'default') {
+		if ((this._injected as unknown as Record<string, boolean>)[name] || name == "default") {
 			this.update(name);
 		}
 	}
@@ -110,9 +110,9 @@ class Themes {
 	 * @param {string} input
 	 */
 	registerUrl (name: string, input: string): void {
-		var url = new Url(input);
+		const url = new Url(input);
 		this._themes[name] = { "url": url.toString() };
-		if ((this._injected as unknown as Record<string, boolean>)[name] || name == 'default') {
+		if ((this._injected as unknown as Record<string, boolean>)[name] || name == "default") {
 			this.update(name);
 		}
 	}
@@ -125,7 +125,7 @@ class Themes {
 	registerRules (name: string, rules: Record<string, Record<string, string>>): void {
 		this._themes[name] = { "rules": rules };
 		// TODO: serialize css rules
-		if ((this._injected as unknown as Record<string, boolean>)[name] || name == 'default') {
+		if ((this._injected as unknown as Record<string, boolean>)[name] || name == "default") {
 			this.update(name);
 		}
 	}
@@ -135,13 +135,12 @@ class Themes {
 	 * @param {string} name
 	 */
 	select (name: string): void {
-		var prev = this._current;
-		var contents;
+		const prev = this._current;
 
 		this._current = name;
 		this.update(name);
 
-		contents = this.rendition.getContents();
+		const contents = this.rendition.getContents();
 		contents.forEach( (content: Contents) => {
 			content.removeClass(prev);
 			content.addClass(name);
@@ -153,7 +152,7 @@ class Themes {
 	 * @param {string} name
 	 */
 	update (name: string): void {
-		var contents = this.rendition.getContents();
+		const contents = this.rendition.getContents();
 		contents.forEach( (content: Contents) => {
 			this.add(name, content);
 		});
@@ -164,11 +163,11 @@ class Themes {
 	 * @param {Contents} contents
 	 */
 	inject (contents: Contents): void {
-		var links: string[] = [];
-		var themes = this._themes;
-		var theme;
+		const links: string[] = [];
+		const themes = this._themes;
+		let theme;
 
-		for (var name in themes) {
+		for (const name in themes) {
 			if (themes.hasOwnProperty(name) && (name === this._current || name === "default")) {
 				theme = themes[name];
 				if((theme.rules && Object.keys(theme.rules).length > 0) || (theme.url && links.indexOf(theme.url) === -1)) {
@@ -189,7 +188,7 @@ class Themes {
 	 * @param {Contents} contents
 	 */
 	add (name: string, contents: Contents): void {
-		var theme = this._themes[name];
+		const theme = this._themes[name];
 
 		if (!theme || !contents) {
 			return;
@@ -213,7 +212,7 @@ class Themes {
 	 * @param {boolean} priority
 	 */
 	override (name: string, value: string, priority?: boolean): void {
-		var contents = this.rendition.getContents();
+		const contents = this.rendition.getContents();
 
 		this._overrides[name] = {
 			value: value,
@@ -226,7 +225,7 @@ class Themes {
 	}
 
 	removeOverride (name: string): void {
-		var contents = this.rendition.getContents();
+		const contents = this.rendition.getContents();
 
 		delete this._overrides[name];
 
@@ -240,9 +239,9 @@ class Themes {
 	 * @param {Content} content
 	 */
 	overrides (contents: Contents): void {
-		var overrides = this._overrides;
+		const overrides = this._overrides;
 
-		for (var rule in overrides) {
+		for (const rule in overrides) {
 			if (overrides.hasOwnProperty(rule)) {
 				contents.css(rule, overrides[rule].value, overrides[rule].priority);
 			}

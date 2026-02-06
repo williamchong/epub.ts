@@ -3,7 +3,6 @@ import EpubCFI from "./epubcfi";
 import { EVENTS } from "./utils/constants";
 import type { IEventEmitter } from "./types";
 import type Rendition from "./rendition";
-import type Contents from "./contents";
 
 interface AnnotationView {
 	index: number;
@@ -51,10 +50,10 @@ class Annotations {
 	 * @returns {Annotation} annotation
 	 */
 	add (type: string, cfiRange: string, data?: Record<string, any>, cb?: Function, className?: string, styles?: Record<string, string>): Annotation {
-		let hash = encodeURI(cfiRange + type);
-		let cfi = new EpubCFI(cfiRange);
-		let sectionIndex = cfi.spinePos;
-		let annotation = new Annotation({
+		const hash = encodeURI(cfiRange + type);
+		const cfi = new EpubCFI(cfiRange);
+		const sectionIndex = cfi.spinePos;
+		const annotation = new Annotation({
 			type,
 			cfiRange,
 			data,
@@ -72,7 +71,7 @@ class Annotations {
 			this._annotationsBySectionIndex[sectionIndex] = [hash];
 		}
 
-		let views = this.rendition.views();
+		const views = this.rendition.views();
 
 		views.forEach( (view: AnnotationView) => {
 			if (annotation.sectionIndex === view.index) {
@@ -89,16 +88,16 @@ class Annotations {
 	 * @param {string} type Type of annotation to add: "highlight", "underline", "mark"
 	 */
 	remove (cfiRange: string, type?: string): void {
-		let hash = encodeURI(cfiRange + type);
+		const hash = encodeURI(cfiRange + type);
 
 		if (hash in this._annotations) {
-			let annotation = this._annotations[hash];
+			const annotation = this._annotations[hash];
 
 			if (type && annotation.type !== type) {
 				return;
 			}
 
-			let views = this.rendition.views();
+			const views = this.rendition.views();
 			views.forEach( (view: AnnotationView) => {
 				this._removeFromAnnotationBySectionIndex(annotation.sectionIndex, hash);
 				if (annotation.sectionIndex === view.index) {
@@ -164,7 +163,7 @@ class Annotations {
 	/**
 	 * iterate over annotations in the store
 	 */
-	each (...args: any[]): any {
+	each (..._args: any[]): any {
 		return (this._annotations as any).forEach.apply(this._annotations, arguments);
 	}
 
@@ -174,11 +173,11 @@ class Annotations {
 	 * @private
 	 */
 	inject (view: AnnotationView): void {
-		let sectionIndex = view.index;
+		const sectionIndex = view.index;
 		if (sectionIndex in this._annotationsBySectionIndex) {
-			let annotations = this._annotationsBySectionIndex[sectionIndex];
+			const annotations = this._annotationsBySectionIndex[sectionIndex];
 			annotations.forEach((hash) => {
-				let annotation = this._annotations[hash];
+				const annotation = this._annotations[hash];
 				annotation.attach(view);
 			});
 		}
@@ -190,11 +189,11 @@ class Annotations {
 	 * @private
 	 */
 	clear (view: AnnotationView): void {
-		let sectionIndex = view.index;
+		const sectionIndex = view.index;
 		if (sectionIndex in this._annotationsBySectionIndex) {
-			let annotations = this._annotationsBySectionIndex[sectionIndex];
+			const annotations = this._annotationsBySectionIndex[sectionIndex];
 			annotations.forEach((hash) => {
-				let annotation = this._annotations[hash];
+				const annotation = this._annotations[hash];
 				annotation.detach(view);
 			});
 		}
@@ -277,7 +276,7 @@ class Annotation implements IEventEmitter {
 	 * @param {View} view
 	 */
 	attach (view: AnnotationView): object | undefined {
-		let {cfiRange, data, type, mark, cb, className, styles} = this;
+		const {cfiRange, data, type, mark: _mark, cb, className, styles} = this;
 		let result;
 
 		if (type === "highlight") {
@@ -298,7 +297,7 @@ class Annotation implements IEventEmitter {
 	 * @param {View} view
 	 */
 	detach (view: AnnotationView): object | undefined {
-		let {cfiRange, type} = this;
+		const {cfiRange, type} = this;
 		let result;
 
 		if (view) {

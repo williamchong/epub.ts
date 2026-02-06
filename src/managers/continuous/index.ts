@@ -7,10 +7,10 @@ import type IframeView from "../views/iframe";
 import type Stage from "../helpers/stage";
 import type { ManagerOptions, ReframeBounds } from "../../types";
 function debounce(func: Function, wait: number): () => void {
-	var timeout: ReturnType<typeof setTimeout>;
+	let timeout: ReturnType<typeof setTimeout>;
 	return function() {
-		var context = this;
-		var args = arguments;
+		const context = this;
+		const args = arguments;
 		clearTimeout(timeout);
 		timeout = setTimeout(function() {
 			func.apply(context, args);
@@ -82,7 +82,7 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	fill(_full?: InstanceType<typeof defer>): Promise<any> {
-		var full = _full || new defer();
+		const full = _full || new defer();
 
 		this.q.enqueue(() => {
 			return this.check();
@@ -100,18 +100,18 @@ class ContinuousViewManager extends DefaultViewManager {
 	moveTo(offset: { left: number; top: number }): void {
 		// var bounds = this.stage.bounds();
 		// var dist = Math.floor(offset.top / bounds.height) * bounds.height;
-		var distX = 0,
+		let distX = 0,
 				distY = 0;
 
-		var offsetX = 0,
-				offsetY = 0;
+		let _offsetX = 0,
+				_offsetY = 0;
 
 		if(!this.isPaginated) {
 			distY = offset.top;
-			offsetY = offset.top+this.settings.offsetDelta;
+			_offsetY = offset.top+this.settings.offsetDelta;
 		} else {
 			distX = Math.floor(offset.left / this.layout.delta) * this.layout.delta;
-			offsetX = distX+this.settings.offsetDelta;
+			_offsetX = distX+this.settings.offsetDelta;
 		}
 
 		if (distX > 0 || distY > 0) {
@@ -133,11 +133,11 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	add(section: Section): Promise<any> {
-		var view = this.createView(section);
+		const view = this.createView(section);
 
 		this.views.append(view);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds: ReframeBounds) => {
+		view.on(EVENTS.VIEWS.RESIZED, (_bounds: ReframeBounds) => {
 			(view as any).expanded = true;
 		});
 
@@ -157,9 +157,9 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	append(section: Section): any {
-		var view = this.createView(section);
+		const view = this.createView(section);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds: ReframeBounds) => {
+		view.on(EVENTS.VIEWS.RESIZED, (_bounds: ReframeBounds) => {
 			(view as any).expanded = true;
 		});
 
@@ -179,10 +179,10 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	prepend(section: Section): any {
-		var view = this.createView(section);
+		const view = this.createView(section);
 
-		view.on(EVENTS.VIEWS.RESIZED, (bounds: ReframeBounds) => {
-			this.counter(bounds);
+		view.on(EVENTS.VIEWS.RESIZED, (_bounds: ReframeBounds) => {
+			this.counter(_bounds);
 			(view as any).expanded = true;
 		});
 
@@ -210,17 +210,17 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	update(_offset?: number): Promise<any> {
-		var container = this.bounds();
-		var views = this.views.all();
-		var viewsLength = views.length;
-		var visible = [];
-		var offset = typeof _offset != "undefined" ? _offset : (this.settings.offset || 0);
-		var isVisible;
-		var view: IframeView;
+		const container = this.bounds();
+		const views = this.views.all();
+		const viewsLength = views.length;
+		const visible = [];
+		const offset = typeof _offset != "undefined" ? _offset : (this.settings.offset || 0);
+		let isVisible;
+		let view: IframeView;
 
-		var updating = new defer();
-		var promises = [];
-		for (var i = 0; i < viewsLength; i++) {
+		const updating = new defer();
+		const promises = [];
+		for (let i = 0; i < viewsLength; i++) {
 			view = views[i];
 
 			isVisible = this.isVisible(view, offset, offset, container);
@@ -229,10 +229,10 @@ class ContinuousViewManager extends DefaultViewManager {
 				// console.log("visible " + view.index, view.displayed);
 
 				if (!view.displayed) {
-					let displayed = view.display(this.request)
+					const displayed = view.display(this.request)
 						.then(function (view: IframeView) {
 							view.show();
-						}, (err: Error) => {
+						}, (_err: Error) => {
 							view.hide();
 						});
 					promises.push(displayed);
@@ -265,11 +265,11 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	check(_offsetLeft?: number, _offsetTop?: number): Promise<any> {
-		var checking = new defer();
-		var newViews: IframeView[] = [];
+		const checking = new defer();
+		const newViews: IframeView[] = [];
 
-		var horizontal = (this.settings.axis === "horizontal");
-		var delta = this.settings.offset || 0;
+		const horizontal = (this.settings.axis === "horizontal");
+		let delta = this.settings.offset || 0;
 
 		if (_offsetLeft && horizontal) {
 			delta = _offsetLeft;
@@ -279,14 +279,14 @@ class ContinuousViewManager extends DefaultViewManager {
 			delta = _offsetTop;
 		}
 
-		var bounds = this._bounds; // bounds saved this until resize
+		const bounds = this._bounds; // bounds saved this until resize
 
 		let offset = horizontal ? this.scrollLeft : this.scrollTop;
-		let visibleLength = horizontal ? Math.floor(bounds.width) : bounds.height;
-		let contentLength = horizontal ? this.container.scrollWidth : this.container.scrollHeight;
-		let writingMode = (this.writingMode && this.writingMode.indexOf("vertical") === 0) ? "vertical" : "horizontal";
-		let rtlScrollType = this.settings.rtlScrollType;
-		let rtl = this.settings.direction === "rtl";
+		const visibleLength = horizontal ? Math.floor(bounds.width) : bounds.height;
+		const contentLength = horizontal ? this.container.scrollWidth : this.container.scrollHeight;
+		const writingMode = (this.writingMode && this.writingMode.indexOf("vertical") === 0) ? "vertical" : "horizontal";
+		const rtlScrollType = this.settings.rtlScrollType;
+		const rtl = this.settings.direction === "rtl";
 
 		if (!this.settings.fullsize) {
 			// Scroll offset starts at width of element
@@ -305,18 +305,18 @@ class ContinuousViewManager extends DefaultViewManager {
 			}
 		}
 
-		let prepend = () => {
-			let first = this.views.first();
-			let prev: any = first && first.section.prev();
+		const prepend = () => {
+			const first = this.views.first();
+			const prev: any = first && first.section.prev();
 
 			if(prev) {
 				newViews.push(this.prepend(prev));
 			}
 		};
 
-		let append = () => {
-			let last = this.views.last();
-			let next: any = last && last.section.next();
+		const append = () => {
+			const last = this.views.last();
+			const next: any = last && last.section.next();
 
 			if(next) {
 				newViews.push(this.append(next));
@@ -324,8 +324,8 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		};
 
-		let end = offset + visibleLength + delta;
-		let start = offset - delta;
+		const end = offset + visibleLength + delta;
+		const start = offset - delta;
 
 		if (end >= contentLength) {
 			append();
@@ -336,7 +336,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		}
 		
 
-		let promises = newViews.map((view) => {
+		const promises = newViews.map((view) => {
 			return view.display(this.request);
 		});
 
@@ -363,22 +363,22 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	trim(): Promise<any> {
-		var task = new defer();
-		var displayed = this.views.displayed();
-		var first = displayed[0];
-		var last = displayed[displayed.length-1];
-		var firstIndex = this.views.indexOf(first);
-		var lastIndex = this.views.indexOf(last);
-		var above = this.views.slice(0, firstIndex);
-		var below = this.views.slice(lastIndex+1);
+		const task = new defer();
+		const displayed = this.views.displayed();
+		const first = displayed[0];
+		const last = displayed[displayed.length-1];
+		const firstIndex = this.views.indexOf(first);
+		const lastIndex = this.views.indexOf(last);
+		const above = this.views.slice(0, firstIndex);
+		const below = this.views.slice(lastIndex+1);
 
 		// Erase all but last above
-		for (var i = 0; i < above.length-1; i++) {
+		for (let i = 0; i < above.length-1; i++) {
 			this.erase(above[i], above);
 		}
 
 		// Erase all except first below
-		for (var j = 1; j < below.length; j++) {
+		for (let j = 1; j < below.length; j++) {
 			this.erase(below[j]);
 		}
 
@@ -388,8 +388,8 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	erase(view: IframeView, above?: IframeView[]): void { //Trim
 
-		var prevTop;
-		var prevLeft;
+		let prevTop;
+		let prevLeft;
 
 		if(!this.settings.fullsize) {
 			prevTop = this.container.scrollTop;
@@ -399,7 +399,7 @@ class ContinuousViewManager extends DefaultViewManager {
 			prevLeft = window.scrollX;
 		}
 
-		var bounds = view.bounds();
+		const bounds = view.bounds();
 
 		this.views.remove(view);
 		
@@ -407,7 +407,7 @@ class ContinuousViewManager extends DefaultViewManager {
 			if (this.settings.axis === "vertical") {
 				this.scrollTo(0, prevTop - bounds.height, true);
 			} else {
-				if(this.settings.direction === 'rtl') {
+				if(this.settings.direction === "rtl") {
 					if (!this.settings.fullsize) {
 						this.scrollTo(prevLeft, 0, true);
 					} else {
@@ -421,9 +421,9 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	}
 
-	addEventListeners(stage?: Stage): void {
+	addEventListeners(_stage?: Stage): void {
 
-		window.addEventListener("unload", function(e: Event){
+		window.addEventListener("unload", function(_e: Event){
 			this.ignore = true;
 			// this.scrollTo(0,0);
 			this.destroy();
@@ -437,11 +437,11 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	addScrollListeners(): void {
-		var scroller;
+		let scroller;
 
 		this.tick = requestAnimationFrame;
 
-		let dir = this.settings.direction === "rtl" && this.settings.rtlScrollType === "default" ? -1 : 1;
+		const dir = this.settings.direction === "rtl" && this.settings.rtlScrollType === "default" ? -1 : 1;
 
 		this.scrollDeltaVert = 0;
 		this.scrollDeltaHorz = 0;
@@ -466,7 +466,7 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	removeEventListeners(): void {
-		var scroller;
+		let scroller;
 
 		if(!this.settings.fullsize) {
 			scroller = this.container;
@@ -481,7 +481,7 @@ class ContinuousViewManager extends DefaultViewManager {
 	onScroll(): void {
 		let scrollTop;
 		let scrollLeft;
-		let dir = this.settings.direction === "rtl" && this.settings.rtlScrollType === "default" ? -1 : 1;
+		const dir = this.settings.direction === "rtl" && this.settings.rtlScrollType === "default" ? -1 : 1;
 
 		if(!this.settings.fullsize) {
 			scrollTop = this.container.scrollTop;
@@ -549,7 +549,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	next(): void {
 
-		let delta = this.layout.props.name === "pre-paginated" &&
+		const delta = this.layout.props.name === "pre-paginated" &&
 								this.layout.props.spread ? this.layout.props.delta * 2 : this.layout.props.delta;
 
 		if(!this.views.length) return;
@@ -571,7 +571,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	prev(): void {
 
-		let delta = this.layout.props.name === "pre-paginated" &&
+		const delta = this.layout.props.name === "pre-paginated" &&
 								this.layout.props.spread ? this.layout.props.delta * 2 : this.layout.props.delta;
 
 		if(!this.views.length) return;

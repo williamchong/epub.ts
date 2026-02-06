@@ -204,7 +204,7 @@ class Rendition implements IEventEmitter {
 	 * @return {method}
 	 */
 	requireManager(manager: string | Function | object): typeof DefaultViewManager | typeof ContinuousViewManager | Function {
-		var viewManager;
+		let viewManager;
 
 		// If manager is a string, try to load from imported managers
 		if (typeof manager === "string" && manager === "default") {
@@ -225,7 +225,7 @@ class Rendition implements IEventEmitter {
 	 * @return {view}
 	 */
 	requireView(view: string | Function | object): typeof IframeView | Function {
-		var View;
+		let View;
 
 		// If view is a string, try to load from imported views,
 		if (typeof view == "string" && view === "iframe") {
@@ -247,10 +247,10 @@ class Rendition implements IEventEmitter {
 			this.settings.layout = "pre-paginated";
 		}
 		switch(this.book!.package!.metadata.spread) {
-			case 'none':
-				this.settings.spread = 'none';
+			case "none":
+				this.settings.spread = "none";
 				break;
-			case 'both':
+			case "both":
 				this.settings.spread = true;
 				break;
 		}
@@ -352,11 +352,9 @@ class Rendition implements IEventEmitter {
 		if (!this.book) {
 			return;
 		}
-		var isCfiString = this.epubcfi.isCfiString(target);
-		var displaying = new defer();
-		var displayed = displaying.promise;
-		var section: Section | null;
-		var moveTo;
+		const _isCfiString = this.epubcfi.isCfiString(target);
+		const displaying = new defer();
+		const displayed = displaying.promise;
 
 		this.displaying = displaying;
 
@@ -365,7 +363,7 @@ class Rendition implements IEventEmitter {
 			target = this.book!.locations!.cfiFromPercentage(parseFloat(target as string));
 		}
 
-		section = this.book!.spine!.get(target);
+		const section: Section | null = this.book!.spine!.get(target);
 
 		if(!section){
 			displaying.reject(new Error("No Section Found"));
@@ -587,21 +585,20 @@ class Rendition implements IEventEmitter {
 	 * @return {object} properties
 	 */
 	determineLayoutProperties(metadata: PackagingMetadataObject & Record<string, any>): GlobalLayout {
-		var properties;
-		var layout = this.settings.layout || metadata.layout || "reflowable";
-		var spread = this.settings.spread || metadata.spread || "auto";
-		var orientation = this.settings.orientation || metadata.orientation || "auto";
-		var flow = this.settings.flow || metadata.flow || "auto";
-		var viewport = metadata.viewport || "";
-		var minSpreadWidth = this.settings.minSpreadWidth || metadata.minSpreadWidth || 800;
-		var direction = this.settings.direction || metadata.direction || "ltr";
+		const layout = this.settings.layout || metadata.layout || "reflowable";
+		const spread = this.settings.spread || metadata.spread || "auto";
+		const orientation = this.settings.orientation || metadata.orientation || "auto";
+		const flow = this.settings.flow || metadata.flow || "auto";
+		const viewport = metadata.viewport || "";
+		const minSpreadWidth = this.settings.minSpreadWidth || metadata.minSpreadWidth || 800;
+		const direction = this.settings.direction || metadata.direction || "ltr";
 
 		if ((this.settings.width === 0 || (this.settings.width as number) > 0) &&
 				(this.settings.height === 0 || (this.settings.height as number) > 0)) {
 			// viewport = "width="+this.settings.width+", height="+this.settings.height+"";
 		}
 
-		properties = {
+		const properties = {
 			layout : layout,
 			spread : spread as string,
 			orientation : orientation,
@@ -620,7 +617,7 @@ class Rendition implements IEventEmitter {
 	 * @param  {string} flow
 	 */
 	flow(flow: string): void {
-		var _flow = flow;
+		let _flow = flow;
 		if (flow === "scrolled" ||
 				flow === "scrolled-doc" ||
 				flow === "scrolled-continuous") {
@@ -722,10 +719,10 @@ class Rendition implements IEventEmitter {
 	reportLocation(): Promise<void> {
 		return this.q.enqueue(function reportedLocation(){
 			requestAnimationFrame(function reportedLocationAfterRAF() {
-				var location = this.manager.currentLocation();
+				const location = this.manager.currentLocation();
 				if (location && location.then && typeof location.then === "function") {
 					location.then(function(result: ViewLocation[]) {
-						let located = this.located(result);
+						const located = this.located(result);
 
 						if (!located || !located.start || !located.end) {
 							return;
@@ -744,7 +741,7 @@ class Rendition implements IEventEmitter {
 						this.emit(EVENTS.RENDITION.RELOCATED, this.location);
 					}.bind(this));
 				} else if (location) {
-					let located = this.located(location);
+					const located = this.located(location);
 
 					if (!located || !located.start || !located.end) {
 						return;
@@ -787,14 +784,14 @@ class Rendition implements IEventEmitter {
 	 * @return {displayedLocation | promise} location (may be a promise)
 	 */
 	currentLocation(): Location | undefined {
-		var location = this.manager!.currentLocation() as any;
+		const location = this.manager!.currentLocation() as any;
 		if (location && location.then && typeof location.then === "function") {
 			location.then(function(result: ViewLocation[]) {
-				let located = this.located(result);
+				const located = this.located(result);
 				return located;
 			}.bind(this));
 		} else if (location) {
-			let located = this.located(location);
+			const located = this.located(location);
 			return located;
 		}
 	}
@@ -809,10 +806,10 @@ class Rendition implements IEventEmitter {
 		if (!location.length) {
 			return undefined;
 		}
-		let start = location[0];
-		let end = location[location.length-1];
+		const start = location[0];
+		const end = location[location.length-1];
 
-		let located: Location = {
+		const located: Location = {
 			start: {
 				index: start.index,
 				href: start.href,
@@ -833,8 +830,8 @@ class Rendition implements IEventEmitter {
 			}
 		};
 
-		let locationStart = this.book!.locations!.locationFromCfi(start.mapping.start);
-		let locationEnd = this.book!.locations!.locationFromCfi(end.mapping.end);
+		const locationStart = this.book!.locations!.locationFromCfi(start.mapping.start);
+		const locationEnd = this.book!.locations!.locationFromCfi(end.mapping.end);
 
 		if (locationStart != null) {
 			located.start.location = locationStart;
@@ -845,8 +842,8 @@ class Rendition implements IEventEmitter {
 			located.end.percentage = this.book!.locations!.percentageFromLocation(locationEnd);
 		}
 
-		let pageStart = this.book!.pageList!.pageFromCfi(start.mapping.start);
-		let pageEnd = this.book!.pageList!.pageFromCfi(end.mapping.end);
+		const pageStart = this.book!.pageList!.pageFromCfi(start.mapping.start);
+		const pageEnd = this.book!.pageList!.pageFromCfi(end.mapping.end);
 
 		if (pageStart != -1) {
 			located.start.page = pageStart;
@@ -963,8 +960,8 @@ class Rendition implements IEventEmitter {
 	 * @return {range}
 	 */
 	getRange(cfi: string, ignoreClass?: string): Range | undefined {
-		var _cfi = new EpubCFI(cfi);
-		var found = this.manager!.visible().filter(function (view: any) {
+		const _cfi = new EpubCFI(cfi);
+		const found = this.manager!.visible().filter(function (view: any) {
 			if(_cfi.spinePos === view.index) return true;
 		});
 
@@ -987,9 +984,9 @@ class Rendition implements IEventEmitter {
 			});
 		}
 
-		let computed = contents.window.getComputedStyle(contents.content, null);
-		let height = (contents.content.offsetHeight - (parseFloat(computed.paddingTop) + parseFloat(computed.paddingBottom))) * .95;
-		let horizontalPadding = parseFloat(computed.paddingLeft) + parseFloat(computed.paddingRight);
+		const computed = contents.window.getComputedStyle(contents.content, null);
+		const height = (contents.content.offsetHeight - (parseFloat(computed.paddingTop) + parseFloat(computed.paddingBottom))) * .95;
+		const horizontalPadding = parseFloat(computed.paddingLeft) + parseFloat(computed.paddingRight);
 
 		contents.addStylesheetRules({
 			"img" : {
@@ -1008,7 +1005,7 @@ class Rendition implements IEventEmitter {
 			}
 		});
 
-		return new Promise<void>(function(resolve, reject){
+		return new Promise<void>(function(resolve, _reject){
 			// Wait to apply
 			setTimeout(function() {
 				resolve();
@@ -1029,7 +1026,7 @@ class Rendition implements IEventEmitter {
 	 * @returns {Views}
 	 */
 	views (): any {
-		let views = this.manager ? this.manager.views : undefined;
+		const views = this.manager ? this.manager.views : undefined;
 		return views || [];
 	}
 
@@ -1041,7 +1038,7 @@ class Rendition implements IEventEmitter {
 	handleLinks(contents: Contents): void {
 		if (contents) {
 			contents.on(EVENTS.CONTENTS.LINK_CLICKED, (href: string) => {
-				let relative = this.book!.path!.relative(href);
+				const relative = this.book!.path!.relative(href);
 				this.display(relative);
 			});
 		}
@@ -1054,8 +1051,8 @@ class Rendition implements IEventEmitter {
 	 * @param  {Section} section
 	 * @private
 	 */
-	injectStylesheet(doc: Document, section: Section): void {
-		let style = doc.createElement("link");
+	injectStylesheet(doc: Document, _section: Section): void {
+		const style = doc.createElement("link");
 		style.setAttribute("type", "text/css");
 		style.setAttribute("rel", "stylesheet");
 		style.setAttribute("href", this.settings.stylesheet!);
@@ -1069,8 +1066,8 @@ class Rendition implements IEventEmitter {
 	 * @param  {Section} section
 	 * @private
 	 */
-	injectScript(doc: Document, section: Section): void {
-		let script = doc.createElement("script");
+	injectScript(doc: Document, _section: Section): void {
+		const script = doc.createElement("script");
 		script.setAttribute("type", "text/javascript");
 		script.setAttribute("src", this.settings.script!);
 		script.textContent = " "; // Needed to prevent self closing tag
@@ -1084,9 +1081,9 @@ class Rendition implements IEventEmitter {
 	 * @param  {Section} section
 	 * @private
 	 */
-	injectIdentifier(doc: Document, section: Section): void {
-		let ident = this.book!.packaging!.metadata.identifier;
-		let meta = doc.createElement("meta");
+	injectIdentifier(doc: Document, _section: Section): void {
+		const ident = this.book!.packaging!.metadata.identifier;
+		const meta = doc.createElement("meta");
 		meta.setAttribute("name", "dc.relation.ispartof");
 		if (ident) {
 			meta.setAttribute("content", ident);

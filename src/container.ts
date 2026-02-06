@@ -12,9 +12,9 @@ class Container {
 	encoding: string;
 
 	constructor(containerDocument?: Document) {
-		this.packagePath = '';
-		this.directory = '';
-		this.encoding = '';
+		this.packagePath = "";
+		this.directory = "";
+		this.encoding = "";
 
 		if (containerDocument) {
 			this.parse(containerDocument);
@@ -27,13 +27,11 @@ class Container {
 	 */
 	parse(containerDocument: Document): void {
 		//-- <rootfile full-path="OPS/package.opf" media-type="application/oebps-package+xml"/>
-		var rootfile;
-
 		if(!containerDocument) {
 			throw new Error("Container File Not Found");
 		}
 
-		rootfile = qs(containerDocument, "rootfile");
+		const rootfile = qs(containerDocument, "rootfile");
 
 		if(!rootfile) {
 			throw new Error("No RootFile Found");

@@ -18,13 +18,13 @@ class Hook {
 	 * Adds a function to be run before a hook completes
 	 * @example this.content.register(function(){...});
 	 */
-	register(...args: any[]): void {
-		for(var i = 0; i < arguments.length; ++i) {
+	register(..._args: any[]): void {
+		for(let i = 0; i < arguments.length; ++i) {
 			if (typeof arguments[i]  === "function") {
 				this.hooks.push(arguments[i]);
 			} else {
 				// unpack array
-				for(var j = 0; j < arguments[i].length; ++j) {
+				for(let j = 0; j < arguments[i].length; ++j) {
 					this.hooks.push(arguments[i][j]);
 				}
 			}
@@ -51,15 +51,17 @@ class Hook {
 	 * @example this.content.trigger(args).then(function(){...});
 	 */
 	trigger(..._args: any[]): Promise<any[]> {
-		var args = arguments;
-		var context = this.context;
-		var promises: any[] = [];
+		const args = arguments;
+		const context = this.context;
+		const promises: any[] = [];
 
 		this.hooks.forEach(function(task) {
+			let executing;
 			try {
-				var executing = task.apply(context, args);
-			} catch (err) {
-				console.log(err);
+				executing = task.apply(context, args);
+			} catch (_err) {
+				// eslint-disable-next-line no-console
+				console.log(_err);
 			}
 
 			if(executing && typeof executing["then"] === "function") {

@@ -100,7 +100,7 @@ class IframeView implements IEventEmitter {
 	}
 
 	container(axis?: string): HTMLElement {
-		var element = document.createElement("div");
+		const element = document.createElement("div");
 
 		element.classList.add("epub-view");
 
@@ -188,7 +188,7 @@ class IframeView implements IEventEmitter {
 		return this.iframe;
 	}
 
-	render(request: RequestFunction, show?: boolean): Promise<void> {
+	render(request: RequestFunction, _show?: boolean): Promise<void> {
 
 		// view.onLayout = this.layout.format.bind(this.layout);
 		this.create();
@@ -208,7 +208,7 @@ class IframeView implements IEventEmitter {
 			.then(function(){
 
 				// find and report the writingMode axis
-				let writingMode = this.contents.writingMode();
+				const writingMode = this.contents.writingMode();
 
 				// Set the axis based on the flow and writing mode
 				let axis;
@@ -235,7 +235,7 @@ class IframeView implements IEventEmitter {
 				// Listen for events that require an expansion of the iframe
 				this.addListeners();
 
-				return new Promise<void>((resolve, reject) => {
+				return new Promise<void>((resolve, _reject) => {
 					// Expand the iframe to the full size of the content
 					this.expand();
 
@@ -273,8 +273,8 @@ class IframeView implements IEventEmitter {
 
 	// Determine locks base on settings
 	size(_width?: number, _height?: number): void {
-		var width = _width || this.settings.width!;
-		var height = _height || this.settings.height!;
+		const width = _width || this.settings.width!;
+		const height = _height || this.settings.height!;
 
 		if(this.layout.name === "pre-paginated") {
 			this.lock("both", width, height);
@@ -290,8 +290,8 @@ class IframeView implements IEventEmitter {
 
 	// Lock an axis to element dimensions, taking borders into account
 	lock(what: string, width: number, height: number): void {
-		var elBorders = borders(this.element);
-		var iframeBorders;
+		const elBorders = borders(this.element);
+		let iframeBorders;
 
 		if(this.iframe) {
 			iframeBorders = borders(this.iframe);
@@ -329,12 +329,12 @@ class IframeView implements IEventEmitter {
 	}
 
 	// Resize a single axis based on content dimensions
-	expand(force?: boolean): void {
-		var width = this.lockedWidth;
-		var height = this.lockedHeight;
-		var columns;
+	expand(_force?: boolean): void {
+		let width = this.lockedWidth;
+		let height = this.lockedHeight;
+		let columns;
 
-		var textWidth, textHeight;
+		let _textWidth, _textHeight;
 
 		if(!this.iframe || this._expanding) return;
 
@@ -382,8 +382,6 @@ class IframeView implements IEventEmitter {
 	}
 
 	reframe(width: number, height: number): void {
-		var size;
-
 		if(isNumber(width)){
 			this.element.style.width = width + "px";
 			this.iframe!.style.width = width + "px";
@@ -396,10 +394,10 @@ class IframeView implements IEventEmitter {
 			this._height = height;
 		}
 
-		let widthDelta = this.prevBounds ? width - this.prevBounds.width : width;
-		let heightDelta = this.prevBounds ? height - this.prevBounds.height : height;
+		const widthDelta = this.prevBounds ? width - this.prevBounds.width : width;
+		const heightDelta = this.prevBounds ? height - this.prevBounds.height : height;
 
-		size = {
+		const size = {
 			width: width,
 			height: height,
 			widthDelta: widthDelta,
@@ -410,7 +408,7 @@ class IframeView implements IEventEmitter {
 
 		requestAnimationFrame(() => {
 			let mark;
-			for (let m in this.marks) {
+			for (const m in this.marks) {
 				if (this.marks.hasOwnProperty(m)) {
 					mark = this.marks[m];
 					this.placeMark(mark.element, mark.range);
@@ -430,8 +428,8 @@ class IframeView implements IEventEmitter {
 
 
 	load(contents: string): Promise<Contents> {
-		var loading = new defer();
-		var loaded = loading.promise;
+		const loading = new defer();
+		const loaded = loading.promise;
 
 		if(!this.iframe) {
 			loading.reject(new Error("No Iframe Available"));
@@ -465,7 +463,7 @@ class IframeView implements IEventEmitter {
 			this.document.open();
 			// For Cordova windows platform
 			if((window as any).MSApp && (window as any).MSApp.execUnsafeLocalFunction) {
-				var outerThis = this;
+				const outerThis = this;
 				(window as any).MSApp.execUnsafeLocalFunction(function () {
 					outerThis.document.write(contents);
 				});
@@ -488,7 +486,7 @@ class IframeView implements IEventEmitter {
 
 		this.rendering = false;
 
-		var link = this.document.querySelector("link[rel='canonical']");
+		let link = this.document.querySelector("link[rel='canonical']");
 		if (link) {
 			link.setAttribute("href", this.section.canonical);
 		} else {
@@ -507,7 +505,7 @@ class IframeView implements IEventEmitter {
 			}
 		});
 
-		this.contents.on(EVENTS.CONTENTS.RESIZE, (e: Event) => {
+		this.contents.on(EVENTS.CONTENTS.RESIZE, (_e: Event) => {
 			if(this.displayed && this.iframe) {
 				this.expand();
 				if (this.contents) {
@@ -551,12 +549,12 @@ class IframeView implements IEventEmitter {
 		//TODO: Add content listeners for expanding
 	}
 
-	removeListeners(layoutFunc?: Function): void {
+	removeListeners(_layoutFunc?: Function): void {
 		//TODO: remove content listeners for expanding
 	}
 
 	display(request: RequestFunction): Promise<IframeView> {
-		var displayed = new defer();
+		const displayed = new defer();
 
 		if (!this.displayed) {
 
@@ -626,8 +624,8 @@ class IframeView implements IEventEmitter {
 	}
 
 	locationOf(target: string): { left: number; top: number } {
-		var parentPos = this.iframe!.getBoundingClientRect();
-		var targetPos = this.contents!.locationOf(target, this.settings.ignoreClass);
+		const _parentPos = this.iframe!.getBoundingClientRect();
+		const targetPos = this.contents!.locationOf(target, this.settings.ignoreClass);
 
 		return {
 			"left": targetPos.left,
@@ -635,11 +633,11 @@ class IframeView implements IEventEmitter {
 		};
 	}
 
-	onDisplayed(view: IframeView): void {
+	onDisplayed(_view: IframeView): void {
 		// Stub, override with a custom functions
 	}
 
-	onResize(view: IframeView, e?: ReframeBounds): void {
+	onResize(_view: IframeView, _e?: ReframeBounds): void {
 		// Stub, override with a custom functions
 	}
 
@@ -656,9 +654,9 @@ class IframeView implements IEventEmitter {
 			return;
 		}
 		const attributes = Object.assign({"fill": "yellow", "fill-opacity": "0.3", "mix-blend-mode": "multiply"}, styles);
-		let range = this.contents.range(cfiRange);
+		const range = this.contents.range(cfiRange);
 
-		let emitter = () => {
+		const emitter = () => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -668,8 +666,8 @@ class IframeView implements IEventEmitter {
 			this.pane = new Pane(this.iframe!, this.element);
 		}
 
-		let m = new Highlight(range, className, data, attributes);
-		let h = this.pane.addMark(m);
+		const m = new Highlight(range, className, data, attributes);
+		const h = this.pane.addMark(m);
 
 		this.highlights[cfiRange] = { "mark": h, "element": h.element, "listeners": [emitter, cb] };
 
@@ -689,8 +687,8 @@ class IframeView implements IEventEmitter {
 			return;
 		}
 		const attributes = Object.assign({"stroke": "black", "stroke-opacity": "0.3", "mix-blend-mode": "multiply"}, styles);
-		let range = this.contents.range(cfiRange);
-		let emitter = () => {
+		const range = this.contents.range(cfiRange);
+		const emitter = () => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -700,8 +698,8 @@ class IframeView implements IEventEmitter {
 			this.pane = new Pane(this.iframe!, this.element);
 		}
 
-		let m = new Underline(range, className, data, attributes);
-		let h = this.pane.addMark(m);
+		const m = new Underline(range, className, data, attributes);
+		const h = this.pane.addMark(m);
 
 		this.underlines[cfiRange] = { "mark": h, "element": h.element, "listeners": [emitter, cb] };
 
@@ -722,7 +720,7 @@ class IframeView implements IEventEmitter {
 		}
 
 		if (cfiRange in this.marks) {
-			let item = this.marks[cfiRange];
+			const item = this.marks[cfiRange];
 			return item;
 		}
 
@@ -730,10 +728,10 @@ class IframeView implements IEventEmitter {
 		if (!range) {
 			return;
 		}
-		let container = range.commonAncestorContainer;
-		let parent = (container.nodeType === 1) ? container : container.parentNode;
+		const container = range.commonAncestorContainer;
+		const parent = (container.nodeType === 1) ? container : container.parentNode;
 
-		let emitter = (e: Event) => {
+		const emitter = (_e: Event) => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -745,7 +743,7 @@ class IframeView implements IEventEmitter {
 			range.selectNodeContents(parent!);
 		}
 
-		let mark = this.document.createElement("a");
+		const mark = this.document.createElement("a");
 		mark.setAttribute("ref", "epubjs-mk");
 		mark.style.position = "absolute";
 
@@ -779,15 +777,15 @@ class IframeView implements IEventEmitter {
 
 		if(this.layout.name === "pre-paginated" ||
 			this.settings.axis !== "horizontal") {
-			let pos = range.getBoundingClientRect();
+			const pos = range.getBoundingClientRect();
 			top = pos.top;
 			right = pos.right;
 		} else {
 			// Element might break columns, so find the left most element
-			let rects = range.getClientRects();
+			const rects = range.getClientRects();
 
 			let rect;
-			for (var i = 0; i != rects.length; i++) {
+			for (let i = 0; i != rects.length; i++) {
 				rect = rects[i];
 				if (!left || rect.left < left) {
 					left = rect.left;
@@ -804,7 +802,7 @@ class IframeView implements IEventEmitter {
 
 	unhighlight(cfiRange: string): void {
 		if (cfiRange in this.highlights) {
-			let item = this.highlights[cfiRange];
+			const item = this.highlights[cfiRange];
 
 			this.pane!.removeMark(item.mark);
 			item.listeners.forEach((l: Function | undefined) => {
@@ -819,7 +817,7 @@ class IframeView implements IEventEmitter {
 
 	ununderline(cfiRange: string): void {
 		if (cfiRange in this.underlines) {
-			let item = this.underlines[cfiRange];
+			const item = this.underlines[cfiRange];
 			this.pane!.removeMark(item.mark);
 			item.listeners.forEach((l: Function | undefined) => {
 				if (l) {
@@ -833,7 +831,7 @@ class IframeView implements IEventEmitter {
 
 	unmark(cfiRange: string): void {
 		if (cfiRange in this.marks) {
-			let item = this.marks[cfiRange];
+			const item = this.marks[cfiRange];
 			this.element.removeChild(item.element);
 			item.listeners.forEach((l: Function | undefined) => {
 				if (l) {
@@ -847,15 +845,15 @@ class IframeView implements IEventEmitter {
 
 	destroy(): void {
 
-		for (let cfiRange in this.highlights) {
+		for (const cfiRange in this.highlights) {
 			this.unhighlight(cfiRange);
 		}
 
-		for (let cfiRange in this.underlines) {
+		for (const cfiRange in this.underlines) {
 			this.ununderline(cfiRange);
 		}
 
-		for (let cfiRange in this.marks) {
+		for (const cfiRange in this.marks) {
 			this.unmark(cfiRange);
 		}
 

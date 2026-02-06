@@ -25,7 +25,7 @@
 - [ ] Full `strict: true`
 - [ ] Node.js support (parsing-only entry point)
 - [ ] Improve test coverage
-- [ ] ESLint + TS plugin
+- [x] ESLint + TS plugin (0 errors, 0 warnings)
 - [ ] GitHub Actions CI
 
 ### Dependency Status

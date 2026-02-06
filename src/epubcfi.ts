@@ -3,7 +3,7 @@ import type { EpubCFIStep, EpubCFIComponent } from "./types";
 
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
-const COMMENT_NODE = 8;
+const _COMMENT_NODE = 8;
 const DOCUMENT_NODE = 9;
 
 /**
@@ -34,8 +34,6 @@ class EpubCFI {
 	id: string | null;
 
 	constructor(cfiFrom?: string | Range | Node | EpubCFI, base?: string | EpubCFIComponent, ignoreClass?: string) {
-		var type;
-
 		this.str = "";
 
 		this.base = {};
@@ -58,7 +56,7 @@ class EpubCFI {
 			this.base = base;
 		}
 
-		type = this.checkType(cfiFrom);
+		const type = this.checkType(cfiFrom);
 
 
 		if(type === "string") {
@@ -104,7 +102,7 @@ class EpubCFI {
 	 * @returns {object} cfi
 	 */
 	parse(cfiStr: string): any {
-		var cfi: any = {
+		const cfi: any = {
 			spinePos: -1,
 			range: false,
 			base: {},
@@ -112,8 +110,6 @@ class EpubCFI {
 			start: null,
 			end: null
 		};
-		var baseComponent, pathComponent, range;
-
 		if(typeof cfiStr !== "string") {
 			return {spinePos: -1};
 		}
@@ -123,7 +119,7 @@ class EpubCFI {
 			cfiStr = cfiStr.slice(8, cfiStr.length-1);
 		}
 
-		baseComponent = this.getChapterComponent(cfiStr);
+		const baseComponent = this.getChapterComponent(cfiStr);
 
 		// Make sure this is a valid cfi or return
 		if(!baseComponent) {
@@ -132,10 +128,10 @@ class EpubCFI {
 
 		cfi.base = this.parseComponent(baseComponent);
 
-		pathComponent = this.getPathComponent(cfiStr);
+		const pathComponent = this.getPathComponent(cfiStr);
 		cfi.path = this.parseComponent(pathComponent!);
 
-		range = this.getRange(cfiStr);
+		const range = this.getRange(cfiStr);
 
 		if(range) {
 			cfi.range = true;
@@ -153,16 +149,16 @@ class EpubCFI {
 	}
 
 	parseComponent(componentStr: string): EpubCFIComponent {
-		var component: EpubCFIComponent = {
+		const component: EpubCFIComponent = {
 			steps: [],
 			terminal: {
 				offset: null,
 				assertion: null
 			}
 		};
-		var parts = componentStr.split(":");
-		var steps = parts[0].split("/");
-		var terminal;
+		const parts = componentStr.split(":");
+		const steps = parts[0].split("/");
+		let terminal;
 
 		if(parts.length > 1) {
 			terminal = parts[1];
@@ -181,15 +177,15 @@ class EpubCFI {
 	}
 
 	parseStep(stepStr: string): EpubCFIStep | undefined {
-		var type, num, index, has_brackets, id;
+		let type, index, id;
 
-		has_brackets = stepStr.match(/\[(.*)\]/);
+		const has_brackets = stepStr.match(/\[(.*)\]/);
 		if(has_brackets && has_brackets[1]){
 			id = has_brackets[1];
 		}
 
 		//-- Check if step is a text node or element
-		num = parseInt(stepStr);
+		const num = parseInt(stepStr);
 
 		if(isNaN(num)) {
 			return;
@@ -212,9 +208,9 @@ class EpubCFI {
 	}
 
 	parseTerminal(termialStr: string): { offset: number | null; assertion: string | null } {
-		var characterOffset: number | null;
-		var textLocationAssertion: string | null = null;
-		var assertion = termialStr.match(/\[(.*)\]/);
+		let characterOffset: number | null;
+		let textLocationAssertion: string | null = null;
+		const assertion = termialStr.match(/\[(.*)\]/);
 
 		if(assertion && assertion[1]){
 			characterOffset = parseInt(termialStr.split("[")[0]);
@@ -236,17 +232,17 @@ class EpubCFI {
 
 	getChapterComponent(cfiStr: string): string {
 
-		var indirection = cfiStr.split("!");
+		const indirection = cfiStr.split("!");
 
 		return indirection[0];
 	}
 
 	getPathComponent(cfiStr: string): string | undefined {
 
-		var indirection = cfiStr.split("!");
+		const indirection = cfiStr.split("!");
 
 		if(indirection[1]) {
-			let ranges = indirection[1].split(",");
+			const ranges = indirection[1].split(",");
 			return ranges[0];
 		}
 
@@ -254,7 +250,7 @@ class EpubCFI {
 
 	getRange(cfiStr: string): [string, string] | false {
 
-		var ranges = cfiStr.split(",");
+		const ranges = cfiStr.split(",");
 
 		if(ranges.length === 3){
 			return [
@@ -267,7 +263,7 @@ class EpubCFI {
 	}
 
 	getCharecterOffsetComponent(cfiStr: string): string {
-		var splitStr = cfiStr.split(":");
+		const splitStr = cfiStr.split(":");
 		return splitStr[1] || "";
 	}
 
@@ -277,7 +273,7 @@ class EpubCFI {
 		}
 
 		return steps.map(function(part){
-			var segment = "";
+			let segment = "";
 
 			if(part.type === "element") {
 				segment += (part.index + 1) * 2;
@@ -298,7 +294,7 @@ class EpubCFI {
 	}
 
 	segmentString(segment: EpubCFIComponent): string {
-		var segmentString = "/";
+		let segmentString = "/";
 
 		segmentString += this.joinSteps(segment.steps);
 
@@ -318,7 +314,7 @@ class EpubCFI {
 	 * @returns {string} epubcfi
 	 */
 	toString(): string {
-		var cfiString = "epubcfi(";
+		let cfiString = "epubcfi(";
 
 		cfiString += this.segmentString(this.base);
 
@@ -347,13 +343,13 @@ class EpubCFI {
 	 * @returns {number} First is earlier = -1, Second is earlier = 1, They are equal = 0
 	 */
 	compare(cfiOne: string | EpubCFI, cfiTwo: string | EpubCFI): number {
-		var stepsA, stepsB;
-		var terminalA, terminalB;
+		let stepsA, stepsB;
+		let terminalA, terminalB;
 
-		var rangeAStartSteps, rangeAEndSteps;
-		var rangeBEndSteps, rangeBEndSteps;
-		var rangeAStartTerminal, rangeAEndTerminal;
-		var rangeBStartTerminal, rangeBEndTerminal;
+		let _rangeAStartSteps, _rangeAEndSteps;
+		let _rangeBStartSteps, _rangeBEndSteps;
+		let _rangeAStartTerminal, _rangeAEndTerminal;
+		let _rangeBStartTerminal, _rangeBEndTerminal;
 
 		if(typeof cfiOne === "string") {
 			cfiOne = new EpubCFI(cfiOne);
@@ -386,7 +382,7 @@ class EpubCFI {
 		}
 
 		// Compare Each Step in the First item
-		for (var i = 0; i < stepsA.length; i++) {
+		for (let i = 0; i < stepsA.length; i++) {
 			if(!stepsA[i]) {
 				return -1;
 			}
@@ -420,7 +416,7 @@ class EpubCFI {
 	}
 
 	step(node: Node): EpubCFIStep {
-		var nodeType = (node.nodeType === TEXT_NODE) ? "text" : "element";
+		const nodeType = (node.nodeType === TEXT_NODE) ? "text" : "element";
 
 		return {
 			"id" : (node as Element).id,
@@ -431,8 +427,7 @@ class EpubCFI {
 	}
 
 	filteredStep(node: Node, ignoreClass: string): EpubCFIStep | undefined {
-		var filteredNode = this.filter(node, ignoreClass);
-		var nodeType;
+		const filteredNode = this.filter(node, ignoreClass);
 
 		// Node filtered, so ignore
 		if (!filteredNode) {
@@ -440,7 +435,7 @@ class EpubCFI {
 		}
 
 		// Otherwise add the filter node in
-		nodeType = (filteredNode.nodeType === TEXT_NODE) ? "text" : "element";
+		const nodeType = (filteredNode.nodeType === TEXT_NODE) ? "text" : "element";
 
 		return {
 			"id" : (filteredNode as Element).id,
@@ -451,15 +446,15 @@ class EpubCFI {
 	}
 
 	pathTo(node: Node, offset: number | null, ignoreClass?: string): EpubCFIComponent {
-		var segment: EpubCFIComponent = {
+		const segment: EpubCFIComponent = {
 			steps: [],
 			terminal: {
 				offset: null,
 				assertion: null
 			}
 		};
-		var currentNode = node;
-		var step;
+		let currentNode = node;
+		let step;
 
 		while(currentNode && currentNode.parentNode &&
 					currentNode.parentNode.nodeType != DOCUMENT_NODE) {
@@ -520,7 +515,7 @@ class EpubCFI {
 	 * @returns {object} cfi
 	 */
 	fromRange(range: Range, base: string | EpubCFIComponent, ignoreClass?: string): Partial<EpubCFI> {
-		var cfi: any = {
+		const cfi: any = {
 			range: false,
 			base: {},
 			path: {},
@@ -528,13 +523,13 @@ class EpubCFI {
 			end: null
 		};
 
-		var start = range.startContainer;
-		var end = range.endContainer;
+		const start = range.startContainer;
+		const end = range.endContainer;
 
-		var startOffset = range.startOffset;
-		var endOffset = range.endOffset;
+		let startOffset = range.startOffset;
+		let endOffset = range.endOffset;
 
-		var needsIgnoring = false;
+		let needsIgnoring = false;
 
 		if (ignoreClass) {
 			// Tell pathTo if / what to ignore
@@ -575,8 +570,8 @@ class EpubCFI {
 			};
 
 			// Push steps that are shared between start and end to the common path
-			var len = cfi.start.steps.length;
-			var i;
+			const len = cfi.start.steps.length;
+			let i;
 
 			for (i = 0; i < len; i++) {
 				if (this.equalStep(cfi.start.steps[i], cfi.end.steps[i])) {
@@ -614,7 +609,7 @@ class EpubCFI {
 	 * @returns {object} cfi
 	 */
 	fromNode(anchor: Node, base: string | EpubCFIComponent, ignoreClass?: string): Partial<EpubCFI> {
-		var cfi: any = {
+		const cfi: any = {
 			range: false,
 			base: {},
 			path: {},
@@ -635,10 +630,10 @@ class EpubCFI {
 	}
 
 	filter(anchor: Node, ignoreClass: string): Node | false {
-		var needsIgnoring;
-		var sibling; // to join with
-		var parent, previousSibling, nextSibling;
-		var isText = false;
+		let needsIgnoring;
+		let sibling; // to join with
+		let parent, previousSibling, nextSibling;
+		let isText = false;
 
 		if (anchor.nodeType === TEXT_NODE) {
 			isText = true;
@@ -682,8 +677,8 @@ class EpubCFI {
 			throw new Error("Anchor must be a text node");
 		}
 
-		var curr = anchor;
-		var totalOffset = offset;
+		let curr = anchor;
+		let totalOffset = offset;
 
 		// If the parent is a ignored node, get offset from it's start
 		if ((anchor.parentNode as Element).classList.contains(ignoreClass)) {
@@ -711,11 +706,12 @@ class EpubCFI {
 	}
 
 	normalizedMap(children: NodeListOf<ChildNode>, nodeType: number, ignoreClass: string): Record<number, number> {
-		var output: Record<number, number> = {};
-		var prevIndex = -1;
-		var i, len = children.length;
-		var currNodeType;
-		var prevNodeType;
+		const output: Record<number, number> = {};
+		let prevIndex = -1;
+		let i;
+		const len = children.length;
+		let currNodeType;
+		let prevNodeType;
 
 		for (i = 0; i < len; i++) {
 
@@ -745,7 +741,7 @@ class EpubCFI {
 	}
 
 	position(anchor: Node): number {
-		var children, index;
+		let children, index;
 		if (anchor.nodeType === ELEMENT_NODE) {
 			children = (anchor.parentNode as Element).children;
 			if (!children) {
@@ -761,7 +757,7 @@ class EpubCFI {
 	}
 
 	filteredPosition(anchor: Node, ignoreClass: string): number {
-		var children, index, map;
+		let children, map;
 
 		if (anchor.nodeType === ELEMENT_NODE) {
 			children = (anchor.parentNode as Element).children;
@@ -777,16 +773,16 @@ class EpubCFI {
 		}
 
 
-		index = Array.prototype.indexOf.call(children, anchor);
+		const index = Array.prototype.indexOf.call(children, anchor);
 
 		return map[index];
 	}
 
 	stepsToXpath(steps: EpubCFIStep[]): string {
-		var xpath = [".", "*"];
+		const xpath = [".", "*"];
 
 		steps.forEach(function(step){
-			var position = step.index + 1;
+			const position = step.index + 1;
 
 			if(step.id){
 				xpath.push("*[position()=" + position + " and @id='" + step.id + "']");
@@ -817,10 +813,10 @@ class EpubCFI {
 	}
 	*/
 	stepsToQuerySelector(steps: EpubCFIStep[]): string {
-		var query = ["html"];
+		const query = ["html"];
 
 		steps.forEach(function(step){
-			var position = step.index + 1;
+			const position = step.index + 1;
 
 			if(step.id){
 				query.push("#" + step.id);
@@ -849,12 +845,12 @@ class EpubCFI {
 	}
 
 	walkToNode(steps: EpubCFIStep[], _doc?: Document, ignoreClass?: string): Node | undefined {
-		var doc = _doc || document;
-		var container: Node = doc.documentElement;
-		var children;
-		var step;
-		var len = steps.length;
-		var i;
+		const doc = _doc || document;
+		let container: Node = doc.documentElement;
+		let children;
+		let step;
+		const len = steps.length;
+		let i;
 
 		for (i = 0; i < len; i++) {
 			step = steps[i];
@@ -885,9 +881,9 @@ class EpubCFI {
 	}
 
 	findNode(steps: EpubCFIStep[], _doc?: Document, ignoreClass?: string): Node | undefined {
-		var doc = _doc || document;
-		var container;
-		var xpath;
+		const doc = _doc || document;
+		let container;
+		let xpath;
 
 		if(!ignoreClass && typeof doc.evaluate != "undefined") {
 			xpath = this.stepsToXpath(steps);
@@ -902,14 +898,14 @@ class EpubCFI {
 	}
 
 	fixMiss(steps: EpubCFIStep[], offset: number, _doc?: Document, ignoreClass?: string): { container: Node; offset: number } {
-		var container = this.findNode(steps.slice(0,-1), _doc, ignoreClass)!;
-		var children = container.childNodes;
-		var map = this.normalizedMap(children, TEXT_NODE, ignoreClass!);
-		var child;
-		var len;
-		var lastStepIndex = steps[steps.length-1].index;
+		let container = this.findNode(steps.slice(0,-1), _doc, ignoreClass)!;
+		const children = container.childNodes;
+		const map = this.normalizedMap(children, TEXT_NODE, ignoreClass!);
+		let child;
+		let len;
+		const lastStepIndex = steps[steps.length-1].index;
 
-		for (let childIndex in map) {
+		for (const childIndex in map) {
 			if (!map.hasOwnProperty(childIndex)) continue;
 
 			if(map[childIndex] === lastStepIndex) {
@@ -942,13 +938,13 @@ class EpubCFI {
 	 * @return {Range}
 	 */
 	toRange(_doc?: Document, ignoreClass?: string): Range | null {
-		var doc = _doc || document;
-		var range;
-		var start, end, startContainer, endContainer;
-		var cfi = this;
-		var startSteps, endSteps;
-		var needsIgnoring = ignoreClass ? (doc.querySelector("." + ignoreClass) != null) : false;
-		var missed;
+		const doc = _doc || document;
+		let range;
+		let start, end, startContainer, endContainer;
+		const cfi = this;
+		let startSteps, endSteps;
+		const needsIgnoring = ignoreClass ? (doc.querySelector("." + ignoreClass) != null) : false;
+		let missed;
 
 		if (typeof(doc.createRange) !== "undefined") {
 			range = doc.createRange();
@@ -978,11 +974,12 @@ class EpubCFI {
 					range.setStart(startContainer, 0);
 				}
 
-			} catch (e) {
+			} catch (_e) {
 				missed = this.fixMiss(startSteps, start.terminal.offset!, doc, needsIgnoring ? ignoreClass : undefined);
 				range.setStart(missed.container, missed.offset);
 			}
 		} else {
+			// eslint-disable-next-line no-console
 			console.log("No startContainer found for", this.toString());
 			// No start found
 			return null;
@@ -997,7 +994,7 @@ class EpubCFI {
 					range.setEnd(endContainer, 0);
 				}
 
-			} catch (e) {
+			} catch (_e) {
 				missed = this.fixMiss(endSteps!, cfi.end!.terminal.offset!, doc, needsIgnoring ? ignoreClass : undefined);
 				range.setEnd(missed.container, missed.offset);
 			}
@@ -1024,9 +1021,9 @@ class EpubCFI {
 	}
 
 	generateChapterComponent(_spineNodeIndex: number, _pos: number | string, id?: string): string {
-		var pos = parseInt(_pos as string),
-				spineNodeIndex = (_spineNodeIndex + 1) * 2,
-				cfi = "/"+spineNodeIndex+"/";
+		const pos = parseInt(_pos as string),
+				spineNodeIndex = (_spineNodeIndex + 1) * 2;
+		let cfi = "/"+spineNodeIndex+"/";
 
 		cfi += (pos + 1) * 2;
 

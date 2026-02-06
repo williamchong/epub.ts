@@ -49,8 +49,8 @@ class PageList {
 	 * @param  {document} xml
 	 */
 	parse(xml: Document): PageListItem[] {
-		var html = qs(xml, "html");
-		var ncx = qs(xml, "ncx");
+		const html = qs(xml, "html");
+		const ncx = qs(xml, "ncx");
 
 		if(html) {
 			return this.parseNav(xml);
@@ -68,12 +68,12 @@ class PageList {
 	 * @return {PageList.item[]} list
 	 */
 	parseNav(navHtml: Document): PageListItem[] {
-		var navElement = querySelectorByType(navHtml, "nav", "page-list");
-		var navItems = navElement ? Array.from(qsa(navElement, "li")) : [];
-		var length = navItems.length;
-		var i;
-		var list: PageListItem[] = [];
-		var item;
+		const navElement = querySelectorByType(navHtml, "nav", "page-list");
+		const navItems = navElement ? Array.from(qsa(navElement, "li")) : [];
+		const length = navItems.length;
+		let i;
+		const list: PageListItem[] = [];
+		let item;
 
 		if(!navItems || length === 0) return list;
 
@@ -86,17 +86,15 @@ class PageList {
 	}
 
 	parseNcx(navXml: Document): PageListItem[] {
-		var list: PageListItem[] = [];
-		var i = 0;
-		var item;
-		var pageList;
-		var pageTargets;
-		var length = 0;
+		const list: PageListItem[] = [];
+		let i = 0;
+		let item;
+		let length = 0;
 
-		pageList = qs(navXml, "pageList");
+		const pageList = qs(navXml, "pageList");
 		if (!pageList) return list;
 
-		pageTargets = qsa(pageList, "pageTarget");
+		const pageTargets = qsa(pageList, "pageTarget");
 		length = pageTargets.length;
 
 		if (!pageTargets || pageTargets.length === 0) {
@@ -112,13 +110,13 @@ class PageList {
 	}
 
 	ncxItem(item: Element): PageListItem {
-		var navLabel = qs(item, "navLabel");
-		var navLabelText = qs(navLabel!, "text");
-		var pageText = navLabelText!.textContent ?? "";
-		var content = qs(item, "content");
+		const navLabel = qs(item, "navLabel");
+		const navLabelText = qs(navLabel!, "text");
+		const pageText = navLabelText!.textContent ?? "";
+		const content = qs(item, "content");
 
-		var href = content!.getAttribute("src") ?? "";
-		var page = parseInt(pageText, 10);
+		const href = content!.getAttribute("src") ?? "";
+		const page = parseInt(pageText, 10);
 
 		return {
 			"href": href,
@@ -133,12 +131,12 @@ class PageList {
 	 * @return {object} pageListItem
 	 */
 	item(item: Element): PageListItem {
-		var content = qs(item, "a")!,
+		const content = qs(item, "a")!,
 				href = content.getAttribute("href") || "",
 				text = content.textContent || "",
 				page = parseInt(text),
-				isCfi = href.indexOf("epubcfi"),
-				split,
+				isCfi = href.indexOf("epubcfi");
+		let split,
 				packageUrl,
 				cfi;
 
@@ -183,7 +181,7 @@ class PageList {
 	 * @return {number} page
 	 */
 	pageFromCfi(cfi: string): number {
-		var pg = -1;
+		let pg = -1;
 
 		// Check if the pageList has not been set yet
 		if(this.locations.length === 0) {
@@ -194,7 +192,7 @@ class PageList {
 
 		// check if the cfi is in the location list
 		// var index = this.locations.indexOf(cfi);
-		var index = indexOfSorted(cfi, this.locations, this.epubcfi.compare);
+		let index = indexOfSorted(cfi, this.locations, this.epubcfi.compare);
 		if(index != -1) {
 			pg = this.pages[index];
 		} else {
@@ -221,7 +219,7 @@ class PageList {
 	 * @return {string} cfi
 	 */
 	cfiFromPage(pg: string | number): string | number {
-		var cfi: string | number = -1;
+		let cfi: string | number = -1;
 		// check that pg is an int
 		if(typeof pg != "number"){
 			pg = parseInt(pg);
@@ -229,7 +227,7 @@ class PageList {
 
 		// check if the cfi is in the page list
 		// Pages could be unsorted.
-		var index = this.pages.indexOf(pg);
+		const index = this.pages.indexOf(pg);
 		if(index != -1) {
 			cfi = this.locations[index];
 		}
@@ -243,7 +241,7 @@ class PageList {
 	 * @return {number} page
 	 */
 	pageFromPercentage(percent: number): number {
-		var pg = Math.round(this.totalPages * percent);
+		const pg = Math.round(this.totalPages * percent);
 		return pg;
 	}
 
@@ -253,7 +251,7 @@ class PageList {
 	 * @return {number} percentage
 	 */
 	percentageFromPage(pg: number): number {
-		var percentage = (pg - this.firstPage) / this.totalPages;
+		const percentage = (pg - this.firstPage) / this.totalPages;
 		return Math.round(percentage * 1000) / 1000;
 	}
 
@@ -263,8 +261,8 @@ class PageList {
 	 * @return {number} percentage
 	 */
 	percentageFromCfi(cfi: string): number {
-		var pg = this.pageFromCfi(cfi);
-		var percentage = this.percentageFromPage(pg);
+		const pg = this.pageFromCfi(cfi);
+		const percentage = this.percentageFromPage(pg);
 		return percentage;
 	}
 

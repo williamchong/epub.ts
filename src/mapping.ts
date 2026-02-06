@@ -27,8 +27,8 @@ class Mapping {
 	 * Find CFI pairs for entire section at once
 	 */
 	section(view: any): EpubCFIPair[] {
-		var ranges = this.findRanges(view);
-		var map = this.rangeListToCfiList(view.section.cfiBase, ranges);
+		const ranges = this.findRanges(view);
+		const map = this.rangeListToCfiList(view.section.cfiBase, ranges);
 
 		return map;
 	}
@@ -41,25 +41,24 @@ class Mapping {
 	 * @param {number} end position to end at
 	 */
 	page(contents: any, cfiBase: string, start: number, end: number): EpubCFIPair | undefined {
-		var root = contents && contents.document ? contents.document.body : false;
-		var result;
+		const root = contents && contents.document ? contents.document.body : false;
 
 		if (!root) {
 			return;
 		}
 
-		result = this.rangePairToCfiPair(cfiBase, {
+		const result = this.rangePairToCfiPair(cfiBase, {
 			start: this.findStart(root, start, end),
 			end: this.findEnd(root, start, end)
 		});
 
 		if (this._dev === true) {
-			let doc = contents.document;
-			let startRange = new EpubCFI(result.start).toRange(doc)!;
-			let endRange = new EpubCFI(result.end).toRange(doc)!;
+			const doc = contents.document;
+			const startRange = new EpubCFI(result.start).toRange(doc)!;
+			const endRange = new EpubCFI(result.end).toRange(doc)!;
 
-			let selection = doc.defaultView!.getSelection();
-			let r = doc.createRange();
+			const selection = doc.defaultView!.getSelection();
+			const r = doc.createRange();
 			selection!.removeAllRanges();
 			r.setStart(startRange.startContainer, startRange.startOffset);
 			r.setEnd(endRange.endContainer, endRange.endOffset);
@@ -85,7 +84,7 @@ class Mapping {
 		}
 		// safeFilter is required so that it can work in IE as filter is a function for IE
 		// and for other browser filter is an object.
-		var filter = {
+		const filter = {
 			acceptNode: function(node: Node) {
 				if ((node as Text).data.trim().length > 0) {
 					return NodeFilter.FILTER_ACCEPT;
@@ -94,12 +93,12 @@ class Mapping {
 				}
 			}
 		};
-		var safeFilter = filter.acceptNode;
+		const safeFilter = filter.acceptNode;
 		(safeFilter as any).acceptNode = filter.acceptNode;
 
-		var treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, safeFilter);
-		var node;
-		var result;
+		const treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, safeFilter);
+		let node;
+		let result;
 		while ((node = treeWalker.nextNode())) {
 			result = func(node);
 			if(result) break;
@@ -109,15 +108,15 @@ class Mapping {
 	}
 
 	findRanges(view: any): any[] {
-		var columns = [];
-		var scrollWidth = view.contents.scrollWidth();
-		var spreads = Math.ceil( scrollWidth / this.layout.spreadWidth);
-		var count = spreads * this.layout.divisor;
-		var columnWidth = this.layout.columnWidth;
-		var gap = this.layout.gap;
-		var start, end;
+		const columns = [];
+		const scrollWidth = view.contents.scrollWidth();
+		const spreads = Math.ceil( scrollWidth / this.layout.spreadWidth);
+		const count = spreads * this.layout.divisor;
+		const columnWidth = this.layout.columnWidth;
+		const gap = this.layout.gap;
+		let start, end;
 
-		for (var i = 0; i < count; i++) {
+		for (let i = 0; i < count; i++) {
 			start = (columnWidth + gap) * i;
 			end = (columnWidth * (i+1)) + (gap * i);
 			columns.push({
@@ -138,22 +137,20 @@ class Mapping {
 	 * @return {Range}
 	 */
 	findStart(root: Node, start: number, end: number): Range {
-		var stack = [root];
-		var $el;
-		var found;
-		var $prev = root;
+		const stack = [root];
+		let $el;
+		let found;
+		let $prev = root;
 
 		while (stack.length) {
 
 			$el = stack.shift();
 
 			found = this.walk($el!, (node) => {
-				var left, right, top, bottom;
-				var elPos;
-				var elRange;
+				let left, right, top, bottom;
 
 
-				elPos = nodeBounds(node);
+				const elPos = nodeBounds(node);
 
 				if (this.horizontal && this.direction === "ltr") {
 
@@ -221,10 +218,10 @@ class Mapping {
 	 * @return {Range}
 	 */
 	findEnd(root: Node, start: number, end: number): Range {
-		var stack = [root];
-		var $el;
-		var $prev = root;
-		var found;
+		const stack = [root];
+		let $el;
+		let $prev = root;
+		let found;
 
 		while (stack.length) {
 
@@ -232,11 +229,9 @@ class Mapping {
 
 			found = this.walk($el!, (node) => {
 
-				var left, right, top, bottom;
-				var elPos;
-				var elRange;
+				let left, right, top, bottom;
 
-				elPos = nodeBounds(node);
+				const elPos = nodeBounds(node);
 
 				if (this.horizontal && this.direction === "ltr") {
 
@@ -304,12 +299,12 @@ class Mapping {
 	 * @return {Range}
 	 */
 	findTextStartRange(node: Node, start: number, end: number): Range {
-		var ranges = this.splitTextNodeIntoRanges(node);
-		var range;
-		var pos;
-		var left, top, right;
+		const ranges = this.splitTextNodeIntoRanges(node);
+		let range;
+		let pos;
+		let left, top, right;
 
-		for (var i = 0; i < ranges.length; i++) {
+		for (let i = 0; i < ranges.length; i++) {
 			range = ranges[i];
 
 			pos = range.getBoundingClientRect();
@@ -353,13 +348,13 @@ class Mapping {
 	 * @return {Range}
 	 */
 	findTextEndRange(node: Node, start: number, end: number): Range {
-		var ranges = this.splitTextNodeIntoRanges(node);
-		var prev;
-		var range;
-		var pos;
-		var left, right, top, bottom;
+		const ranges = this.splitTextNodeIntoRanges(node);
+		let prev;
+		let range;
+		let pos;
+		let left, right, top, bottom;
 
-		for (var i = 0; i < ranges.length; i++) {
+		for (let i = 0; i < ranges.length; i++) {
 			range = ranges[i];
 
 			pos = range.getBoundingClientRect();
@@ -417,14 +412,14 @@ class Mapping {
 	 * @return {Range[]}
 	 */
 	splitTextNodeIntoRanges(node: Node, _splitter?: string): Range[] {
-		var ranges: Range[] = [];
-		var textContent = node.textContent || "";
-		var text = textContent.trim();
-		var range: Range | null;
-		var doc = node.ownerDocument!;
-		var splitter = _splitter || " ";
+		const ranges: Range[] = [];
+		const textContent = node.textContent || "";
+		const text = textContent.trim();
+		let range: Range | null;
+		const doc = node.ownerDocument!;
+		const splitter = _splitter || " ";
 
-		var pos = text.indexOf(splitter);
+		let pos = text.indexOf(splitter);
 
 		if(pos === -1 || node.nodeType != Node.TEXT_NODE) {
 			range = doc.createRange();
@@ -471,14 +466,14 @@ class Mapping {
 	 */
 	rangePairToCfiPair(cfiBase: string, rangePair: RangePair): EpubCFIPair {
 
-		var startRange = rangePair.start;
-		var endRange = rangePair.end;
+		const startRange = rangePair.start;
+		const endRange = rangePair.end;
 
 		startRange.collapse(true);
 		endRange.collapse(false);
 
-		let startCfi = new EpubCFI(startRange, cfiBase).toString();
-		let endCfi = new EpubCFI(endRange, cfiBase).toString();
+		const startCfi = new EpubCFI(startRange, cfiBase).toString();
+		const endCfi = new EpubCFI(endRange, cfiBase).toString();
 
 		return {
 			start: startCfi,
@@ -488,10 +483,10 @@ class Mapping {
 	}
 
 	rangeListToCfiList(cfiBase: string, columns: RangePair[]): EpubCFIPair[] {
-		var map = [];
-		var cifPair;
+		const map = [];
+		let cifPair;
 
-		for (var i = 0; i < columns.length; i++) {
+		for (let i = 0; i < columns.length; i++) {
 			cifPair = this.rangePairToCfiPair(cfiBase, columns[i]);
 
 			map.push(cifPair);
