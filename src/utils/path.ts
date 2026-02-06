@@ -29,12 +29,13 @@ class Path {
 
 		if (this.isDirectory(pathString)) {
 			this.directory = pathString;
+			this.filename = "";
+			this.extension = "";
 		} else {
 			this.directory = parsed.dir + "/";
+			this.filename = parsed.base;
+			this.extension = parsed.ext.slice(1);
 		}
-
-		this.filename = parsed.base;
-		this.extension = parsed.ext.slice(1);
 
 	}
 

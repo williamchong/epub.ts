@@ -53,6 +53,9 @@ class Url {
 
 				this.protocol = this.Url.protocol;
 				this.origin = this.Url.origin;
+				if (this.origin === "null" && this.protocol === "file:") {
+					this.origin = "file://";
+				}
 				this.hash = this.Url.hash;
 				this.search = this.Url.search;
 
