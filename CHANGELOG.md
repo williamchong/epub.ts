@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.94 (2026-02-07)
+
+### Bug fixes
+
+- Enable `display: inline-block` on column containers to fix iOS WebKit
+  scrollWidth inflation loop that caused infinite width calculation.
+  Note: this may cause layout issues with RTL content.
+
 ## 0.3.93 (2026-02-07)
 
 Initial release of `@likecoin/epub-ts`, a TypeScript fork of [epubjs](https://github.com/futurepress/epub.js) v0.3.93.
