@@ -174,7 +174,7 @@ export function locationOf(item: any, array: any[], compareFunction?: (a: any, b
 	const end = _end || array.length;
 	const pivot = parseInt(start + (end - start) / 2 as any);
 	if(!compareFunction){
-		compareFunction = function(a, b) {
+		compareFunction = function(a, b): number {
 			if(a > b) return 1;
 			if(a < b) return -1;
 			return 0;
@@ -214,7 +214,7 @@ export function indexOfSorted(item: any, array: any[], compareFunction?: (a: any
 	const end = _end || array.length;
 	const pivot = parseInt(start + (end - start) / 2 as any);
 	if(!compareFunction){
-		compareFunction = function(a, b) {
+		compareFunction = function(a, b): number {
 			if(a > b) return 1;
 			if(a < b) return -1;
 			return 0;
@@ -353,7 +353,7 @@ export function indexOfNode(node: Node, typeId: number): number {
 	let sib;
 	let index = -1;
 	for (let i = 0; i < children.length; i++) {
-		sib = children[i];
+		sib = children[i]!;
 		if (sib.nodeType === typeId) {
 			index++;
 		}
@@ -507,6 +507,7 @@ export function qs(el: Document | Element, sel: string): Element | undefined {
 			return elements[0];
 		}
 	}
+	return undefined;
 }
 
 /**
@@ -557,6 +558,7 @@ export function qsp(el: Document | Element, sel: string, props: Record<string, s
 			return filtered[0];
 		}
 	}
+	return undefined;
 }
 
 /**
@@ -613,6 +615,7 @@ export function walk(node: Node, callback: (node: Node) => boolean, _unused?: bo
 			child = child.nextSibling;
 		} while(child);
 	}
+	return undefined;
 }
 
 /**
@@ -625,7 +628,7 @@ export function blob2base64(blob: Blob): Promise<string | ArrayBuffer> {
 	return new Promise(function(resolve, _reject) {
 		const reader = new FileReader();
 		reader.readAsDataURL(blob);
-		reader.onloadend = function() {
+		reader.onloadend = function(): void {
 			resolve(reader.result!);
 		};
 	});
@@ -674,14 +677,15 @@ export function querySelectorByType(html: Document | Element, element: string, t
 	if(!query || (query as any).length === 0) {
 		query = qsa(html, element);
 		for (let i = 0; i < query.length; i++) {
-			if(query[i].getAttributeNS("http://www.idpf.org/2007/ops", "type") === type ||
-				 query[i].getAttribute("epub:type") === type) {
-				return query[i];
+			if(query[i]!.getAttributeNS("http://www.idpf.org/2007/ops", "type") === type ||
+				 query[i]!.getAttribute("epub:type") === type) {
+				return query[i]!;
 			}
 		}
 	} else {
 		return query;
 	}
+	return undefined;
 }
 
 /**
@@ -694,7 +698,7 @@ export function findChildren(el: Element): Element[] {
 	const result = [];
 	const childNodes = el.childNodes;
 	for (let i = 0; i < childNodes.length; i++) {
-		const node = childNodes[i];
+		const node = childNodes[i]!;
 		if (node.nodeType === 1) {
 			result.push(node as Element);
 		}
@@ -728,7 +732,7 @@ export function filterChildren(el: Element, nodeName: string, single?: boolean):
 	const result = [];
 	const childNodes = el.childNodes;
 	for (let i = 0; i < childNodes.length; i++) {
-		const node = childNodes[i];
+		const node = childNodes[i]!;
 		if (node.nodeType === 1 && node.nodeName.toLowerCase() === nodeName) {
 			if (single) {
 				return node as Element;
@@ -740,6 +744,7 @@ export function filterChildren(el: Element, nodeName: string, single?: boolean):
 	if (!single) {
 		return result;
 	}
+	return undefined;
 }
 
 /**
@@ -751,7 +756,7 @@ export function filterChildren(el: Element, nodeName: string, single?: boolean):
  */
 export function getParentByTagName(node: Node, tagname: string): Element | undefined {
 	let parent;
-	if (node === null || tagname === "") return;
+	if (node === null || tagname === "") return undefined;
 	parent = node.parentNode;
 	while (parent && parent.nodeType === 1) {
 		if ((parent as Element).tagName.toLowerCase() === tagname) {
@@ -759,6 +764,7 @@ export function getParentByTagName(node: Node, tagname: string): Element | undef
 		}
 		parent = parent.parentNode;
 	}
+	return undefined;
 }
 
 /**
@@ -848,6 +854,7 @@ export class RangeObject {
 				return startParents[i - 1];
 			}
 		}
+		return undefined;
 	}
 
 	_checkCollapsed(): void {

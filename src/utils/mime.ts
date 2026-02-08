@@ -139,7 +139,7 @@ const table = {
 	}
 };
 
-const mimeTypes = (function() {
+const mimeTypes = (function(): Record<string, string> {
 	let type, subtype, val, index; const mimeTypes: Record<string, string> = {};
 	for (type in table) {
 		if (table.hasOwnProperty(type)) {

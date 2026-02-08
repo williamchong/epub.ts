@@ -139,6 +139,7 @@ class Archive {
 				return new Blob([uint8array as BlobPart], {type : mimeType});
 			});
 		}
+		return undefined;
 	}
 
 	/**
@@ -156,6 +157,7 @@ class Archive {
 				return text;
 			});
 		}
+		return undefined;
 	}
 
 	/**
@@ -174,6 +176,7 @@ class Archive {
 				return "data:" + mimeType + ";base64," + data;
 			});
 		}
+		return undefined;
 	}
 
 	/**

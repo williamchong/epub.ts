@@ -7,6 +7,10 @@ export default tseslint.config(
 	{
 		files: ["src/**/*.ts"],
 		rules: {
+			// Enforce `import type` for type-only imports
+			"@typescript-eslint/consistent-type-imports": "error",
+			// Require explicit return types on functions and methods
+			"@typescript-eslint/explicit-function-return-type": "error",
 			// Allow explicit any — 123 remain where genuinely needed
 			"@typescript-eslint/no-explicit-any": "off",
 			// Allow non-null assertions — used extensively for lifecycle guarantees

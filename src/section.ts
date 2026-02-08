@@ -144,7 +144,7 @@ class Section {
 		const section = this;
 		const matches: SearchResult[] = [];
 		const query = _query.toLowerCase();
-		const find = function(node: Node){
+		const find = function(node: Node): void {
 			const text = node.textContent!.toLowerCase();
 			let range: Range;
 			let cfi;
@@ -207,7 +207,7 @@ class Section {
 		const excerptLimit = 150;
 		const section = this;
 		const query = _query.toLowerCase();
-		const search = function(nodeList: Node[]){
+		const search = function(nodeList: Node[]): void {
 			const textWithCase =  nodeList.reduce((acc: string ,current: Node)=>{
 				return acc + (current.textContent ?? "");
 			},"");
@@ -225,7 +225,7 @@ class Section {
 						endNodeIndex += 1;
 					}
 
-					const startNode = nodeList[startNodeIndex] , endNode = nodeList[endNodeIndex];
+					const startNode = nodeList[startNodeIndex]! , endNode = nodeList[endNodeIndex]!;
 					const range = section.document!.createRange();
 					range.setStart(startNode,pos);
 					const beforeEndLengthCount =  nodeList.slice(0, endNodeIndex).reduce((acc: number,current: Node)=>{return acc+(current.textContent ?? "").length;},0) ;

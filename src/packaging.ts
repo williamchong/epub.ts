@@ -208,7 +208,7 @@ class Packaging {
 		}
 
 		if (identifier.localName === "identifier" && identifier.namespaceURI === "http://purl.org/dc/elements/1.1/") {
-			return identifier.childNodes.length > 0 ? (identifier.childNodes[0].nodeValue ?? "").trim() : "";
+			return identifier.childNodes.length > 0 ? (identifier.childNodes[0]!.nodeValue ?? "").trim() : "";
 		}
 
 		return "";
@@ -298,10 +298,10 @@ class Packaging {
 
 		if(!found || found.length === 0) return "";
 
-		const el = found[0];
+		const el = found[0]!;
 
 		if(el.childNodes.length){
-			return el.childNodes[0].nodeValue ?? "";
+			return el.childNodes[0]!.nodeValue ?? "";
 		}
 
 		return "";
@@ -319,7 +319,7 @@ class Packaging {
 		const el = qsp(xml, "meta", {"property":property});
 
 		if(el && el.childNodes.length){
-			return el.childNodes[0].nodeValue ?? "";
+			return el.childNodes[0]!.nodeValue ?? "";
 		}
 
 		return "";

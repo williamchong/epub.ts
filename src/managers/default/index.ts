@@ -285,13 +285,14 @@ class DefaultViewManager implements IEventEmitter {
 		if (this.layout.name === "pre-paginated" && this.layout.divisor > 1) {
 			if (forceRight || section.index === 0) {
 				// First page (cover) should stand alone for pre-paginated books
-				return;
+				return undefined;
 			}
 			next = section.next();
 			if (next && !next.properties.includes("page-spread-left")) {
 				return action.call(this, next);
 			}
 		}
+		return undefined;
 	}
 
 	display(section: Section, target?: string): Promise<void> {
@@ -493,7 +494,7 @@ class DefaultViewManager implements IEventEmitter {
 
 		const dir = this.settings.direction;
 
-		if(!this.views.length) return;
+		if(!this.views.length) return undefined;
 
 		if(this.isPaginated && this.settings.axis === "horizontal" && (!dir || dir === "ltr")) {
 
@@ -573,7 +574,7 @@ class DefaultViewManager implements IEventEmitter {
 					this.views.show();
 				});
 		}
-
+		return undefined;
 
 	}
 
@@ -582,7 +583,7 @@ class DefaultViewManager implements IEventEmitter {
 		let left;
 		const dir = this.settings.direction;
 
-		if(!this.views.length) return;
+		if(!this.views.length) return undefined;
 
 		if(this.isPaginated && this.settings.axis === "horizontal" && (!dir || dir === "ltr")) {
 
@@ -649,13 +650,13 @@ class DefaultViewManager implements IEventEmitter {
 
 			return this.prepend(prev, forceRight)
 				.then(() => {
-					let left;
 					if (this.layout.name === "pre-paginated" && this.layout.divisor > 1) {
-						left = prev.prev();
+						const left = prev.prev();
 						if (left) {
 							return this.prepend(left);
 						}
 					}
+					return undefined;
 				}, (err) => {
 					return err;
 				})
@@ -675,13 +676,14 @@ class DefaultViewManager implements IEventEmitter {
 					this.views.show();
 				});
 		}
+		return undefined;
 	}
 
 	current(): IframeView | null {
 		const visible = this.visible();
 		if(visible.length){
 			// Current is the last visible view
-			return visible[visible.length-1];
+			return visible[visible.length-1]!;
 		}
 		return null;
 	}
@@ -880,7 +882,7 @@ class DefaultViewManager implements IEventEmitter {
 		let view;
 
 		for (let i = 0; i < viewsLength; i++) {
-			view = views[i];
+			view = views[i]!;
 			isVisible = this.isVisible(view, 0, 0, container);
 
 			if(isVisible === true) {

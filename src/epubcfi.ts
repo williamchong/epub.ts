@@ -139,11 +139,11 @@ class EpubCFI {
 			cfi.end = this.parseComponent(range[1]);
 		}
 
-		// Get spine node position
-		// cfi.spineSegment = cfi.base.steps[1];
-
 		// Chapter segment is always the second step
-		cfi.spinePos = cfi.base.steps[1].index;
+		if (cfi.base.steps.length < 2) {
+			return {spinePos: -1};
+		}
+		cfi.spinePos = cfi.base.steps[1]!.index;
 
 		return cfi;
 	}
@@ -157,11 +157,11 @@ class EpubCFI {
 			}
 		};
 		const parts = componentStr.split(":");
-		const steps = parts[0].split("/");
+		const steps = parts[0]!.split("/");
 		let terminal;
 
 		if(parts.length > 1) {
-			terminal = parts[1];
+			terminal = parts[1]!;
 			component.terminal = this.parseTerminal(terminal);
 		}
 
@@ -213,7 +213,7 @@ class EpubCFI {
 		const assertion = termialStr.match(/\[(.*)\]/);
 
 		if(assertion && assertion[1]){
-			characterOffset = parseInt(termialStr.split("[")[0]);
+			characterOffset = parseInt(termialStr.split("[")[0]!);
 			textLocationAssertion = assertion[1];
 		} else {
 			characterOffset = parseInt(termialStr);
@@ -234,7 +234,7 @@ class EpubCFI {
 
 		const indirection = cfiStr.split("!");
 
-		return indirection[0];
+		return indirection[0]!;
 	}
 
 	getPathComponent(cfiStr: string): string | undefined {
@@ -245,7 +245,7 @@ class EpubCFI {
 			const ranges = indirection[1].split(",");
 			return ranges[0];
 		}
-
+		return undefined;
 	}
 
 	getRange(cfiStr: string): [string, string] | false {
@@ -254,8 +254,8 @@ class EpubCFI {
 
 		if(ranges.length === 3){
 			return [
-				ranges[1],
-				ranges[2]
+				ranges[1]!,
+				ranges[2]!
 			];
 		}
 
@@ -389,10 +389,10 @@ class EpubCFI {
 			if(!stepsB[i]) {
 				return 1;
 			}
-			if(stepsA[i].index > stepsB[i].index) {
+			if(stepsA[i]!.index > stepsB[i]!.index) {
 				return 1;
 			}
-			if(stepsA[i].index < stepsB[i].index) {
+			if(stepsA[i]!.index < stepsB[i]!.index) {
 				return -1;
 			}
 			// Otherwise continue checking
@@ -480,7 +480,7 @@ class EpubCFI {
 			segment.terminal.offset = offset;
 
 			// Make sure we are getting to a textNode if there is an offset
-			if(segment.steps[segment.steps.length-1].type != "text") {
+			if(segment.steps.length > 0 && segment.steps[segment.steps.length-1]!.type != "text") {
 				segment.steps.push({
 					"type" : "text",
 					"index" : 0,
@@ -542,7 +542,7 @@ class EpubCFI {
 
 		if (typeof base === "string") {
 			cfi.base = this.parseComponent(base);
-			cfi.spinePos = cfi.base.steps[1].index;
+			cfi.spinePos = cfi.base.steps[1]!.index;
 		} else if (typeof base === "object") {
 			cfi.base = base;
 		}
@@ -577,17 +577,17 @@ class EpubCFI {
 			let i;
 
 			for (i = 0; i < len; i++) {
-				if (this.equalStep(cfi.start.steps[i], cfi.end.steps[i])) {
+				if (this.equalStep(cfi.start.steps[i]!, cfi.end.steps[i]!)) {
 					if(i === len-1) {
 						// Last step is equal, check terminals
 						if(cfi.start.terminal === cfi.end.terminal) {
 							// CFI's are equal
-							cfi.path.steps.push(cfi.start.steps[i]);
+							cfi.path.steps.push(cfi.start.steps[i]!);
 							// Not a range
 							cfi.range = false;
 						}
 					} else {
-						cfi.path.steps.push(cfi.start.steps[i]);
+						cfi.path.steps.push(cfi.start.steps[i]!);
 					}
 
 				} else {
@@ -623,7 +623,7 @@ class EpubCFI {
 
 		if (typeof base === "string") {
 			cfi.base = this.parseComponent(base);
-			cfi.spinePos = cfi.base.steps[1].index;
+			cfi.spinePos = cfi.base.steps[1]!.index;
 		} else if (typeof base === "object") {
 			cfi.base = base;
 		}
@@ -719,11 +719,11 @@ class EpubCFI {
 
 		for (i = 0; i < len; i++) {
 
-			currNodeType = children[i].nodeType;
+			currNodeType = children[i]!.nodeType;
 
 			// Check if needs ignoring
 			if (currNodeType === ELEMENT_NODE &&
-					(children[i] as Element).classList.contains(ignoreClass)) {
+					(children[i]! as Element).classList.contains(ignoreClass)) {
 				currNodeType = TEXT_NODE;
 			}
 
@@ -777,9 +777,10 @@ class EpubCFI {
 		}
 
 
+		// anchor is always a child of its parentNode, so indexOf is guaranteed to find it
 		const index = Array.prototype.indexOf.call(children, anchor);
 
-		return map[index];
+		return map[index]!;
 	}
 
 	stepsToXpath(steps: EpubCFIStep[]): string {
@@ -857,7 +858,7 @@ class EpubCFI {
 		let i;
 
 		for (i = 0; i < len; i++) {
-			step = steps[i];
+			step = steps[i]!;
 
 			if(step.type === "element") {
 				//better to get a container using id as some times step.index may not be correct
@@ -867,10 +868,10 @@ class EpubCFI {
 				}
 				else {
 					children = (container as Element).children || findChildren(container as Element);
-					container = children[step.index];
+					container = children[step.index] as Element;
 				}
 			} else if(step.type === "text") {
-				container = this.textNodes(container, ignoreClass)[step.index];
+				container = this.textNodes(container, ignoreClass)[step.index] as Node;
 			}
 			if(!container) {
 				//Break the for loop as due to incorrect index we can get error if
@@ -902,24 +903,27 @@ class EpubCFI {
 	}
 
 	fixMiss(steps: EpubCFIStep[], offset: number, _doc?: Document, ignoreClass?: string): { container: Node; offset: number } {
-		let container = this.findNode(steps.slice(0,-1), _doc, ignoreClass)!;
+		let container = this.findNode(steps.slice(0,-1), _doc, ignoreClass);
+		if (!container) {
+			return { container: (_doc ?? document).documentElement, offset: 0 };
+		}
 		const children = container.childNodes;
 		const map = this.normalizedMap(children, TEXT_NODE, ignoreClass!);
 		let child;
 		let len;
-		const lastStepIndex = steps[steps.length-1].index;
+		const lastStepIndex = steps[steps.length-1]!.index;
 
 		for (const childIndex in map) {
 			if (!map.hasOwnProperty(childIndex)) continue;
 
 			if(map[childIndex] === lastStepIndex) {
-				child = children[childIndex as any];
+				child = children[childIndex as any]!;
 				len = (child.textContent ?? "").length;
 				if(offset > len) {
 					offset = offset - len;
 				} else {
 					if (child.nodeType === ELEMENT_NODE) {
-						container = child.childNodes[0];
+						container = child.childNodes[0] ?? child;
 					} else {
 						container = child;
 					}

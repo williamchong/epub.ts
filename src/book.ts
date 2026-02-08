@@ -684,7 +684,7 @@ class Book implements IEventEmitter {
 				this.storage!.requester = this.archive!.request.bind(this.archive!);
 			}
 			// Substitute hook
-			const substituteResources = (output: string, section: Section) => {
+			const substituteResources = (output: string, section: Section): void => {
 				section.output = this.resources!.substitute(output, section.url);
 			};
 

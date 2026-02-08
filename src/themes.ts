@@ -82,7 +82,7 @@ class Themes {
 	registerThemes (themes: Record<string, string | Record<string, Record<string, string>>>): void {
 		for (const theme in themes) {
 			if (themes.hasOwnProperty(theme)) {
-				const value = themes[theme];
+				const value = themes[theme]!;
 				if (typeof(value) === "string") {
 					this.registerUrl(theme, value);
 				} else {
@@ -169,7 +169,7 @@ class Themes {
 
 		for (const name in themes) {
 			if (themes.hasOwnProperty(name) && (name === this._current || name === "default")) {
-				theme = themes[name];
+				theme = themes[name]!;
 				if((theme.rules && Object.keys(theme.rules).length > 0) || (theme.url && links.indexOf(theme.url) === -1)) {
 					this.add(name, contents);
 				}
@@ -220,7 +220,7 @@ class Themes {
 		};
 
 		contents.forEach( (content: Contents) => {
-			content.css(name, this._overrides[name].value, this._overrides[name].priority);
+			content.css(name, this._overrides[name]!.value, this._overrides[name]!.priority);
 		});
 	}
 
@@ -243,7 +243,7 @@ class Themes {
 
 		for (const rule in overrides) {
 			if (overrides.hasOwnProperty(rule)) {
-				contents.css(rule, overrides[rule].value, overrides[rule].priority);
+				contents.css(rule, overrides[rule]!.value, overrides[rule]!.priority);
 			}
 		}
 	}

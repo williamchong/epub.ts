@@ -74,7 +74,7 @@ class Contents implements IEventEmitter {
 	/**
 		* Get DOM events that are listened for and passed along
 		*/
-	static get listenedEvents() {
+	static get listenedEvents(): typeof DOM_EVENTS {
 		return DOM_EVENTS;
 	}
 
@@ -516,7 +516,7 @@ class Contents implements IEventEmitter {
 	 */
 	mediaQueryListeners(): void {
 		const sheets = this.document.styleSheets;
-		const mediaChangeHandler = (m: MediaQueryListEvent) => {
+		const mediaChangeHandler = (m: MediaQueryListEvent): void => {
 			if(m.matches && !this._expanding) {
 				setTimeout(this.expand.bind(this), 1);
 			}
@@ -526,7 +526,7 @@ class Contents implements IEventEmitter {
 			let rules;
 			// Firefox errors if we access cssRules cross-domain
 			try {
-				rules = sheets[i].cssRules;
+				rules = sheets[i]!.cssRules;
 			} catch (_e) {
 				return;
 			}
@@ -581,7 +581,7 @@ class Contents implements IEventEmitter {
 		const images = this.document.querySelectorAll("img");
 		let img;
 		for (let i = 0; i < images.length; i++) {
-			img = images[i];
+			img = images[i]!;
 
 			if (typeof img.naturalWidth !== "undefined" &&
 					img.naturalWidth === 0) {
@@ -735,7 +735,7 @@ class Contents implements IEventEmitter {
 			$stylesheet.type = "text/css";
 			$stylesheet.rel = "stylesheet";
 			$stylesheet.href = src;
-			$stylesheet.onload = ($stylesheet as any).onreadystatechange = function(this: any) {
+			$stylesheet.onload = ($stylesheet as any).onreadystatechange = function(this: any): void {
 				if ( !ready && (!this.readyState || this.readyState == "complete") ) {
 					ready = true;
 					// Let apply
@@ -798,8 +798,8 @@ class Contents implements IEventEmitter {
 		if (Array.isArray(rules)) {
 			// Array format: [selector, [prop, val], ...] or [selector, [[prop, val], ...]]
 			for (let i = 0, rl = rules.length; i < rl; i++) {
-				let j = 1, rule: Array<string | string[]> = rules[i], propStr = "";
-				const selector = rules[i][0] as string;
+				let j = 1, rule: Array<string | string[]> = rules[i]!, propStr = "";
+				const selector = rules[i]![0] as string;
 				// If the second argument of a rule is an array of arrays, correct our variables.
 				if (Array.isArray(rule[1]?.[0])) {
 					rule = rule[1] as string[];
@@ -807,7 +807,7 @@ class Contents implements IEventEmitter {
 				}
 
 				for (let pl = rule.length; j < pl; j++) {
-					const prop = rule[j];
+					const prop = rule[j]!;
 					propStr += prop[0] + ":" + prop[1] + (prop[2] ? " !important" : "") + ";\n";
 				}
 
@@ -817,7 +817,7 @@ class Contents implements IEventEmitter {
 		} else {
 			const selectors = Object.keys(rules);
 			selectors.forEach((selector) => {
-				const definition = rules[selector];
+				const definition = rules[selector]!;
 				if (Array.isArray(definition)) {
 					definition.forEach((item) => {
 						const _rules = Object.keys(item);
@@ -856,7 +856,7 @@ class Contents implements IEventEmitter {
 			$script.type = "text/javascript";
 			$script.async = true;
 			$script.src = src;
-			$script.onload = ($script as any).onreadystatechange = function(this: any) {
+			$script.onload = ($script as any).onreadystatechange = function(this: any): void {
 				if ( !ready && (!this.readyState || this.readyState == "complete") ) {
 					ready = true;
 					setTimeout(function(){
@@ -1254,7 +1254,7 @@ class Contents implements IEventEmitter {
 			name: name,
 			version: version,
 			layoutStyle: this.layoutStyle(),
-			hasFeature: function (feature: string) {
+			hasFeature: function (feature: string): boolean {
 				switch (feature) {
 					case "dom-manipulation":
 						return true;

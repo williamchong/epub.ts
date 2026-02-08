@@ -128,7 +128,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		// view.off("shown", this.afterDisplayed);
 		// view.off("shown", this.afterDisplayedAbove);
-		view.onDisplayed = function(){};
+		view.onDisplayed = function(): void {};
 
 	}
 
@@ -221,7 +221,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		const updating = new defer();
 		const promises = [];
 		for (let i = 0; i < viewsLength; i++) {
-			view = views[i];
+			view = views[i]!;
 
 			isVisible = this.isVisible(view, offset, offset, container);
 
@@ -305,7 +305,7 @@ class ContinuousViewManager extends DefaultViewManager {
 			}
 		}
 
-		const prepend = () => {
+		const prepend = (): void => {
 			const first = this.views.first();
 			const prev = first && first.section.prev();
 
@@ -314,7 +314,7 @@ class ContinuousViewManager extends DefaultViewManager {
 			}
 		};
 
-		const append = () => {
+		const append = (): void => {
 			const last = this.views.last();
 			const next = last && last.section.next();
 
@@ -365,8 +365,12 @@ class ContinuousViewManager extends DefaultViewManager {
 	trim(): Promise<any> {
 		const task = new defer();
 		const displayed = this.views.displayed();
-		const first = displayed[0];
-		const last = displayed[displayed.length-1];
+		if (!displayed.length) {
+			task.resolve();
+			return task.promise;
+		}
+		const first = displayed[0]!;
+		const last = displayed[displayed.length-1]!;
 		const firstIndex = this.views.indexOf(first);
 		const lastIndex = this.views.indexOf(last);
 		const above = this.views.slice(0, firstIndex);
@@ -374,12 +378,12 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		// Erase all but last above
 		for (let i = 0; i < above.length-1; i++) {
-			this.erase(above[i], above);
+			this.erase(above[i]!, above);
 		}
 
 		// Erase all except first below
 		for (let j = 1; j < below.length; j++) {
-			this.erase(below[j]);
+			this.erase(below[j]!);
 		}
 
 		task.resolve();
@@ -552,7 +556,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		const delta = this.layout.props.name === "pre-paginated" &&
 								this.layout.props.spread ? this.layout.props.delta * 2 : this.layout.props.delta;
 
-		if(!this.views.length) return;
+		if(!this.views.length) return undefined;
 
 		if(this.isPaginated && this.settings.axis === "horizontal") {
 
@@ -567,6 +571,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		this.q.enqueue(() => {
 			return this.check();
 		});
+		return undefined;
 	}
 
 	prev(): Promise<void> | undefined {
@@ -574,7 +579,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		const delta = this.layout.props.name === "pre-paginated" &&
 								this.layout.props.spread ? this.layout.props.delta * 2 : this.layout.props.delta;
 
-		if(!this.views.length) return;
+		if(!this.views.length) return undefined;
 
 		if(this.isPaginated && this.settings.axis === "horizontal") {
 
@@ -589,6 +594,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		this.q.enqueue(() => {
 			return this.check();
 		});
+		return undefined;
 	}
 
 	updateFlow(flow: string): void {

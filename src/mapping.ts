@@ -87,7 +87,7 @@ class Mapping {
 		// safeFilter is required so that it can work in IE as filter is a function for IE
 		// and for other browser filter is an object.
 		const filter = {
-			acceptNode: function(node: Node) {
+			acceptNode: function(node: Node): number {
 				if ((node as Text).data.trim().length > 0) {
 					return NodeFilter.FILTER_ACCEPT;
 				} else {
@@ -197,6 +197,7 @@ class Mapping {
 					}
 
 				}
+				return undefined;
 
 
 			});
@@ -278,6 +279,7 @@ class Mapping {
 					}
 
 				}
+				return undefined;
 
 			});
 
@@ -307,7 +309,7 @@ class Mapping {
 		let left, top, right;
 
 		for (let i = 0; i < ranges.length; i++) {
-			range = ranges[i];
+			range = ranges[i]!;
 
 			pos = range.getBoundingClientRect();
 
@@ -338,7 +340,7 @@ class Mapping {
 
 		}
 
-		return ranges[0];
+		return ranges[0]!;
 	}
 
 	/**
@@ -357,7 +359,7 @@ class Mapping {
 		let left, right, top, bottom;
 
 		for (let i = 0; i < ranges.length; i++) {
-			range = ranges[i];
+			range = ranges[i]!;
 
 			pos = range.getBoundingClientRect();
 
@@ -402,7 +404,7 @@ class Mapping {
 		}
 
 		// Ends before limit
-		return ranges[ranges.length-1];
+		return ranges[ranges.length-1]!;
 
 	}
 
@@ -489,7 +491,7 @@ class Mapping {
 		let cifPair;
 
 		for (let i = 0; i < columns.length; i++) {
-			cifPair = this.rangePairToCfiPair(cfiBase, columns[i]);
+			cifPair = this.rangePairToCfiPair(cfiBase, columns[i]!);
 
 			map.push(cifPair);
 

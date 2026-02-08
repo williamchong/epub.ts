@@ -119,7 +119,7 @@ class Locations implements IEventEmitter {
 		let counter = 0;
 		let prev: any;
 		const _break = chars || this.break;
-		const parser = (node: Node) => {
+		const parser = (node: Node): boolean => {
 			const len = (node as Text).length;
 			let dist;
 			let pos = 0;
@@ -179,6 +179,7 @@ class Locations implements IEventEmitter {
 				}
 			}
 			prev = node;
+			return false;
 		};
 
 		sprint(body!, parser);
@@ -270,7 +271,7 @@ class Locations implements IEventEmitter {
 		if (startCfi && section.index === startCfi.spinePos) {
 			startNode = startCfi.findNode(startCfi.range ? startCfi.path.steps.concat(startCfi.start!.steps) : startCfi.path.steps, contents.ownerDocument!);
 		}
-		const parser = (node: Node) => {
+		const parser = (node: Node): boolean => {
 			if (!foundStartNode) {
 				if (node === startNode) {
 					foundStartNode = true;
@@ -321,6 +322,7 @@ class Locations implements IEventEmitter {
 				}
 			}
 			_prev = node;
+			return false;
 		};
 
 		sprint(body!, parser);
@@ -392,7 +394,7 @@ class Locations implements IEventEmitter {
 		}
 
 		if(loc >= 0 && loc < this._locations.length) {
-			cfi = this._locations[loc];
+			cfi = this._locations[loc]!;
 		}
 
 		return cfi;

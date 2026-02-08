@@ -81,7 +81,7 @@ class Spine {
 			}
 
 			if (item.linear === "yes") {
-				item.prev = () => {
+				item.prev = (): Section | undefined => {
 					let prevIndex = item.index;
 					while (prevIndex > 0) {
 						const prev = this.get(prevIndex-1);
@@ -92,7 +92,7 @@ class Spine {
 					}
 					return;
 				};
-				item.next = () => {
+				item.next = (): Section | undefined => {
 					let nextIndex = item.index;
 					while (nextIndex < this.spineItems.length-1) {
 						const next = this.get(nextIndex+1);
@@ -149,14 +149,14 @@ class Spine {
 		} else if(typeof target === "number" || isNaN(Number(target)) === false){
 			index = Number(target);
 		} else if(typeof target === "string" && target.indexOf("#") === 0) {
-			index = this.spineById[target.substring(1)];
+			index = this.spineById[target.substring(1)] ?? -1;
 		} else if(typeof target === "string") {
 			// Remove fragments
-			target = target.split("#")[0];
-			index = this.spineByHref[target] || this.spineByHref[encodeURI(target)];
+			target = target.split("#")[0]!;
+			index = this.spineByHref[target] ?? this.spineByHref[encodeURI(target)] ?? -1;
 		}
 
-		return this.spineItems[index] || null;
+		return this.spineItems[index] ?? null;
 	}
 
 	/**
@@ -217,6 +217,7 @@ class Spine {
 
 			return this.spineItems.splice(index, 1);
 		}
+		return undefined;
 	}
 
 	/**
@@ -242,6 +243,7 @@ class Spine {
 			}
 			index += 1;
 		} while (index < this.spineItems.length) ;
+		return undefined;
 	}
 
 	/**
@@ -258,6 +260,7 @@ class Spine {
 			}
 			index -= 1;
 		} while (index >= 0);
+		return undefined;
 	}
 
 	destroy(): void {

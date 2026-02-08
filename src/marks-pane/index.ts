@@ -14,7 +14,7 @@ function svgCreate(name: string): SVGElement {
 function proxyMouse(target: HTMLElement | HTMLIFrameElement, tracked: Mark[]): void {
 	function dispatch(e: any): void {
 		for (let i = tracked.length - 1; i >= 0; i--) {
-			const t = tracked[i];
+			const t = tracked[i]!;
 			let x = e.clientX;
 			let y = e.clientY;
 
@@ -81,7 +81,7 @@ function hitTest(item: Mark, target: HTMLElement | HTMLIFrameElement, x: number,
 
 	const rects = item.getClientRects();
 	for (let i = 0, len = rects.length; i < len; i++) {
-		if (rectContains(rects[i], x, y)) {
+		if (rectContains(rects[i]!, x, y)) {
 			return true;
 		}
 	}
@@ -220,7 +220,7 @@ export class Mark {
 				if (rects[i] === box) {
 					return true;
 				}
-				if (containsRect(rects[i], box)) {
+				if (containsRect(rects[i]!, box)) {
 					return false;
 				}
 			}
@@ -254,7 +254,7 @@ export class Highlight extends Mark {
 
 		for (const attr in this.attributes) {
 			if (this.attributes.hasOwnProperty(attr)) {
-				this.element!.setAttribute(attr, this.attributes[attr]);
+				this.element!.setAttribute(attr, this.attributes[attr]!);
 			}
 		}
 
@@ -274,7 +274,7 @@ export class Highlight extends Mark {
 		const container = this.container.getBoundingClientRect();
 
 		for (let i = 0, len = filtered.length; i < len; i++) {
-			const r = filtered[i];
+			const r = filtered[i]!;
 			const el = svgCreate("rect");
 			el.setAttribute("x", (r.left - offset.left + container.left) as any);
 			el.setAttribute("y", (r.top - offset.top + container.top) as any);
@@ -303,7 +303,7 @@ export class Underline extends Highlight {
 		const container = this.container.getBoundingClientRect();
 
 		for (let i = 0, len = filtered.length; i < len; i++) {
-			const r = filtered[i];
+			const r = filtered[i]!;
 
 			const rect = svgCreate("rect");
 			rect.setAttribute("x", (r.left - offset.left + container.left) as any);

@@ -32,7 +32,7 @@ function request(url: string, type?: string, withCredentials?: boolean, headers?
 	xhr.open("GET", url, true);
 
 	for(header in headers) {
-		xhr.setRequestHeader(header, headers![header]);
+		xhr.setRequestHeader(header, headers![header]!);
 	}
 
 	if(type == "json") {
@@ -68,11 +68,11 @@ function request(url: string, type?: string, withCredentials?: boolean, headers?
 
 	xhr.send();
 
-	function err(e: ProgressEvent) {
+	function err(e: ProgressEvent): void {
 		deferred.reject(e);
 	}
 
-	function handler() {
+	function handler(): Promise<any> | undefined {
 		if (xhr.readyState === XMLHttpRequest.DONE) {
 			let responseXML: Document | null | false = false;
 
@@ -142,6 +142,7 @@ function request(url: string, type?: string, withCredentials?: boolean, headers?
 
 			}
 		}
+		return undefined;
 	}
 
 	return deferred.promise;

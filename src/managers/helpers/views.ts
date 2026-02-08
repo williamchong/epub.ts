@@ -34,7 +34,7 @@ class Views {
 		return this._views.slice.apply(this._views, args);
 	}
 
-	get(i: number): IframeView {
+	get(i: number): IframeView | undefined {
 		return this._views[i];
 	}
 
@@ -61,7 +61,7 @@ class Views {
 
 		if(this.container){
 			if(index < this.container.children.length){
-				this.container.insertBefore(view.element, this.container.children[index]);
+				this.container.insertBefore(view.element, this.container.children[index]!);
 			} else {
 				this.container.appendChild(view.element);
 			}
@@ -108,7 +108,7 @@ class Views {
 		if(!this.length) return;
 
 		for (let i = 0; i < len; i++) {
-			view = this._views[i];
+			view = this._views[i]!;
 			this.destroy(view);
 		}
 
@@ -122,12 +122,12 @@ class Views {
 		const len = this.length;
 
 		for (let i = 0; i < len; i++) {
-			view = this._views[i];
+			view = this._views[i]!;
 			if(view.displayed && view.section.index == section.index) {
 				return view;
 			}
 		}
-
+		return undefined;
 	}
 
 	displayed(): IframeView[] {
@@ -136,7 +136,7 @@ class Views {
 		const len = this.length;
 
 		for (let i = 0; i < len; i++) {
-			view = this._views[i];
+			view = this._views[i]!;
 			if(view.displayed){
 				displayed.push(view);
 			}
@@ -149,7 +149,7 @@ class Views {
 		const len = this.length;
 
 		for (let i = 0; i < len; i++) {
-			view = this._views[i];
+			view = this._views[i]!;
 			if(view.displayed){
 				view.show();
 			}
@@ -162,7 +162,7 @@ class Views {
 		const len = this.length;
 
 		for (let i = 0; i < len; i++) {
-			view = this._views[i];
+			view = this._views[i]!;
 			if(view.displayed){
 				view.hide();
 			}

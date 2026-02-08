@@ -3,7 +3,8 @@ import {extend, borders, uuid, isNumber, bounds, defer, createBlobUrl, revokeBlo
 import EpubCFI from "../../epubcfi";
 import Contents from "../../contents";
 import { EVENTS } from "../../utils/constants";
-import { Pane, Highlight, Underline, Mark } from "../../marks-pane";
+import { Pane, Highlight, Underline } from "../../marks-pane";
+import type { Mark } from "../../marks-pane";
 import type { IEventEmitter, ViewSettings, ReframeBounds, RequestFunction } from "../../types";
 import type Section from "../../section";
 import type Layout from "../../layout";
@@ -410,7 +411,7 @@ class IframeView implements IEventEmitter {
 			let mark;
 			for (const m in this.marks) {
 				if (this.marks.hasOwnProperty(m)) {
-					mark = this.marks[m];
+					mark = this.marks[m]!;
 					this.placeMark(mark.element, mark.range);
 				}
 			}
@@ -436,7 +437,7 @@ class IframeView implements IEventEmitter {
 			return loaded;
 		}
 
-		this.iframe.onload = (event: Event) => {
+		this.iframe.onload = (event: Event): void => {
 
 			this.onLoad(event, loading);
 
@@ -656,7 +657,7 @@ class IframeView implements IEventEmitter {
 		const attributes = Object.assign({"fill": "yellow", "fill-opacity": "0.3", "mix-blend-mode": "multiply"}, styles);
 		const range = this.contents.range(cfiRange);
 
-		const emitter = () => {
+		const emitter = (): void => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -688,7 +689,7 @@ class IframeView implements IEventEmitter {
 		}
 		const attributes = Object.assign({"stroke": "black", "stroke-opacity": "0.3", "mix-blend-mode": "multiply"}, styles);
 		const range = this.contents.range(cfiRange);
-		const emitter = () => {
+		const emitter = (): void => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -731,7 +732,7 @@ class IframeView implements IEventEmitter {
 		const container = range.commonAncestorContainer;
 		const parent = (container.nodeType === 1) ? container : container.parentNode;
 
-		const emitter = (_e: Event) => {
+		const emitter = (_e: Event): void => {
 			this.emit(EVENTS.VIEWS.MARK_CLICKED, cfiRange, data);
 		};
 
@@ -786,7 +787,7 @@ class IframeView implements IEventEmitter {
 
 			let rect;
 			for (let i = 0; i != rects.length; i++) {
-				rect = rects[i];
+				rect = rects[i]!;
 				if (!left || rect.left < left) {
 					left = rect.left;
 					// right = rect.right;
@@ -802,7 +803,7 @@ class IframeView implements IEventEmitter {
 
 	unhighlight(cfiRange: string): void {
 		if (cfiRange in this.highlights) {
-			const item = this.highlights[cfiRange];
+			const item = this.highlights[cfiRange]!;
 
 			this.pane!.removeMark(item.mark);
 			item.listeners.forEach((l: Function | undefined) => {
@@ -817,7 +818,7 @@ class IframeView implements IEventEmitter {
 
 	ununderline(cfiRange: string): void {
 		if (cfiRange in this.underlines) {
-			const item = this.underlines[cfiRange];
+			const item = this.underlines[cfiRange]!;
 			this.pane!.removeMark(item.mark);
 			item.listeners.forEach((l: Function | undefined) => {
 				if (l) {
@@ -831,7 +832,7 @@ class IframeView implements IEventEmitter {
 
 	unmark(cfiRange: string): void {
 		if (cfiRange in this.marks) {
-			const item = this.marks[cfiRange];
+			const item = this.marks[cfiRange]!;
 			this.element.removeChild(item.element);
 			item.listeners.forEach((l: Function | undefined) => {
 				if (l) {

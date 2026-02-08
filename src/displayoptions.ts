@@ -42,7 +42,7 @@ class DisplayOptions {
 			let value = "";
 
 			if (el.childNodes.length) {
-				value = el.childNodes[0].nodeValue ?? "";
+				value = el.childNodes[0]!.nodeValue ?? "";
 			}
 
 			switch ((el.attributes as any).name.value) {

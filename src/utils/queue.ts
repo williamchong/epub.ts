@@ -225,11 +225,11 @@ class Queue {
 class Task {
 	constructor(task: Function, args: any[], context: any){
 
-		return function(this: unknown){
+		return function(this: unknown): Promise<any> {
 			const toApply = (arguments as any) || [];
 
 			return new Promise( (resolve, reject) => {
-				const callback = function(value: any, err: any){
+				const callback = function(value: any, err: any): void {
 					if (!value && err) {
 						reject(err);
 					} else {

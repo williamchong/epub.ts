@@ -51,7 +51,7 @@ class Resources {
 		this.manifest = manifest;
 		this.resources = Object.keys(manifest).
 			map(function (key){
-				return manifest[key];
+				return manifest[key]!;
 			});
 
 		this.replacementUrls = [];
@@ -80,6 +80,7 @@ class Resources {
 						item.type === "text/html") {
 					return true;
 				}
+				return false;
 			});
 
 		// Exclude HTML
@@ -89,6 +90,7 @@ class Resources {
 						item.type !== "text/html") {
 					return true;
 				}
+				return false;
 			});
 
 		// Only CSS
@@ -97,6 +99,7 @@ class Resources {
 				if (item.type === "text/css") {
 					return true;
 				}
+				return false;
 			});
 	}
 
@@ -108,7 +111,7 @@ class Resources {
 
 		// All Assets Urls
 		this.urls = this.assets.
-			map(function(item: PackagingManifestItem) {
+			map(function(item: PackagingManifestItem): string {
 				return item.href;
 			}.bind(this));
 
@@ -276,7 +279,7 @@ class Resources {
 
 		// Get Urls relative to current sections
 		return this.urls.
-			map(function(href: string) {
+			map(function(href: string): string {
 				const resolved = resolver(href);
 				const relative = new Path(absolute).relative(resolved);
 				return relative;
@@ -295,7 +298,7 @@ class Resources {
 		}
 		if (this.replacementUrls.length) {
 			return new Promise((resolve: (value: string) => void, _reject: (reason?: any) => void) => {
-				resolve(this.replacementUrls[indexInUrls]);
+				resolve(this.replacementUrls[indexInUrls]!);
 			});
 		} else {
 			return this.createUrl(path);

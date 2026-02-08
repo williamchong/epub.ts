@@ -78,7 +78,7 @@ export function replaceLinks(contents: Element, fn: (path: string) => void): voi
 
 	const base = qs(contents.ownerDocument, "base");
 	const location = base ? base.getAttribute("href") ?? undefined : undefined;
-	const replaceLink = function(link: Element){
+	const replaceLink = function(link: Element): void {
 		const href = link.getAttribute("href") ?? "";
 
 		if(href.indexOf("mailto:") === 0){
@@ -99,7 +99,7 @@ export function replaceLinks(contents: Element, fn: (path: string) => void): voi
 				// NOOP
 			}
 
-			(link as HTMLElement).onclick = function(){
+			(link as HTMLElement).onclick = function(): boolean {
 
 				if(linkUrl && linkUrl.hash) {
 					fn(linkUrl.Path.path + linkUrl.hash);
@@ -115,7 +115,7 @@ export function replaceLinks(contents: Element, fn: (path: string) => void): voi
 	};
 
 	for (let i = 0; i < links.length; i++) {
-		replaceLink(links[i]);
+		replaceLink(links[i]!);
 	}
 
 

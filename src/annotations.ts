@@ -66,7 +66,7 @@ class Annotations {
 		this._annotations[hash] = annotation;
 
 		if (sectionIndex in this._annotationsBySectionIndex) {
-			this._annotationsBySectionIndex[sectionIndex].push(hash);
+			this._annotationsBySectionIndex[sectionIndex]!.push(hash);
 		} else {
 			this._annotationsBySectionIndex[sectionIndex] = [hash];
 		}
@@ -91,7 +91,7 @@ class Annotations {
 		const hash = encodeURI(cfiRange + type);
 
 		if (hash in this._annotations) {
-			const annotation = this._annotations[hash];
+			const annotation = this._annotations[hash]!;
 
 			if (type && annotation.type !== type) {
 				return;
@@ -122,7 +122,7 @@ class Annotations {
 	 * @private
 	 */
 	_annotationsAt (index: number): string[] {
-		return this._annotationsBySectionIndex[index];
+		return this._annotationsBySectionIndex[index] ?? [];
 	}
 
 
@@ -165,7 +165,7 @@ class Annotations {
 	 */
 	each (fn: (annotation: Annotation, key: string) => void): void {
 		Object.keys(this._annotations).forEach((key) => {
-			fn(this._annotations[key], key);
+			fn(this._annotations[key]!, key);
 		});
 	}
 
@@ -177,9 +177,10 @@ class Annotations {
 	inject (view: AnnotationView): void {
 		const sectionIndex = view.index;
 		if (sectionIndex in this._annotationsBySectionIndex) {
-			const annotations = this._annotationsBySectionIndex[sectionIndex];
+			const annotations = this._annotationsBySectionIndex[sectionIndex]!;
 			annotations.forEach((hash) => {
 				const annotation = this._annotations[hash];
+				if (!annotation) return;
 				annotation.attach(view);
 			});
 		}
@@ -193,9 +194,10 @@ class Annotations {
 	clear (view: AnnotationView): void {
 		const sectionIndex = view.index;
 		if (sectionIndex in this._annotationsBySectionIndex) {
-			const annotations = this._annotationsBySectionIndex[sectionIndex];
+			const annotations = this._annotationsBySectionIndex[sectionIndex]!;
 			annotations.forEach((hash) => {
 				const annotation = this._annotations[hash];
+				if (!annotation) return;
 				annotation.detach(view);
 			});
 		}

@@ -78,7 +78,7 @@ class PageList {
 		if(!navItems || length === 0) return list;
 
 		for (i = 0; i < length; ++i) {
-			item = this.item(navItems[i]);
+			item = this.item(navItems[i]!);
 			list.push(item);
 		}
 
@@ -102,7 +102,7 @@ class PageList {
 		}
 
 		for (i = 0; i < length; ++i) {
-			item = this.ncxItem(pageTargets[i]);
+			item = this.ncxItem(pageTargets[i]!);
 			list.push(item);
 		}
 
@@ -170,8 +170,8 @@ class PageList {
 				this.locations.push(item.cfi);
 			}
 		});
-		this.firstPage = this.pages[0];
-		this.lastPage = this.pages[this.pages.length-1];
+		this.firstPage = this.pages[0]!;
+		this.lastPage = this.pages[this.pages.length-1]!;
 		this.totalPages = this.lastPage - this.firstPage;
 	}
 
@@ -194,14 +194,14 @@ class PageList {
 		// var index = this.locations.indexOf(cfi);
 		let index = indexOfSorted(cfi, this.locations, this.epubcfi.compare);
 		if(index != -1) {
-			pg = this.pages[index];
+			pg = this.pages[index]!;
 		} else {
 			// Otherwise add it to the list of locations
 			// Insert it in the correct position in the locations page
 			//index = EPUBJS.core.insert(cfi, this.locations, this.epubcfi.compare);
 			index = locationOf(cfi, this.locations, this.epubcfi.compare);
 			// Get the page at the location just before the new one, or return the first
-			pg = index-1 >= 0 ? this.pages[index-1] : this.pages[0];
+			pg = index-1 >= 0 ? this.pages[index-1]! : this.pages[0]!;
 			if(pg !== undefined) {
 				// Add the new page in so that the locations and page array match up
 				//this.pages.splice(index, 0, pg);
@@ -228,8 +228,8 @@ class PageList {
 		// check if the cfi is in the page list
 		// Pages could be unsorted.
 		const index = this.pages.indexOf(pg);
-		if(index != -1) {
-			cfi = this.locations[index];
+		if(index != -1 && index < this.locations.length) {
+			cfi = this.locations[index]!;
 		}
 		// TODO: handle pages not in the list
 		return cfi;

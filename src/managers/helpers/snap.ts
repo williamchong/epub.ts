@@ -9,19 +9,19 @@ import type Layout from "../../layout";
 // easing equations from https://github.com/danro/easing-js/blob/master/easing.js
 const PI_D2 = (Math.PI / 2);
 const EASING_EQUATIONS = {
-		easeOutSine: function (pos: number) {
+		easeOutSine: function (pos: number): number {
 				return Math.sin(pos * PI_D2);
 		},
-		easeInOutSine: function (pos: number) {
+		easeInOutSine: function (pos: number): number {
 				return (-0.5 * (Math.cos(Math.PI * pos) - 1));
 		},
-		easeInOutQuint: function (pos: number) {
+		easeInOutQuint: function (pos: number): number {
 				if ((pos /= 0.5) < 1) {
 						return 0.5 * Math.pow(pos, 5);
 				}
 				return 0.5 * (Math.pow((pos - 2), 5) + 2);
 		},
-		easeInCubic: function(pos: number) {
+		easeInCubic: function(pos: number): number {
 			return Math.pow(pos, 3);
   	}
 };
@@ -202,7 +202,7 @@ class Snap implements IEventEmitter {
 	}
 
 	onTouchStart(e: TouchEvent): void {
-		const { screenX, screenY } = e.touches[0];
+		const { screenX, screenY } = e.touches[0]!;
 
 		if (this.fullsize) {
 			this.enableScroll();
@@ -222,7 +222,7 @@ class Snap implements IEventEmitter {
 	}
 
 	onTouchMove(e: TouchEvent): void {
-		const { screenX, screenY } = e.touches[0];
+		const { screenX, screenY } = e.touches[0]!;
 		const deltaY = Math.abs(screenY - this.endTouchY);
 
 		this.touchCanceler = true;
@@ -312,7 +312,7 @@ class Snap implements IEventEmitter {
 		this.snapping = true;
 
 		// add animation loop
-		const tick = () => {
+		const tick = (): void => {
 			const now = this.now();
 			const time = Math.min(1, ((now - startTime) / duration));
 			const _timeFunction = easing(time);

@@ -6,7 +6,7 @@ import Queue from "./utils/queue";
 import Layout from "./layout";
 // import Mapping from "./mapping";
 import Themes from "./themes";
-import Contents from "./contents";
+import type Contents from "./contents";
 import Annotations from "./annotations";
 import { EVENTS, DOM_EVENTS } from "./utils/constants";
 import type { IEventEmitter, RenditionOptions, Location, GlobalLayout, ViewLocation, SizeObject, PackagingMetadataObject } from "./types";
@@ -799,6 +799,7 @@ class Rendition implements IEventEmitter {
 			const located = this.located(location);
 			return located;
 		}
+		return undefined;
 	}
 
 	/**
@@ -811,8 +812,8 @@ class Rendition implements IEventEmitter {
 		if (!location.length) {
 			return undefined;
 		}
-		const start = location[0];
-		const end = location[location.length-1];
+		const start = location[0]!;
+		const end = location[location.length-1]!;
 
 		const located: Location = {
 			start: {
@@ -968,12 +969,14 @@ class Rendition implements IEventEmitter {
 		const _cfi = new EpubCFI(cfi);
 		const found = this.manager!.visible().filter(function (view: IframeView) {
 			if(_cfi.spinePos === view.index) return true;
+			return false;
 		});
 
 		// Should only every return 1 item
 		if (found.length) {
-			return found[0].contents!.range(_cfi as any, ignoreClass);
+			return found[0]!.contents!.range(_cfi as any, ignoreClass);
 		}
+		return undefined;
 	}
 
 	/**
@@ -1061,7 +1064,7 @@ class Rendition implements IEventEmitter {
 		style.setAttribute("type", "text/css");
 		style.setAttribute("rel", "stylesheet");
 		style.setAttribute("href", this.settings.stylesheet!);
-		doc.getElementsByTagName("head")[0].appendChild(style);
+		doc.getElementsByTagName("head")[0]!.appendChild(style);
 	}
 
 	/**
@@ -1076,7 +1079,7 @@ class Rendition implements IEventEmitter {
 		script.setAttribute("type", "text/javascript");
 		script.setAttribute("src", this.settings.script!);
 		script.textContent = " "; // Needed to prevent self closing tag
-		doc.getElementsByTagName("head")[0].appendChild(script);
+		doc.getElementsByTagName("head")[0]!.appendChild(script);
 	}
 
 	/**
@@ -1093,7 +1096,7 @@ class Rendition implements IEventEmitter {
 		if (ident) {
 			meta.setAttribute("content", ident);
 		}
-		doc.getElementsByTagName("head")[0].appendChild(meta);
+		doc.getElementsByTagName("head")[0]!.appendChild(meta);
 	}
 
 }
