@@ -34,7 +34,6 @@ class Themes {
 
 	/**
 	 * Add themes to be used by a rendition
-	 * @param {object | Array<object> | string}
 	 * @example themes.register("light", "http://example.com/light.css")
 	 * @example themes.register("light", { "body": { "color": "purple"}})
 	 * @example themes.register({ "light" : {...}, "dark" : {...}})
@@ -236,7 +235,7 @@ class Themes {
 
 	/**
 	 * Add all overrides
-	 * @param {Content} content
+	 * @param contents - contents to apply overrides to
 	 */
 	overrides (contents: Contents): void {
 		const overrides = this._overrides;

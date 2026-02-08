@@ -370,8 +370,8 @@ class Locations implements IEventEmitter {
 
 	/**
 	 * Get a percentage position from a location index
-	 * @param {number} location
-	 * @return {number}
+	 * @param loc - location index
+	 * @return percentage
 	 */
 	percentageFromLocation(loc: number): number {
 		if (!loc || !this.total) {

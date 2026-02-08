@@ -3,8 +3,6 @@ import type { PackagingMetadataObject, PackagingSpineItem, PackagingManifestItem
 
 /**
  * Open Packaging Format Parser
- * @class
- * @param {document} packageDocument OPF XML
  */
 class Packaging {
 	manifest: PackagingManifestObject;
@@ -327,8 +325,8 @@ class Packaging {
 
 	/**
 	 * Load JSON Manifest
-	 * @param  {document} packageDocument OPF XML
-	 * @return {object} parsed package parts
+	 * @param json - JSON manifest data
+	 * @return parsed package parts
 	 */
 	load(json: Record<string, any>): PackagingObject & { toc: NavItem[] } {
 		this.metadata = json.metadata;

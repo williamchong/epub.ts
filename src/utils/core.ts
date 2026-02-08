@@ -638,7 +638,6 @@ export function blob2base64(blob: Blob): Promise<string | ArrayBuffer> {
 /**
  * Creates a new pending promise and provides methods to resolve or reject it.
  * From: https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Promise.jsm/Deferred#backwards_forwards_compatible
- * @memberof Core
  */
 export class defer {
 	id: string;

@@ -717,9 +717,8 @@ class Rendition implements IEventEmitter {
 	}
 
 	/**
-	 * Report the current location
-	 * @fires relocated
-	 * @fires locationChanged
+	 * Report the current location.
+	 * Emits "relocated" and "locationChanged" events.
 	 */
 	reportLocation(): Promise<void> {
 		return this.q.enqueue(() => {

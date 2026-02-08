@@ -144,9 +144,9 @@ class Archive {
 
 	/**
 	 * Get Text from Archive by Url
-	 * @param  {string} url
-	 * @param  {string} [encoding]
-	 * @return {string}
+	 * @param url
+	 * @param _encoding
+	 * @return text content
 	 */
 	getText(url: string, _encoding?: string): Promise<string> | undefined {
 		const decodededUrl = window.decodeURIComponent(url.substr(1)); // Remove first slash

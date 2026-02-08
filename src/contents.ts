@@ -887,7 +887,7 @@ class Contents implements IEventEmitter {
 
 	/**
 	 * Remove a class from the contents container
-	 * @param {string} removeClass
+	 * @param className - class name to remove
 	 */
 	removeClass(className: string): void {
 		if(!this.document) return;
