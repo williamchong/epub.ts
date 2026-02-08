@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "docs": "typedoc --plugin typedoc-plugin-markdown --out documentation/md --entryPoints src/index.ts --tsconfig tsconfig.json --excludePrivate --excludeInternal --readme none"
+    "docs": "typedoc --out documentation/html --entryPoints src/index.ts --tsconfig tsconfig.json --excludePrivate --excludeInternal && typedoc --plugin typedoc-plugin-markdown --out documentation/md --entryPoints src/index.ts --tsconfig tsconfig.json --excludePrivate --excludeInternal --readme none"
   },
   "author": "William Chong <me@williamchong.cloud>",
   "contributors": [

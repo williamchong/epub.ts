@@ -73,7 +73,7 @@ import {
 
 ## API
 
-See the full [API documentation](./documentation/md/README.md) for details on all classes, interfaces, and methods.
+See the full [API documentation](https://likecoin.github.io/epub.ts/) for details on all classes, interfaces, and methods.
 
 Key classes:
 
