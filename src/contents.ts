@@ -1046,12 +1046,6 @@ class Contents implements IEventEmitter {
 		return new EpubCFI(node, this.cfiBase, ignoreClass).toString();
 	}
 
-	// TODO: find where this is used - remove?
-	map(layout: LayoutProps): EpubCFIPair[] {
-		const map = new Mapping(layout);
-		return map.section(undefined as any);
-	}
-
 	/**
 	 * Size the contents to a given width and height
 	 * @param {number} [width]

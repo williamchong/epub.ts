@@ -280,7 +280,7 @@ class EpubCFI {
 			}
 
 			if(part.type === "text") {
-				segment += 1 + (2 * part.index); // TODO: double check that this is odd
+				segment += 1 + (2 * part.index);
 			}
 
 			if(part.id) {
