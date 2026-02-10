@@ -2,19 +2,17 @@
  * Core Utilities and Helpers
  * @module Core
 */
-import { DOMParser as XMLDOMParser } from "@xmldom/xmldom";
 
 /**
- * Vendor prefixed requestAnimationFrame
  * @returns {function} requestAnimationFrame
  * @memberof Core
  */
-export const requestAnimationFrame = (typeof window != "undefined") ? ((window as any).requestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).msRequestAnimationFrame) : false;
+export const requestAnimationFrame = (typeof window != "undefined") ? window.requestAnimationFrame : false;
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
 const _COMMENT_NODE = 8;
 const _DOCUMENT_NODE = 9;
-const _URL = typeof URL != "undefined" ? URL : (typeof window != "undefined" ? ((window as any).URL || (window as any).webkitURL || (window as any).mozURL) : undefined);
+const _URL = typeof URL != "undefined" ? URL : window.URL;
 
 /**
  * Generates a UUID
@@ -462,68 +460,42 @@ export function type(obj: unknown): string {
  * Parse xml (or html) markup
  * @param {string} markup
  * @param {string} mime
- * @param {boolean} forceXMLDom force using xmlDom to parse instead of native parser
  * @returns {document} document
  * @memberof Core
  */
-export function parse(markup: string, mime: string, forceXMLDom?: boolean): Document {
-	let Parser;
-
-	if (typeof DOMParser === "undefined" || forceXMLDom) {
-		Parser = XMLDOMParser;
-	} else {
-		Parser = DOMParser;
-	}
-
+export function parse(markup: string, mime: string): Document {
 	// Remove byte order mark before parsing
 	// https://www.w3.org/International/questions/qa-byte-order-mark
 	if(markup.charCodeAt(0) === 0xFEFF) {
 		markup = markup.slice(1);
 	}
 
-	const doc = new Parser().parseFromString(markup, mime as DOMParserSupportedType);
-
-	return doc;
+	return new DOMParser().parseFromString(markup, mime as DOMParserSupportedType);
 }
 
 /**
- * querySelector polyfill
+ * querySelector wrapper
  * @param {element} el
  * @param {string} sel selector string
  * @returns {element} element
  * @memberof Core
  */
 export function qs(el: Document | Element, sel: string): Element | undefined {
-	let elements;
 	if (!el) {
 		throw new Error("No Element Provided");
 	}
-
-	if (typeof el.querySelector != "undefined") {
-		return el.querySelector(sel) ?? undefined;
-	} else {
-		elements = el.getElementsByTagName(sel);
-		if (elements.length) {
-			return elements[0];
-		}
-	}
-	return undefined;
+	return el.querySelector(sel) ?? undefined;
 }
 
 /**
- * querySelectorAll polyfill
+ * querySelectorAll wrapper
  * @param {element} el
  * @param {string} sel selector string
  * @returns {element[]} elements
  * @memberof Core
  */
-export function qsa(el: Document | Element, sel: string): NodeListOf<Element> | HTMLCollectionOf<Element> {
-
-	if (typeof el.querySelector != "undefined") {
-		return el.querySelectorAll(sel);
-	} else {
-		return el.getElementsByTagName(sel);
-	}
+export function qsa(el: Document | Element, sel: string): NodeListOf<Element> {
+	return el.querySelectorAll(sel);
 }
 
 /**
@@ -535,30 +507,12 @@ export function qsa(el: Document | Element, sel: string): NodeListOf<Element> | 
  * @memberof Core
  */
 export function qsp(el: Document | Element, sel: string, props: Record<string, string>): Element | undefined {
-	let q, filtered;
-	if (typeof el.querySelector != "undefined") {
-		sel += "[";
-		for (const prop in props) {
-			sel += prop + "~='" + props[prop] + "'";
-		}
-		sel += "]";
-		return el.querySelector(sel) ?? undefined;
-	} else {
-		q = el.getElementsByTagName(sel);
-		filtered = Array.prototype.slice.call(q, 0).filter(function(el: Element) {
-			for (const prop in props) {
-				if(el.getAttribute(prop) === props[prop]){
-					return true;
-				}
-			}
-			return false;
-		});
-
-		if (filtered) {
-			return filtered[0];
-		}
+	sel += "[";
+	for (const prop in props) {
+		sel += prop + "~='" + props[prop] + "'";
 	}
-	return undefined;
+	sel += "]";
+	return el.querySelector(sel) ?? undefined;
 }
 
 /**
@@ -568,17 +522,7 @@ export function qsp(el: Document | Element, sel: string, props: Record<string, s
  * @param  {function} func function to run on each element
  */
 export function sprint(root: Node, func: (node: Node) => void): void {
-	const doc = root.ownerDocument || root;
-	if (typeof((doc as Document).createTreeWalker) !== "undefined") {
-		treeWalker(root, func, NodeFilter.SHOW_TEXT);
-	} else {
-		walk(root, function(node) {
-			if (node && node.nodeType === 3) { // Node.TEXT_NODE
-				func(node);
-			}
-			return false;
-		}, true);
-	}
+	treeWalker(root, func, NodeFilter.SHOW_TEXT);
 }
 
 /**
@@ -668,21 +612,17 @@ export class defer {
  * @memberof Core
  */
 export function querySelectorByType(html: Document | Element, element: string, type: string): Element | undefined {
-	let query;
-	if (typeof html.querySelector != "undefined") {
-		query = html.querySelector(`${element}[*|type="${type}"]`);
-	}
-	// Handle IE not supporting namespaced epub:type in querySelector
-	if(!query || (query as any).length === 0) {
-		query = qsa(html, element);
-		for (let i = 0; i < query.length; i++) {
-			if(query[i]!.getAttributeNS("http://www.idpf.org/2007/ops", "type") === type ||
-				 query[i]!.getAttribute("epub:type") === type) {
-				return query[i]!;
-			}
-		}
-	} else {
+	const query = html.querySelector(`${element}[*|type="${type}"]`);
+	if (query) {
 		return query;
+	}
+	// Fallback: walk elements and check epub:type via namespace or attribute
+	const elements = html.querySelectorAll(element);
+	for (let i = 0; i < elements.length; i++) {
+		if(elements[i]!.getAttributeNS("http://www.idpf.org/2007/ops", "type") === type ||
+			 elements[i]!.getAttribute("epub:type") === type) {
+			return elements[i]!;
+		}
 	}
 	return undefined;
 }

@@ -78,16 +78,8 @@ class Mapping {
 	 * @return {*} returns the result of the walk function
 	 */
 	walk(root: Node, func: (node: Node) => Node | undefined): Node | undefined {
-		// IE11 has strange issue, if root is text node IE throws exception on
-		// calling treeWalker.nextNode(), saying
-		// Unexpected call to method or property access instead of returning null value
-		if(root && root.nodeType === Node.TEXT_NODE) {
-			return;
-		}
-		// safeFilter is required so that it can work in IE as filter is a function for IE
-		// and for other browser filter is an object.
-		const filter = {
-			acceptNode: function(node: Node): number {
+		const filter: NodeFilter = {
+			acceptNode(node: Node): number {
 				if ((node as Text).data.trim().length > 0) {
 					return NodeFilter.FILTER_ACCEPT;
 				} else {
@@ -95,10 +87,8 @@ class Mapping {
 				}
 			}
 		};
-		const safeFilter = filter.acceptNode;
-		(safeFilter as any).acceptNode = filter.acceptNode;
 
-		const treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, safeFilter);
+		const treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, filter);
 		let node;
 		let result;
 		while ((node = treeWalker.nextNode())) {

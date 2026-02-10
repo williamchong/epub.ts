@@ -9,18 +9,7 @@ function request(url: string, type?: string, withCredentials?: boolean, headers?
 
 	const xhr = new XMLHttpRequest();
 
-	//-- Check from PDF.js:
-	//   https://github.com/mozilla/pdf.js/blob/master/web/compatibility.js
-	const xhrPrototype = XMLHttpRequest.prototype;
-
 	let header;
-
-	if (!("overrideMimeType" in xhrPrototype)) {
-		// IE10 might have response, but not overrideMimeType
-		Object.defineProperty(xhrPrototype, "overrideMimeType", {
-			value: function xmlHttpRequestOverrideMimeType() {}
-		});
-	}
 
 	if(withCredentials) {
 		xhr.withCredentials = true;

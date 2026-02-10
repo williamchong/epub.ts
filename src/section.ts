@@ -4,7 +4,6 @@ import Hook from "./utils/hook";
 import { sprint } from "./utils/core";
 import { replaceBase } from "./utils/replacements";
 import Request from "./utils/request";
-import { DOMParser as XMLDOMSerializer } from "@xmldom/xmldom";
 import type { SpineItem, GlobalLayout, SearchResult, RequestFunction } from "./types";
 
 /**
@@ -108,15 +107,7 @@ class Section {
 		const rendered = rendering.promise;
 		this.load(_request).
 			then((contents: Element) => {
-				const userAgent = (typeof navigator !== "undefined" && navigator.userAgent) || "";
-				const isIE = userAgent.indexOf("Trident") >= 0;
-				let Serializer;
-				if (typeof XMLSerializer === "undefined" || isIE) {
-					Serializer = XMLDOMSerializer;
-				} else {
-					Serializer = XMLSerializer;
-				}
-				const serializer = new Serializer() as unknown as XMLSerializer;
+				const serializer = new XMLSerializer();
 				this.output = serializer.serializeToString(contents);
 				return this.output;
 			}).
@@ -192,15 +183,12 @@ class Section {
 
 
 	/**
-	 * Search a string in multiple sequential Element of the section. If the document.createTreeWalker api is missed(eg: IE8), use `find` as a fallback.
+	 * Search a string in multiple sequential Element of the section.
 	 * @param  {string} _query The query string to search
 	 * @param  {int} maxSeqEle The maximum number of Element that are combined for search, default value is 5.
 	 * @return {object[]} A list of matches, with form {cfi, excerpt}
 	 */
 	search(_query: string, maxSeqEle: number = 5): SearchResult[] {
-		if (typeof(document.createTreeWalker) == "undefined") {
-			return this.find(_query);
-		}
 		const matches: SearchResult[] = [];
 		const excerptLimit = 150;
 		const section = this;
