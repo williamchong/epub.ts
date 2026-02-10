@@ -18,7 +18,7 @@ function debounce(func: Function, wait: number): (...args: any[]) => void {
 
 class ContinuousViewManager extends DefaultViewManager {
 	snapper!: Snap;
-	tick: typeof requestAnimationFrame;
+	tick!: typeof requestAnimationFrame;
 	scrollDeltaVert!: number;
 	scrollDeltaHorz!: number;
 	_scrolled!: (...args: any[]) => void;

@@ -13,7 +13,7 @@ A TypeScript fork of [epubjs](https://github.com/futurepress/epub.js) v0.3.93 by
 - **Drop-in replacement** for epubjs v0.3.93 — same API, just change the import
 - **TypeScript first** — full strict mode, typed emitter, generated `.d.ts` declarations
 - **Modern build** — Vite library build, ESM + CJS output
-- **Fewer dependencies** — removed `core-js`, `lodash`, `path-webpack`, `event-emitter`
+- **Fewer dependencies** — only 1 runtime dependency (`jszip`); removed `core-js`, `lodash`, `path-webpack`, `event-emitter`, `localforage`, `@xmldom/xmldom`
 - **Named exports** — import individual classes like `Book`, `EpubCFI`, `Rendition`, etc.
 
 ## Installation
@@ -95,7 +95,7 @@ Key classes:
 | Build | Vite | webpack + Babel |
 | Tests | Vitest | Karma + Mocha |
 | Type definitions | Generated from source | Hand-written `.d.ts` |
-| Dependencies | 3 (`jszip`, `localforage`, `@xmldom/xmldom`) | 7+ (`core-js`, `lodash`, `event-emitter`, etc.) |
+| Dependencies | 1 (`jszip`) | 7+ (`core-js`, `lodash`, `event-emitter`, etc.) |
 | API compatibility | 100% (drop-in replacement) | — |
 | Bundle format | ESM + CJS | UMD |
 | Maintenance | Active | Inactive since 2022 |
@@ -114,8 +114,11 @@ Key classes:
 - Build: webpack + Babel → Vite
 - Tests: Karma + Mocha → Vitest
 - Source: JavaScript → TypeScript (full strict mode)
-- Removed dependencies: `core-js`, `lodash`, `path-webpack`
+- Removed dependencies: `core-js`, `lodash`, `path-webpack`, `localforage`, `@xmldom/xmldom`
 - Replaced `event-emitter` with inline typed emitter
+- Replaced `localforage` with native IndexedDB wrapper
+- Replaced `@xmldom/xmldom` with native DOMParser/XMLSerializer
+- Dropped IE8–IE11 support
 
 ## Development
 
@@ -158,7 +161,6 @@ For AI agents contributing to this project, see [AGENTS.md](./AGENTS.md).
 
 - [epubjs](https://github.com/futurepress/epub.js) by [Fred Chasen](https://github.com/fchasen) / [FuturePress](https://github.com/futurepress) — the original library this is forked from
 - [jszip](https://github.com/Stuk/jszip) — ZIP file handling
-- [@xmldom/xmldom](https://github.com/xmldom/xmldom) — XML parsing
 
 ## Built by 3ook.com
 

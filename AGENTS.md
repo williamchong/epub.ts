@@ -61,4 +61,7 @@ See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for conversion progress.
 ### Current Stage: C (Improvements)
 - TypeScript strict mode: complete
 - ESLint: 0 errors, 0 warnings
-- Remaining: replace `localforage`, replace `@xmldom/xmldom`, Node.js support, improve test coverage
+- `localforage` replaced with native IndexedDB
+- `@xmldom/xmldom` replaced with native DOMParser
+- Only 1 runtime dependency: `jszip`
+- Remaining: Node.js support, improve test coverage

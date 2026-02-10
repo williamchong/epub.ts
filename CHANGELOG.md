@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.4.0 (2026-02-11)
+
+### Breaking changes
+
+- Drop IE8–IE11 support: removed all Trident detection, TreeWalker fallbacks,
+  `overrideMimeType` polyfill, `safeFilter` hack, and `querySelector` polyfills.
+  Library now targets modern browsers only.
+
+### Dependencies removed
+
+- `localforage` — replaced with a thin native IndexedDB wrapper (~30 lines);
+  graceful fallback via try/catch when IndexedDB is unavailable (e.g. Safari
+  private browsing). Public `Store` API unchanged.
+- `@xmldom/xmldom` — replaced with native `DOMParser` and `XMLSerializer`.
+  Only runtime dependency is now `jszip`.
+- `@types/localforage` (devDependency)
+
+### Dependencies upgraded
+
+- `jszip` 3.7.1 → 3.10.1
+
+### Bug fixes
+
+- Fix `Store` request interceptor not falling through to network on cache miss
+- Fix memory leaks in `Contents`: remove resize/MutationObserver listeners on
+  destroy
+- Fix incomplete `Rendition.destroy()`: now cleans up manager, themes, and
+  annotation hooks
+
+### Refactor
+
+- Modernize legacy JS patterns to ES6+ across 18 files: replace `arguments`
+  with rest params, `Array.prototype.slice.call` with `Array.from`,
+  `.apply()`/`.call()` with spread syntax, `.bind(this)` with arrow functions
+- Remove resolved TODOs and dead code
+
 ## 0.3.97 (2026-02-08)
 
 ### Documentation
