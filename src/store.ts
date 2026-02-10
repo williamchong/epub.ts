@@ -3,8 +3,46 @@ import httpRequest from "./utils/request";
 import mime from "./utils/mime";
 import Path from "./utils/path";
 import EventEmitter from "./utils/event-emitter";
-import localforage from "localforage";
 import type { IEventEmitter, RequestFunction } from "./types";
+
+interface SimpleStorage {
+	getItem(key: string): Promise<any>;
+	setItem(key: string, value: any): Promise<any>;
+}
+
+function openIDB(name: string): Promise<IDBDatabase> {
+	return new Promise((resolve, reject) => {
+		const req = indexedDB.open(name, 1);
+		req.onupgradeneeded = (): void => {
+			req.result.createObjectStore("data");
+		};
+		req.onsuccess = (): void => resolve(req.result);
+		req.onerror = (): void => reject(req.error);
+	});
+}
+
+function createStorage(name: string): SimpleStorage {
+	const dbPromise = openIDB(name);
+
+	return {
+		getItem(key: string): Promise<any> {
+			return dbPromise.then((db) => new Promise((resolve, reject) => {
+				const tx = db.transaction("data", "readonly");
+				const req = tx.objectStore("data").get(key);
+				req.onsuccess = (): void => resolve(req.result ?? null);
+				req.onerror = (): void => reject(req.error);
+			}));
+		},
+		setItem(key: string, value: any): Promise<any> {
+			return dbPromise.then((db) => new Promise((resolve, reject) => {
+				const tx = db.transaction("data", "readwrite");
+				const req = tx.objectStore("data").put(value, key);
+				req.onsuccess = (): void => resolve(value);
+				req.onerror = (): void => reject(req.error);
+			}));
+		}
+	};
+}
 
 /**
  * Handles saving and requesting files from local storage
@@ -19,7 +57,7 @@ class Store implements IEventEmitter {
 	declare emit: (type: string, ...args: any[]) => void;
 
 	urlCache: Record<string, string>;
-	storage!: LocalForage;
+	storage!: SimpleStorage;
 	name: string;
 	requester: RequestFunction;
 	resolver: (href: string) => string;
@@ -28,8 +66,6 @@ class Store implements IEventEmitter {
 
 	constructor(name: string, requester?: RequestFunction, resolver?: (href: string) => string) {
 		this.urlCache = {};
-
-		// storage is set in checkRequirements() called below
 
 		this.name = name;
 		this.requester = requester || httpRequest;
@@ -43,20 +79,17 @@ class Store implements IEventEmitter {
 	}
 
 	/**
-	 * Checks to see if localForage exists in global namspace,
-	 * Requires localForage if it isn't there
+	 * Checks that IndexedDB is available and creates the storage instance
 	 * @private
 	 */
 	checkRequirements(): void {
 		try {
-			if (typeof localforage === "undefined") {
-				throw new Error("localForage lib not loaded");
+			if (typeof indexedDB === "undefined") {
+				throw new Error("IndexedDB not available");
 			}
-			this.storage = localforage.createInstance({
-				name: this.name
-			});
+			this.storage = createStorage(this.name);
 		} catch (_e) {
-			throw new Error("localForage lib not loaded");
+			throw new Error("IndexedDB not available");
 		}
 	}
 
