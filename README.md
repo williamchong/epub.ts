@@ -97,7 +97,7 @@ Key classes:
 | Type definitions | Generated from source | Hand-written `.d.ts` |
 | Dependencies | 1 (`jszip`) | 7+ (`core-js`, `lodash`, `event-emitter`, etc.) |
 | API compatibility | 100% (drop-in replacement) | — |
-| Bundle format | ESM + CJS | UMD |
+| Bundle format | ESM + CJS + UMD | UMD |
 | Maintenance | Active | Inactive since 2022 |
 
 ## Supported Environments

@@ -18,8 +18,10 @@
 
 ### Stage C: Improvements
 - [x] Enable `noImplicitAny` (270 implicit-any params annotated)
-- [x] Replace ~528 explicit `any` with proper types (~100 remain where genuinely needed)
+- [x] Replace ~528 explicit `any` with proper types (~136 remain across 28 files)
 - [x] Type all public APIs (no `any` in user-facing signatures)
+- [x] Fix CSS injection vulnerability (use `textContent` instead of `innerHTML` for style elements)
+- [x] Fix dangerous URL scheme handling (strip `javascript:` and `data:text/html` hrefs)
 - [x] Enable `strictNullChecks` (476 errors fixed across 30 files)
 - [x] Full `strict: true` (377 errors fixed: strictPropertyInitialization 120, noImplicitThis 251, others 6)
 - [x] ESLint + TS plugin (0 errors, 0 warnings)
@@ -28,7 +30,8 @@
 - [x] Replace `@xmldom/xmldom` with browser-native DOMParser
 - [x] Add `"sideEffects": false` to package.json (enables better tree-shaking for consumers)
 - [ ] Node.js support (parsing-only entry point)
-- [ ] Improve test coverage
+- [ ] Improve test coverage (currently 14% — 6 test files for 42 source files)
+- [ ] Reduce remaining `any` types (136 across 28 files, concentrated in queue.ts, store.ts, inline.ts)
 
 ---
 
@@ -94,7 +97,7 @@ All formats are single-file bundles. `preserveModules` was considered for ESM bu
 
 - **No Node.js support** — requires a DOM environment; parsing-only entry point planned
 - **Single-file ESM bundle** — `Book` imports nearly everything, so `preserveModules` wouldn't help much
-- **~100 `any` types remain** — in places where genuinely needed (e.g., DOM API interop, third-party lib types)
+- **~136 `any` types remain** — concentrated in `queue.ts` (15), `store.ts` (17), `inline.ts` (19), `core.ts` (12)
 
 ---
 
@@ -102,7 +105,10 @@ All formats are single-file bundles. `preserveModules` was considered for ESM bu
 
 ### High Priority
 1. Node.js support (parsing-only entry point, no rendering)
-2. Improve test coverage (rendition, navigation, annotations)
+2. Improve test coverage — untested: Rendition, Contents, Spine, Navigation, Packaging, Archive, all view managers
+3. Type the Queue class — core infrastructure is nearly untyped (15 `any` occurrences)
 
 ### Medium Priority
-3. Explore splitting `Book` dependency graph for better tree-shaking
+4. Replace empty catch blocks with proper error propagation (~15 instances)
+5. Reduce non-null assertions in `rendition.ts` (72) and `book.ts` (49)
+6. Explore splitting `Book` dependency graph for better tree-shaking

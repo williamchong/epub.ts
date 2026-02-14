@@ -15,7 +15,6 @@ All project rules and conventions are below. See also `README.md` for project ov
 - `src/` — Library source (TypeScript)
 - `test/` — Vitest tests
 - `dist/` — Build output (gitignored)
-- `types/` — Legacy TS declarations (will be removed after full TS conversion)
 - `documentation/md/API.md` — Generated API docs
 
 ## Conventions
@@ -64,4 +63,5 @@ See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for conversion progress.
 - `localforage` replaced with native IndexedDB
 - `@xmldom/xmldom` replaced with native DOMParser
 - Only 1 runtime dependency: `jszip`
-- Remaining: Node.js support, improve test coverage
+- Security: CSS injection and dangerous URL schemes fixed
+- Remaining: Node.js support, improve test coverage, reduce ~136 remaining `any` types
