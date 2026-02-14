@@ -124,15 +124,16 @@ class Locations implements IEventEmitter {
 			let dist;
 			let pos = 0;
 
-			if ((node.textContent ?? "").trim().length === 0) {
-				return false; // continue
-			}
-
 			// Start range
-			if (counter == 0) {
+			if (counter === 0 && range === undefined) {
 				range = this.createRange();
 				range.startContainer = node;
 				range.startOffset = 0;
+			}
+
+			if ((node.textContent ?? "").trim().length === 0) {
+				prev = node;
+				return false; // continue
 			}
 
 			dist = _break - counter;

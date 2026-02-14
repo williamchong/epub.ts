@@ -38,6 +38,7 @@ class DefaultViewManager implements IEventEmitter {
 	writingMode!: string;
 	_hasScrolled!: boolean;
 	_onScroll!: (...args: any[]) => void;
+	_onUnload!: (e: Event) => void;
 	orientationTimeout: ReturnType<typeof setTimeout> | undefined;
 	resizeTimeout!: ReturnType<typeof setTimeout>;
 	afterScrolled!: ReturnType<typeof setTimeout>;
@@ -156,9 +157,10 @@ class DefaultViewManager implements IEventEmitter {
 	addEventListeners(): void {
 		let scroller;
 
-		window.addEventListener("unload", (_e: Event) => {
+		this._onUnload = (_e: Event): void => {
 			this.destroy();
-		});
+		};
+		window.addEventListener("unload", this._onUnload);
 
 		if(!this.settings.fullsize) {
 			scroller = this.container;
@@ -181,6 +183,9 @@ class DefaultViewManager implements IEventEmitter {
 
 		scroller.removeEventListener("scroll", this._onScroll);
 		(this as any)._onScroll = undefined;
+
+		window.removeEventListener("unload", this._onUnload);
+		(this as any)._onUnload = undefined;
 	}
 
 	destroy(): void {

@@ -53,6 +53,7 @@ export interface PackagingManifestItem {
 	type: string;
 	overlay: string;
 	properties: string[];
+	fallback: string;
 }
 
 export interface PackagingManifestObject {

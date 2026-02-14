@@ -425,11 +425,12 @@ class ContinuousViewManager extends DefaultViewManager {
 
 	addEventListeners(_stage?: Stage): void {
 
-		window.addEventListener("unload", (_e: Event) => {
+		this._onUnload = (_e: Event): void => {
 			this.ignore = true;
 			// this.scrollTo(0,0);
 			this.destroy();
-		});
+		};
+		window.addEventListener("unload", this._onUnload);
 
 		this.addScrollListeners();
 
@@ -478,6 +479,9 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		scroller.removeEventListener("scroll", this._onScroll);
 		(this as any)._onScroll = undefined;
+
+		window.removeEventListener("unload", this._onUnload);
+		(this as any)._onUnload = undefined;
 	}
 
 	onScroll(): void {
