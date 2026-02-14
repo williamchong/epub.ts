@@ -460,6 +460,11 @@ class Contents implements IEventEmitter {
 		}
 
 		clearTimeout(this.expanding);
+
+		const images = this.document.querySelectorAll("img");
+		for (let i = 0; i < images.length; i++) {
+			images[i]!.onload = null;
+		}
 	}
 
 	/**
@@ -1286,6 +1291,7 @@ class Contents implements IEventEmitter {
 
 	destroy(): void {
 		this.removeListeners();
+		(this as any).__listeners = {};
 	}
 }
 

@@ -551,7 +551,10 @@ class IframeView implements IEventEmitter {
 	}
 
 	removeListeners(_layoutFunc?: Function): void {
-		//TODO: remove content listeners for expanding
+		if (this.contents) {
+			this.contents.off(EVENTS.CONTENTS.EXPAND);
+			this.contents.off(EVENTS.CONTENTS.RESIZE);
+		}
 	}
 
 	display(request: RequestFunction): Promise<IframeView> {
@@ -883,6 +886,10 @@ class IframeView implements IEventEmitter {
 			this.contents!.destroy();
 
 			this.stopExpanding = true;
+
+			if (this.iframe) {
+				this.iframe.onload = null;
+			}
 			this.element.removeChild(this.iframe!);
 
 			if (this.pane) {
@@ -899,8 +906,7 @@ class IframeView implements IEventEmitter {
 			(this as any)._height = null;
 		}
 
-		// this.element.style.height = "0px";
-		// this.element.style.width = "0px";
+		(this as any).__listeners = {};
 	}
 }
 

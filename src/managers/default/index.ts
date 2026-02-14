@@ -201,15 +201,7 @@ class DefaultViewManager implements IEventEmitter {
 
 		this.rendered = false;
 
-		/*
-
-			clearTimeout(this.trimTimeout);
-			if(this.settings.hidden) {
-				this.element.removeChild(this.wrapper);
-			} else {
-				this.element.removeChild(this.container);
-			}
-		*/
+		(this as any).__listeners = {};
 	}
 
 	onOrientationChange(_e?: Event): void {

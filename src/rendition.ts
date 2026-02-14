@@ -877,6 +877,11 @@ class Rendition implements IEventEmitter {
 		this.q.clear();
 
 		if (this.manager) {
+			this.manager.off(EVENTS.MANAGERS.ADDED);
+			this.manager.off(EVENTS.MANAGERS.REMOVED);
+			this.manager.off(EVENTS.MANAGERS.RESIZED);
+			this.manager.off(EVENTS.MANAGERS.ORIENTATION_CHANGE);
+			this.manager.off(EVENTS.MANAGERS.SCROLLED);
 			this.manager.destroy();
 			this.manager = undefined;
 		}
@@ -893,6 +898,9 @@ class Rendition implements IEventEmitter {
 
 		this.themes.destroy();
 
+		if (this._layout) {
+			this._layout.off(EVENTS.LAYOUT.UPDATED);
+		}
 		this._layout = undefined;
 		this.location = undefined;
 	}

@@ -801,6 +801,11 @@ class Book implements IEventEmitter {
 		this.rendition && this.rendition.destroy();
 		this.displayOptions && this.displayOptions.destroy();
 
+		if (this.storage) {
+			this.storage.destroy();
+			this.storage = undefined;
+		}
+
 		this.spine = undefined;
 		this.locations = undefined;
 		this.pageList = undefined;

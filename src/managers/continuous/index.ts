@@ -613,6 +613,9 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	destroy(): void {
+		clearTimeout(this.scrollTimeout);
+		clearTimeout(this.trimTimeout);
+
 		super.destroy();
 
 		if (this.snapper) {
