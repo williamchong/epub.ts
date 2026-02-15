@@ -51,8 +51,8 @@ class Archive {
 	 */
 	openUrl(zipUrl: string, isBase64?: boolean): Promise<JSZip> {
 		return request(zipUrl, "binary")
-			.then((data: ArrayBuffer) => {
-				return this.zip!.loadAsync(data, {"base64": isBase64});
+			.then((data) => {
+				return this.zip!.loadAsync(data as ArrayBuffer, {"base64": isBase64});
 			});
 	}
 
@@ -62,8 +62,8 @@ class Archive {
 	 * @param  {string} [type] specify the type of the returned result
 	 * @return {Promise<Blob | string | JSON | Document | XMLDocument>}
 	 */
-	request(url: string, type?: string): Promise<any> {
-		const deferred = new defer();
+	request(url: string, type?: string): Promise<unknown> {
+		const deferred = new defer<unknown>();
 		let response;
 		const path = new Path(url);
 
@@ -186,14 +186,14 @@ class Archive {
 	 * @return {Promise} url promise with Url string
 	 */
 	createUrl(url: string, options?: { base64?: boolean }): Promise<string> {
-		const deferred = new defer();
+		const deferred = new defer<string>();
 		const _URL = window.URL || window.webkitURL || window.mozURL;
 		let tempUrl;
 		let response;
 		const useBase64 = options && options.base64;
 
 		if(url in this.urlCache) {
-			deferred.resolve(this.urlCache[url]);
+			deferred.resolve(this.urlCache[url]!);
 			return deferred.promise;
 		}
 

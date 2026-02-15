@@ -310,7 +310,7 @@ class Contents implements IEventEmitter {
 			"scalable": undefined
 		};
 		const newContent: string[] = [];
-		let settings: Record<string, string | number> = {};
+		let settings: Partial<Record<keyof ViewportSettings, string | number>> = {};
 
 		/*
 		* check for the viewport size
@@ -345,7 +345,7 @@ class Contents implements IEventEmitter {
 			}
 		}
 
-		settings = defaults(options || {}, parsed);
+		settings = defaults(options ?? {} as Partial<Record<keyof ViewportSettings, string | number>>, parsed as Partial<Record<keyof ViewportSettings, string | number>>);
 
 		if (options) {
 			if (settings.width) {

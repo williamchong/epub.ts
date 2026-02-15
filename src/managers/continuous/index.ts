@@ -33,7 +33,7 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		this.name = "continuous";
 
-		this.settings = extend({}, {
+		this.settings = extend({} as ManagerOptions, {
 			infinite: true,
 			overflow: undefined,
 			axis: undefined,
@@ -79,8 +79,8 @@ class ContinuousViewManager extends DefaultViewManager {
 			});
 	}
 
-	fill(_full?: InstanceType<typeof defer>): Promise<any> {
-		const full = _full || new defer();
+	fill(_full?: defer<void>): Promise<void> {
+		const full = _full || new defer<void>();
 
 		this.q.enqueue(() => {
 			return this.check();
@@ -216,7 +216,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		let isVisible;
 		let view: IframeView;
 
-		const updating = new defer();
+		const updating = new defer<void>();
 		const promises = [];
 		for (let i = 0; i < viewsLength; i++) {
 			view = views[i]!;
@@ -263,7 +263,7 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	check(_offsetLeft?: number, _offsetTop?: number): Promise<any> {
-		const checking = new defer();
+		const checking = new defer<boolean>();
 		const newViews: IframeView[] = [];
 
 		const horizontal = (this.settings.axis === "horizontal");
@@ -361,7 +361,7 @@ class ContinuousViewManager extends DefaultViewManager {
 	}
 
 	trim(): Promise<any> {
-		const task = new defer();
+		const task = new defer<void>();
 		const displayed = this.views.displayed();
 		if (!displayed.length) {
 			task.resolve();

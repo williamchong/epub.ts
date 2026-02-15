@@ -63,13 +63,13 @@ class Rendition implements IEventEmitter {
 	epubcfi: EpubCFI;
 	q: Queue;
 	location: Location | undefined;
-	starting: defer;
+	starting: defer<void>;
 	started: Promise<void>;
 	manager: DefaultViewManager | undefined;
 	ViewManager!: typeof DefaultViewManager | typeof ContinuousViewManager | Function;
 	View!: typeof IframeView | Function;
 	_layout: Layout | undefined;
-	displaying: defer | undefined;
+	displaying: defer<Section | undefined> | undefined;
 
 	declare on: IEventEmitter["on"];
 	declare off: IEventEmitter["off"];
@@ -77,7 +77,7 @@ class Rendition implements IEventEmitter {
 
 	constructor(book: Book, options?: RenditionOptions) {
 
-		this.settings = extend({}, {
+		this.settings = extend({} as RenditionOptions & Record<string, any>, {
 			width: null,
 			height: null,
 			ignoreClass: "",
@@ -180,7 +180,7 @@ class Rendition implements IEventEmitter {
 		// Hold queue until book is opened
 		this.q.enqueue(this.book.opened!);
 
-		this.starting = new defer();
+		this.starting = new defer<void>();
 		/**
 		 * @member {promise} started returns after the rendition has started
 		 * @memberof Rendition
@@ -338,7 +338,7 @@ class Rendition implements IEventEmitter {
 	 */
 	display(target?: string | number): Promise<Section> {
 		if (this.displaying) {
-			this.displaying.resolve();
+			this.displaying.resolve(undefined);
 		}
 		return this.q.enqueue(this._display, target) as Promise<Section>;
 	}
@@ -349,12 +349,12 @@ class Rendition implements IEventEmitter {
 	 * @param  {string} target Url or EpubCFI
 	 * @return {Promise}
 	 */
-	_display(target?: string | number): Promise<Section> | undefined {
+	_display(target?: string | number): Promise<Section | undefined> | undefined {
 		if (!this.book) {
 			return;
 		}
 		const _isCfiString = this.epubcfi.isCfiString(target);
-		const displaying = new defer();
+		const displaying = new defer<Section | undefined>();
 		const displayed = displaying.promise;
 
 		this.displaying = displaying;

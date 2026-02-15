@@ -222,7 +222,7 @@ class Store implements IEventEmitter {
 
 
 		return response.then((r) => {
-			const deferred = new defer();
+			const deferred = new defer<unknown>();
 			let result;
 			if (r) {
 				result = this.handleResponse(r, type);
@@ -299,7 +299,7 @@ class Store implements IEventEmitter {
 		mimeType = mimeType || mime.lookup(url);
 
 		return this.storage.getItem(encodedUrl).then(function(uint8array) {
-			const deferred = new defer();
+			const deferred = new defer<string>();
 			const reader = new FileReader();
 
 			if(!uint8array) return;
@@ -307,7 +307,7 @@ class Store implements IEventEmitter {
 			const blob = new Blob([uint8array as BlobPart], {type : mimeType});
 
 			reader.addEventListener("loadend", () => {
-				deferred.resolve(reader.result);
+				deferred.resolve(reader.result as string);
 			});
 
 			reader.readAsText(blob, mimeType);
@@ -328,7 +328,7 @@ class Store implements IEventEmitter {
 		mimeType = mimeType || mime.lookup(url);
 
 		return this.storage.getItem(encodedUrl).then((uint8array) => {
-			const deferred = new defer();
+			const deferred = new defer<string>();
 			const reader = new FileReader();
 
 			if(!uint8array) return;
@@ -336,7 +336,7 @@ class Store implements IEventEmitter {
 			const blob = new Blob([uint8array as BlobPart], {type : mimeType});
 
 			reader.addEventListener("loadend", () => {
-				deferred.resolve(reader.result);
+				deferred.resolve(reader.result as string);
 			});
 			reader.readAsDataURL(blob);
 
@@ -351,13 +351,13 @@ class Store implements IEventEmitter {
 	 * @return {Promise} url promise with Url string
 	 */
 	createUrl(url: string, options?: { base64?: boolean }): Promise<string> {
-		const deferred = new defer();
+		const deferred = new defer<string>();
 		let tempUrl;
 		let response;
 		const useBase64 = options && options.base64;
 
 		if(url in this.urlCache) {
-			deferred.resolve(this.urlCache[url]);
+			deferred.resolve(this.urlCache[url]!);
 			return deferred.promise;
 		}
 

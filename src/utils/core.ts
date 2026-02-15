@@ -95,12 +95,12 @@ export function prefixed(unprefixed: string): string {
 	const lower = unprefixed.toLowerCase();
 	const length = vendors.length;
 
-	if (typeof(document) === "undefined" || typeof((document.body.style as any)[lower]) != "undefined") {
+	if (typeof(document) === "undefined" || lower in document.body.style) {
 		return unprefixed;
 	}
 
 	for (let i = 0; i < length; i++) {
-		if (typeof((document.body.style as any)[prefixes[i] + lower]) != "undefined") {
+		if ((prefixes[i] + lower) in document.body.style) {
 			return prefixes[i] + lower;
 		}
 	}
@@ -114,11 +114,11 @@ export function prefixed(unprefixed: string): string {
  * @returns {object}
  * @memberof Core
  */
-export function defaults(obj: any, ...sources: any[]): any {
+export function defaults<T extends object>(obj: T, ...sources: object[]): T {
 	for (let i = 0; i < sources.length; i++) {
-		const source = sources[i];
+		const source = sources[i] as Record<string, unknown>;
 		for (const prop in source) {
-			if (obj[prop] === void 0) obj[prop] = source[prop];
+			if ((obj as Record<string, unknown>)[prop] === void 0) (obj as Record<string, unknown>)[prop] = source[prop];
 		}
 	}
 	return obj;
@@ -130,8 +130,8 @@ export function defaults(obj: any, ...sources: any[]): any {
  * @returns {object}
  * @memberof Core
  */
-export function extend(target: any, ...sources: any[]): any {
-	sources.forEach(function (source: any) {
+export function extend<T extends object>(target: T, ...sources: (object | null | undefined)[]): T {
+	sources.forEach(function (source) {
 		if(!source) return;
 		Object.getOwnPropertyNames(source).forEach(function(propName) {
 			Object.defineProperty(target, propName, Object.getOwnPropertyDescriptor(source, propName)!);
@@ -149,7 +149,7 @@ export function extend(target: any, ...sources: any[]): any {
  * @returns {number} location (in array)
  * @memberof Core
  */
-export function insert(item: any, array: any[], compareFunction?: (a: any, b: any) => number): number {
+export function insert<T>(item: T, array: T[], compareFunction?: (a: T, b: T) => number): number {
 	const location = locationOf(item, array, compareFunction);
 	array.splice(location, 0, item);
 
@@ -166,14 +166,14 @@ export function insert(item: any, array: any[], compareFunction?: (a: any, b: an
  * @returns {number} location (in array)
  * @memberof Core
  */
-export function locationOf(item: any, array: any[], compareFunction?: (a: any, b: any) => number, _start?: number, _end?: number): number {
+export function locationOf<T>(item: T, array: T[], compareFunction?: (a: T, b: T) => number, _start?: number, _end?: number): number {
 	const start = _start || 0;
 	const end = _end || array.length;
-	const pivot = parseInt(start + (end - start) / 2 as any);
+	const pivot = Math.floor(start + (end - start) / 2);
 	if(!compareFunction){
-		compareFunction = function(a, b): number {
-			if(a > b) return 1;
-			if(a < b) return -1;
+		compareFunction = function(a: T, b: T): number {
+			if((a as unknown as string | number) > (b as unknown as string | number)) return 1;
+			if((a as unknown as string | number) < (b as unknown as string | number)) return -1;
 			return 0;
 		};
 	}
@@ -181,7 +181,7 @@ export function locationOf(item: any, array: any[], compareFunction?: (a: any, b
 		return pivot;
 	}
 
-	const compared = compareFunction(array[pivot], item);
+	const compared = compareFunction(array[pivot]!, item);
 	if(end-start === 1) {
 		return compared >= 0 ? pivot : pivot + 1;
 	}
@@ -206,14 +206,14 @@ export function locationOf(item: any, array: any[], compareFunction?: (a: any, b
  * @returns {number} index (in array) or -1
  * @memberof Core
  */
-export function indexOfSorted(item: any, array: any[], compareFunction?: (a: any, b: any) => number, _start?: number, _end?: number): number {
+export function indexOfSorted<T>(item: T, array: T[], compareFunction?: (a: T, b: T) => number, _start?: number, _end?: number): number {
 	const start = _start || 0;
 	const end = _end || array.length;
-	const pivot = parseInt(start + (end - start) / 2 as any);
+	const pivot = Math.floor(start + (end - start) / 2);
 	if(!compareFunction){
-		compareFunction = function(a, b): number {
-			if(a > b) return 1;
-			if(a < b) return -1;
+		compareFunction = function(a: T, b: T): number {
+			if((a as unknown as string | number) > (b as unknown as string | number)) return 1;
+			if((a as unknown as string | number) < (b as unknown as string | number)) return -1;
 			return 0;
 		};
 	}
@@ -221,7 +221,7 @@ export function indexOfSorted(item: any, array: any[], compareFunction?: (a: any
 		return -1; // Not found
 	}
 
-	const compared = compareFunction(array[pivot], item);
+	const compared = compareFunction(array[pivot]!, item);
 	if(end-start === 1) {
 		return compared === 0 ? pivot : -1;
 	}
@@ -582,11 +582,11 @@ export function blob2base64(blob: Blob): Promise<string | ArrayBuffer> {
  * Creates a new pending promise and provides methods to resolve or reject it.
  * From: https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Promise.jsm/Deferred#backwards_forwards_compatible
  */
-export class defer {
+export class defer<T = unknown> {
 	id: string;
-	resolve!: (value?: any) => void;
-	reject!: (reason?: any) => void;
-	promise: Promise<any>;
+	resolve!: (value: T | PromiseLike<T>) => void;
+	reject!: (reason?: unknown) => void;
+	promise: Promise<T>;
 
 	constructor() {
 		this.id = uuid();
@@ -594,7 +594,7 @@ export class defer {
 		/* A newly created Promise object.
 		 * Initially in pending state.
 		 */
-		this.promise = new Promise((resolve, reject) => {
+		this.promise = new Promise<T>((resolve, reject) => {
 			this.resolve = resolve;
 			this.reject = reject;
 		});

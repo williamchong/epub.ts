@@ -63,7 +63,7 @@ class Section {
 	 */
 	load(_request?: RequestFunction): Promise<Element> {
 		const request = _request || this.request || Request;
-		const loading = new defer();
+		const loading = new defer<Element>();
 		const loaded = loading.promise;
 
 		if(this.contents) {
@@ -79,7 +79,7 @@ class Section {
 					return this.hooks!.content.trigger(this.document, this);
 				})
 				.then(() => {
-					loading.resolve(this.contents);
+					loading.resolve(this.contents!);
 				})
 				.catch(function(error: Error){
 					loading.reject(error);
@@ -103,7 +103,7 @@ class Section {
 	 * @return {string} output a serialized XML Document
 	 */
 	render(_request?: RequestFunction): Promise<string> {
-		const rendering = new defer();
+		const rendering = new defer<string>();
 		const rendered = rendering.promise;
 		this.load(_request).
 			then((contents: Element) => {
@@ -115,7 +115,7 @@ class Section {
 				return this.hooks!.serialize.trigger(this.output, this);
 			}).
 			then(() => {
-				rendering.resolve(this.output);
+				rendering.resolve(this.output!);
 			})
 			.catch(function(error: Error){
 				rendering.reject(error);

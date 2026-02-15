@@ -58,7 +58,7 @@ class DefaultViewManager implements IEventEmitter {
 		this.renditionQueue = options.queue;
 		this.q = new Queue(this);
 
-		this.settings = extend({}, {
+		this.settings = extend({} as ManagerOptions, {
 			infinite: true,
 			hidden: false,
 			width: undefined,
@@ -274,7 +274,7 @@ class DefaultViewManager implements IEventEmitter {
 	}
 
 	createView(section: Section, forceRight?: boolean): IframeView {
-		return new this.View(section, extend(this.viewSettings, { forceRight }) );
+		return new this.View(section, extend(this.viewSettings as ViewSettings, { forceRight }) );
 	}
 
 	handleNextPrePaginated(forceRight: boolean, section: Section, action: Function): Promise<IframeView> | undefined {
@@ -295,7 +295,7 @@ class DefaultViewManager implements IEventEmitter {
 
 	display(section: Section, target?: string): Promise<void> {
 
-		const displaying = new defer();
+		const displaying = new defer<void>();
 		const displayed = displaying.promise;
 
 		// Check if moving to target is needed

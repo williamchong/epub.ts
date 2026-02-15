@@ -1,11 +1,11 @@
 import {defer, isXml, parse} from "./core";
 import Path from "./path";
 
-function request(url: string, type?: string, withCredentials?: boolean, headers?: Record<string, string>): Promise<any> {
+function request(url: string, type?: string, withCredentials?: boolean, headers?: Record<string, string>): Promise<unknown> {
 	const supportsURL = (typeof window != "undefined") ? window.URL : false; // TODO: fallback for url if window isn't defined
 	const BLOB_RESPONSE: XMLHttpRequestResponseType = supportsURL ? "blob" : "arraybuffer";
 
-	const deferred = new defer();
+	const deferred = new defer<unknown>();
 
 	const xhr = new XMLHttpRequest();
 
@@ -61,7 +61,7 @@ function request(url: string, type?: string, withCredentials?: boolean, headers?
 		deferred.reject(e);
 	}
 
-	function handler(): Promise<any> | undefined {
+	function handler(): Promise<unknown> | undefined {
 		if (xhr.readyState === XMLHttpRequest.DONE) {
 			let responseXML: Document | null | false = false;
 

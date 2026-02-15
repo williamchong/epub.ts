@@ -303,7 +303,7 @@ class Snap implements IEventEmitter {
 	}
 
 	smoothScrollTo(destination: number): Promise<void> {
-		const deferred = new defer();
+		const deferred = new defer<void>();
 		const start = this.scrollLeft;
 		const startTime = this.now();
 

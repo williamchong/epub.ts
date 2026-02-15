@@ -69,7 +69,7 @@ class IframeView implements IEventEmitter {
 			forceRight: false,
 			allowScriptedContent: false,
 			allowPopups: false
-		}, options || {});
+		} as ViewSettings, options || {});
 
 		this.id = "epubjs-view-" + uuid();
 		this.section = section;
@@ -430,7 +430,7 @@ class IframeView implements IEventEmitter {
 
 
 	load(contents: string): Promise<Contents> {
-		const loading = new defer();
+		const loading = new defer<Contents>();
 		const loaded = loading.promise;
 
 		if(!this.iframe) {
@@ -471,7 +471,7 @@ class IframeView implements IEventEmitter {
 		return loaded;
 	}
 
-	onLoad(event: Event, promise: { resolve: (value?: any) => void; reject: (reason?: any) => void }): void {
+	onLoad(event: Event, promise: { resolve: (value: Contents | PromiseLike<Contents>) => void; reject: (reason?: unknown) => void }): void {
 
 		this.window = this.iframe!.contentWindow!;
 		this.document = this.iframe!.contentDocument!;
@@ -551,7 +551,7 @@ class IframeView implements IEventEmitter {
 	}
 
 	display(request: RequestFunction): Promise<IframeView> {
-		const displayed = new defer();
+		const displayed = new defer<IframeView>();
 
 		if (!this.displayed) {
 

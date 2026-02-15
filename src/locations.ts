@@ -99,7 +99,7 @@ class Locations implements IEventEmitter {
 
 		return section.load(this.request)
 			.then((contents: Element) => {
-				const completed = new defer();
+				const completed = new defer<string[]>();
 				const locations = this.parse(contents, section.cfiBase!);
 				this._locations = this._locations!.concat(locations);
 
@@ -240,7 +240,7 @@ class Locations implements IEventEmitter {
 
 		return section.load(this.request)
 			.then((contents: Element) => {
-				const completed = new defer();
+				const completed = new defer<{ cfi: string; wordCount: number }[]>();
 				const locations = this.parseWords(contents, section, wordCount, startCfi);
 				const remainingCount = count! - this._locationsWords.length;
 				this._locationsWords = this._locationsWords.concat(locations.length >= count! ? locations.slice(0, remainingCount) : locations);

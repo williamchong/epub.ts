@@ -21,14 +21,14 @@ import type { IEventEmitter, BookOptions, RenditionOptions, RequestFunction, Pac
 import type Section from "./section";
 
 interface BookLoadingState {
-	manifest: defer;
-	spine: defer;
-	metadata: defer;
-	cover: defer;
-	navigation: defer;
-	pageList: defer;
-	resources: defer;
-	displayOptions: defer;
+	manifest: defer<PackagingManifestObject>;
+	spine: defer<Spine>;
+	metadata: defer<PackagingMetadataObject>;
+	cover: defer<string>;
+	navigation: defer<Navigation>;
+	pageList: defer<PageList>;
+	resources: defer<Resources>;
+	displayOptions: defer<DisplayOptions>;
 }
 
 interface BookLoadedState {
@@ -74,7 +74,7 @@ const INPUT_TYPE = {
  */
 class Book implements IEventEmitter {
 	settings: BookOptions & Record<string, any>;
-	opening: defer;
+	opening: defer<Book>;
 	opened: Promise<Book> | undefined;
 	isOpen: boolean;
 	loading: BookLoadingState | undefined;
@@ -113,7 +113,7 @@ class Book implements IEventEmitter {
 			url = undefined;
 		}
 
-		this.settings = extend({}, {
+		this.settings = extend({} as BookOptions & Record<string, any>, {
 			requestMethod: undefined,
 			requestCredentials: undefined,
 			requestHeaders: undefined,
@@ -128,7 +128,7 @@ class Book implements IEventEmitter {
 
 
 		// Promises
-		this.opening = new defer();
+		this.opening = new defer<Book>();
 		/**
 		 * @member {promise} opened returns after the book is loaded
 		 * @memberof Book
@@ -137,14 +137,14 @@ class Book implements IEventEmitter {
 		this.isOpen = false;
 
 		this.loading = {
-			manifest: new defer(),
-			spine: new defer(),
-			metadata: new defer(),
-			cover: new defer(),
-			navigation: new defer(),
-			pageList: new defer(),
-			resources: new defer(),
-			displayOptions: new defer()
+			manifest: new defer<PackagingManifestObject>(),
+			spine: new defer<Spine>(),
+			metadata: new defer<PackagingMetadataObject>(),
+			cover: new defer<string>(),
+			navigation: new defer<Navigation>(),
+			pageList: new defer<PageList>(),
+			resources: new defer<Resources>(),
+			displayOptions: new defer<DisplayOptions>()
 		};
 
 		this.loaded = {
@@ -535,19 +535,19 @@ class Book implements IEventEmitter {
 
 		this.loadNavigation(this.packaging!).then(() => {
 			// this.toc = this.navigation.toc;
-			this.loading!.navigation.resolve(this.navigation);
+			this.loading!.navigation.resolve(this.navigation!);
 		});
 
 		if (this.packaging!.coverPath) {
 			this.cover = this.resolve(this.packaging!.coverPath);
 		}
 		// Resolve promises
-		this.loading!.manifest.resolve(this.packaging!.manifest);
-		this.loading!.metadata.resolve(this.packaging!.metadata);
-		this.loading!.spine.resolve(this.spine);
+		this.loading!.manifest.resolve(this.packaging!.manifest!);
+		this.loading!.metadata.resolve(this.packaging!.metadata!);
+		this.loading!.spine.resolve(this.spine!);
 		this.loading!.cover.resolve(this.cover);
-		this.loading!.resources.resolve(this.resources);
-		this.loading!.pageList.resolve(this.pageList);
+		this.loading!.resources.resolve(this.resources!);
+		this.loading!.pageList.resolve(this.pageList!);
 
 		this.isOpen = true;
 

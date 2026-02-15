@@ -316,7 +316,7 @@ class InlineView implements IEventEmitter {
 
 
 	load(contents: string): Promise<Contents> {
-		const loading = new defer();
+		const loading = new defer<Contents>();
 		const loaded = loading.promise;
 		const doc = parse(contents, "text/html");
 		const body = qs(doc, "body");
@@ -372,7 +372,7 @@ class InlineView implements IEventEmitter {
 	}
 
 	display(request: RequestFunction): Promise<InlineView> {
-		const displayed = new defer();
+		const displayed = new defer<InlineView>();
 
 		if (!this.displayed) {
 

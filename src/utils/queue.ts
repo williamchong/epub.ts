@@ -3,7 +3,7 @@ import {defer, requestAnimationFrame} from "./core";
 interface QueueItem {
 	task?: (...args: unknown[]) => unknown;
 	args: unknown[];
-	deferred?: defer;
+	deferred?: defer<unknown>;
 	promise: Promise<unknown>;
 }
 
@@ -18,7 +18,7 @@ class Queue {
 	tick: ((cb: FrameRequestCallback) => number) | false;
 	running: boolean | Promise<void> | undefined;
 	paused: boolean;
-	defered: defer | undefined;
+	defered: defer<void> | undefined;
 
 	constructor(context?: object){
 		this._q = [];
@@ -49,7 +49,7 @@ class Queue {
 
 		if(typeof task === "function"){
 
-			deferred = new defer();
+			deferred = new defer<unknown>();
 			promise = deferred.promise;
 
 			queued = {
@@ -98,10 +98,10 @@ class Queue {
 
 				if(result && typeof (result as Promise<unknown>)["then"] === "function") {
 					// Task is a function that returns a promise
-					return (result as Promise<unknown>).then((...args: unknown[]) => {
-						inwait.deferred!.resolve(...args);
-					}, (...args: unknown[]) => {
-						inwait.deferred!.reject(...args);
+					return (result as Promise<unknown>).then((value: unknown) => {
+						inwait.deferred!.resolve(value);
+					}, (reason: unknown) => {
+						inwait.deferred!.reject(reason);
 					});
 				} else {
 					// Task resolves immediately
@@ -135,7 +135,7 @@ class Queue {
 
 		if(!this.running){
 			this.running = true;
-			this.defered = new defer();
+			this.defered = new defer<void>();
 		}
 
 		if (this.tick) {
