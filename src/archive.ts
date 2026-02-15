@@ -99,23 +99,23 @@ class Archive {
 	 * @param  {string} [type]
 	 * @return {any} the parsed result
 	 */
-	handleResponse(response: any, type?: string): any {
+	handleResponse(response: string | Blob, type?: string): Document | object | Blob | string {
 		let r;
 
 		if(type == "json") {
-			r = JSON.parse(response);
+			r = JSON.parse(response as string);
 		}
 		else
 		if(isXml(type!)) {
-			r = parse(response, "text/xml");
+			r = parse(response as string, "text/xml");
 		}
 		else
 		if(type == "xhtml") {
-			r = parse(response, "application/xhtml+xml");
+			r = parse(response as string, "application/xhtml+xml");
 		}
 		else
 		if(type == "html" || type == "htm") {
-			r = parse(response, "text/html");
+			r = parse(response as string, "text/html");
 		 } else {
 			 r = response;
 		 }

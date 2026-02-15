@@ -14,7 +14,7 @@ import type { IEventEmitter, ManagerOptions, ViewSettings, ViewLocation, Request
 
 class DefaultViewManager implements IEventEmitter {
 	name: string;
-	optsSettings: ManagerOptions | undefined;
+	optsSettings: ManagerOptions["settings"];
 	View: new (section: Section, options?: ViewSettings) => IframeView;
 	request: RequestFunction;
 	renditionQueue: Queue;

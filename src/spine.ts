@@ -2,7 +2,8 @@ import EpubCFI from "./epubcfi";
 import Hook from "./utils/hook";
 import Section from "./section";
 import {replaceBase, replaceCanonical, replaceMeta} from "./utils/replacements";
-import type { PackagingManifestObject, PackagingObject, SpineItem } from "./types";
+import type Packaging from "./packaging";
+import type { PackagingManifestObject, SpineItem } from "./types";
 
 /**
  * A collection of Spine Items
@@ -51,9 +52,9 @@ class Spine {
 	 * @param  {method} resolver URL resolver
 	 * @param  {method} canonical Resolve canonical url
 	 */
-	unpack(_package: PackagingObject & { baseUrl?: string; basePath?: string }, resolver: (href: string, absolute?: boolean) => string, canonical: (href: string) => string): void {
+	unpack(_package: Packaging & { baseUrl?: string; basePath?: string }, resolver: (href: string, absolute?: boolean) => string, canonical: (href: string) => string): void {
 
-		this.items = _package.spine as unknown as SpineItem[];
+		this.items = _package.spine as SpineItem[];
 		this.manifest = _package.manifest;
 		this.spineNodeIndex = _package.spineNodeIndex;
 		this.baseUrl = _package.baseUrl || _package.basePath || "";

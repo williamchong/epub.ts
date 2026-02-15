@@ -9,7 +9,7 @@ import Themes from "./themes";
 import type Contents from "./contents";
 import Annotations from "./annotations";
 import { EVENTS, DOM_EVENTS } from "./utils/constants";
-import type { IEventEmitter, RenditionOptions, Location, GlobalLayout, ViewLocation, SizeObject, PackagingMetadataObject } from "./types";
+import type { IEventEmitter, RenditionOptions, Location, GlobalLayout, ViewLocation, SizeObject, PackagingMetadataObject, ManagerOptions, LayoutProps } from "./types";
 import type Book from "./book";
 import type Section from "./section";
 
@@ -55,7 +55,7 @@ interface RenditionHooks {
 }
 
 class Rendition implements IEventEmitter {
-	settings: RenditionOptions & Record<string, any>;
+	settings: RenditionOptions;
 	book: Book | undefined;
 	hooks: RenditionHooks;
 	themes: Themes;
@@ -77,7 +77,7 @@ class Rendition implements IEventEmitter {
 
 	constructor(book: Book, options?: RenditionOptions) {
 
-		this.settings = extend({} as RenditionOptions & Record<string, any>, {
+		this.settings = extend({} as RenditionOptions, {
 			width: null,
 			height: null,
 			ignoreClass: "",
@@ -260,7 +260,7 @@ class Rendition implements IEventEmitter {
 			this.ViewManager = this.requireManager(this.settings.manager!);
 			this.View = this.requireView(this.settings.view!);
 
-			this.manager = new (this.ViewManager as new (options: Record<string, any>) => DefaultViewManager)({
+			this.manager = new (this.ViewManager as new (options: ManagerOptions) => DefaultViewManager)({
 				view: this.View,
 				queue: this.q,
 				request: this.book!.load.bind(this.book),
@@ -589,13 +589,13 @@ class Rendition implements IEventEmitter {
 	 * @param  {object} metadata
 	 * @return {object} properties
 	 */
-	determineLayoutProperties(metadata: PackagingMetadataObject & Record<string, any>): GlobalLayout {
+	determineLayoutProperties(metadata: PackagingMetadataObject): GlobalLayout {
 		const layout = this.settings.layout || metadata.layout || "reflowable";
 		const spread = this.settings.spread || metadata.spread || "auto";
 		const orientation = this.settings.orientation || metadata.orientation || "auto";
 		const flow = this.settings.flow || metadata.flow || "auto";
 		const viewport = metadata.viewport || "";
-		const minSpreadWidth = this.settings.minSpreadWidth || metadata.minSpreadWidth || 800;
+		const minSpreadWidth = this.settings.minSpreadWidth || 800;
 		const direction = this.settings.direction || metadata.direction || "ltr";
 
 		if ((this.settings.width === 0 || (this.settings.width as number) > 0) &&
@@ -664,7 +664,7 @@ class Rendition implements IEventEmitter {
 
 			// this.mapping = new Mapping(this._layout.props);
 
-			this._layout.on(EVENTS.LAYOUT.UPDATED, (props: Record<string, any>, changed: Record<string, any>) => {
+			this._layout.on(EVENTS.LAYOUT.UPDATED, (props: LayoutProps, changed: Partial<LayoutProps>) => {
 				this.emit(EVENTS.RENDITION.LAYOUT, props, changed);
 			})
 		}
@@ -723,9 +723,9 @@ class Rendition implements IEventEmitter {
 	reportLocation(): Promise<void> {
 		return this.q.enqueue(() => {
 			requestAnimationFrame(() => {
-				const location = this.manager!.currentLocation() as any;
-				if (location && location.then && typeof location.then === "function") {
-					location.then((result: ViewLocation[]) => {
+				const location = this.manager!.currentLocation() as ViewLocation[] | PromiseLike<ViewLocation[]>;
+				if (location && "then" in location && typeof location.then === "function") {
+					(location as PromiseLike<ViewLocation[]>).then((result: ViewLocation[]) => {
 						const located = this.located(result);
 
 						if (!located || !located.start || !located.end) {
@@ -745,7 +745,7 @@ class Rendition implements IEventEmitter {
 						this.emit(EVENTS.RENDITION.RELOCATED, this.location);
 					});
 				} else if (location) {
-					const located = this.located(location);
+					const located = this.located(location as ViewLocation[]);
 
 					if (!located || !located.start || !located.end) {
 						return;
@@ -788,14 +788,14 @@ class Rendition implements IEventEmitter {
 	 * @return {displayedLocation | promise} location (may be a promise)
 	 */
 	currentLocation(): Location | undefined {
-		const location = this.manager!.currentLocation() as any;
-		if (location && location.then && typeof location.then === "function") {
-			location.then((result: ViewLocation[]) => {
+		const location = this.manager!.currentLocation() as ViewLocation[] | PromiseLike<ViewLocation[]>;
+		if (location && "then" in location && typeof location.then === "function") {
+			(location as PromiseLike<ViewLocation[]>).then((result: ViewLocation[]) => {
 				const located = this.located(result);
 				return located;
 			});
 		} else if (location) {
-			const located = this.located(location);
+			const located = this.located(location as ViewLocation[]);
 			return located;
 		}
 		return undefined;
@@ -975,7 +975,7 @@ class Rendition implements IEventEmitter {
 
 		// Should only every return 1 item
 		if (found.length) {
-			return found[0]!.contents!.range(_cfi as any, ignoreClass);
+			return found[0]!.contents!.range(_cfi.toString(), ignoreClass);
 		}
 		return undefined;
 	}

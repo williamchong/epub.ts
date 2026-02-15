@@ -141,6 +141,10 @@ export interface RenditionOptions {
 	defaultDirection?: string;
 	allowScriptedContent?: boolean;
 	allowPopups?: boolean;
+	globalLayoutProperties?: GlobalLayout;
+	direction?: string;
+	orientation?: string;
+	gap?: number;
 }
 
 export interface DisplayedLocation {
@@ -275,7 +279,7 @@ export interface ManagerOptions extends ViewSettings {
 	offsetDelta?: number;
 	resizeOnOrientationChange?: boolean;
 	queue?: Queue;
-	settings?: ManagerOptions;
+	settings?: RenditionOptions;
 }
 
 // ===== Hooks =====

@@ -17,7 +17,7 @@ import Store from "./store";
 import DisplayOptions from "./displayoptions";
 import type JSZip from "jszip";
 import { EPUBJS_VERSION, EVENTS } from "./utils/constants";
-import type { IEventEmitter, BookOptions, RenditionOptions, RequestFunction, PackagingManifestObject, PackagingMetadataObject, PackagingObject } from "./types";
+import type { IEventEmitter, BookOptions, RenditionOptions, RequestFunction, PackagingManifestObject, PackagingMetadataObject } from "./types";
 import type Section from "./section";
 
 interface BookLoadingState {
@@ -73,7 +73,7 @@ const INPUT_TYPE = {
  * @example new Book({ replacements: "blobUrl" })
  */
 class Book implements IEventEmitter {
-	settings: BookOptions & Record<string, any>;
+	settings: BookOptions;
 	opening: defer<Book>;
 	opened: Promise<Book> | undefined;
 	isOpen: boolean;
@@ -113,7 +113,7 @@ class Book implements IEventEmitter {
 			url = undefined;
 		}
 
-		this.settings = extend({} as BookOptions & Record<string, any>, {
+		this.settings = extend({} as BookOptions, {
 			requestMethod: undefined,
 			requestCredentials: undefined,
 			requestHeaders: undefined,
@@ -357,7 +357,7 @@ class Book implements IEventEmitter {
 	openContainer(url: string): Promise<string> {
 		return this.load(url)
 			.then((xml) => {
-				this.container = new Container(xml);
+				this.container = new Container(xml as Document);
 				return this.resolve(this.container.packagePath!);
 			});
 	}
@@ -372,7 +372,7 @@ class Book implements IEventEmitter {
 		this.path = new Path(url);
 		return this.load(url)
 			.then((xml) => {
-				this.packaging = new Packaging(xml);
+				this.packaging = new Packaging(xml as Document);
 				return this.unpack(this.packaging);
 			});
 	}
@@ -388,7 +388,7 @@ class Book implements IEventEmitter {
 		return this.load(url)
 			.then((json) => {
 				this.packaging = new Packaging();
-				this.packaging.load(json);
+				this.packaging.load(json as Record<string, any>);
 				return this.unpack(this.packaging);
 			});
 	}
@@ -398,7 +398,7 @@ class Book implements IEventEmitter {
 	 * @param  {string} path path to the resource to load
 	 * @return {Promise}     returns a promise with the requested resource
 	 */
-	load(path: string, _type?: string): Promise<any> {
+	load(path: string, _type?: string): Promise<unknown> {
 		const resolved = this.resolve(path);
 		if(this.archived) {
 			return this.archive!.request(resolved);
@@ -513,7 +513,7 @@ class Book implements IEventEmitter {
 		if (this.packaging!.metadata!.layout === "") {
 			// rendition:layout not set - check display options if book is pre-paginated
 			this.load(this.url!.resolve(IBOOKS_DISPLAY_OPTIONS_PATH)).then((xml) => {
-				this.displayOptions = new DisplayOptions(xml);
+				this.displayOptions = new DisplayOptions(xml as Document);
 				this.loading!.displayOptions.resolve(this.displayOptions);
 			}).catch((_err) => {
 				this.displayOptions = new DisplayOptions();
@@ -524,12 +524,12 @@ class Book implements IEventEmitter {
 			this.loading!.displayOptions.resolve(this.displayOptions);
 		}
 
-		this.spine!.unpack(this.packaging! as unknown as PackagingObject & { baseUrl?: string; basePath?: string }, (path: string, absolute?: boolean): string => this.resolve(path, absolute), (path: string): string => this.canonical(path));
+		this.spine!.unpack(this.packaging!, (path: string, absolute?: boolean): string => this.resolve(path, absolute), (path: string): string => this.canonical(path));
 
 		this.resources = new Resources(this.packaging!.manifest!, {
 			archive: this.archive,
 			resolver: (path: string, absolute?: boolean): string => this.resolve(path, absolute),
-			request: (path: string, type?: string): Promise<any> => this.request(path, type),
+			request: (path: string, type?: string): Promise<unknown> => this.request(path, type),
 			replacements: this.settings.replacements || (this.archived ? "blobUrl" : "base64")
 		});
 
@@ -584,8 +584,8 @@ class Book implements IEventEmitter {
 			return new Promise((resolve, _reject) => {
 				this.navigation = new Navigation(toc);
 
-				if ((packaging as any).pageList) {
-					this.pageList = new PageList((packaging as any).pageList); // TODO: handle page lists from Manifest
+				if ("pageList" in packaging && packaging.pageList) {
+					this.pageList = new PageList(packaging.pageList as Document); // TODO: handle page lists from Manifest
 				}
 
 				resolve(this.navigation);
@@ -603,8 +603,8 @@ class Book implements IEventEmitter {
 
 		return this.load(navPath, "xml")
 			.then((xml) => {
-				this.navigation = new Navigation(xml);
-				this.pageList = new PageList(xml);
+				this.navigation = new Navigation(xml as Document);
+				this.pageList = new PageList(xml as Document);
 				return this.navigation;
 			});
 	}
@@ -673,15 +673,15 @@ class Book implements IEventEmitter {
 		// Save original url
 		const originalUrl = this.url;
 		// Save original request method
-		const requester = this.settings.requestMethod || ((url: string, type?: string): Promise<any> => request(url, type));
+		const requester = this.settings.requestMethod || ((url: string, type?: string): Promise<unknown> => request(url, type));
 		// Create new Store
 		this.storage = new Store(name as string, requester, (path: string, absolute?: boolean): string => this.resolve(path, absolute));
 		// Replace request method to go through store
-		this.request = (path: string, type?: string): Promise<any> => this.storage!.request(path, type);
+		this.request = (path: string, type?: string): Promise<unknown> => this.storage!.request(path, type);
 
 		this.opened!.then(() => {
 			if (this.archived) {
-				this.storage!.requester = (path: string, type?: string): Promise<any> => this.archive!.request(path, type);
+				this.storage!.requester = (path: string, type?: string): Promise<unknown> => this.archive!.request(path, type);
 			}
 			// Substitute hook
 			const substituteResources = (output: string, section: Section): void => {
@@ -689,7 +689,7 @@ class Book implements IEventEmitter {
 			};
 
 			// Set to use replacements
-			(this.resources!.settings as any).replacements = replacementsSetting || "blobUrl";
+			this.resources!.settings!.replacements = (replacementsSetting || "blobUrl") as string;
 			// Create replacement urls
 			this.resources!.replacements().
 				then(() => {
@@ -757,7 +757,7 @@ class Book implements IEventEmitter {
 	getRange(cfiRange: string): Promise<Range> {
 		const cfi = new EpubCFI(cfiRange);
 		const item = this.spine!.get(cfi.spinePos);
-		const _request = (section: any): Promise<any> => this.load(section);
+		const _request = (path: string): Promise<unknown> => this.load(path);
 		if (!item) {
 			return new Promise((resolve, reject) => {
 				reject("CFI could not be found");

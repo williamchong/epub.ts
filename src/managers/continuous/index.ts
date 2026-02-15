@@ -52,8 +52,9 @@ class ContinuousViewManager extends DefaultViewManager {
 		extend(this.settings, options.settings || {});
 
 		// Gap can be 0, but defaults doesn't handle that
-		if (options.settings?.gap !== undefined && options.settings.gap === 0) {
-			this.settings.gap = options.settings.gap;
+		const settingsGap = options.settings?.gap;
+		if (settingsGap !== undefined && settingsGap === 0) {
+			this.settings.gap = settingsGap;
 		}
 
 		this.viewSettings = {
