@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.4.3 (2026-02-15)
+
+### Security
+
+- Fix CSS injection: use `textContent` instead of `innerHTML` for style elements
+- Strip `javascript:` and `data:text/html` hrefs from EPUB links to prevent XSS
+
+### Bug fixes
+
+- Clean up event listeners and timers in `destroy()` methods across 6 files
+  (Book, Contents, Rendition, IframeView, DefaultViewManager, ContinuousViewManager)
+- Clean up image `onload` handlers and `__listeners` in `Contents.destroy()`
+- Clean up `Store` reference in `Book.destroy()`
+
+### Type safety
+
+- Remove ~143 `any` types across 24 source files
+- Widen `destroy()` properties with `| undefined` to remove `(this as any)` casts
+- Type callback parameters in rendition, themes, and annotations hooks
+- Replace `CSSStyleDeclaration` index access with `getPropertyValue()`
+- Replace `el.attributes.name.value` with `el.getAttribute("name")` in DisplayOptions
+- Type `Hook` class context/register/trigger signatures
+- Remove IE compatibility code (`onreadystatechange`, `MSApp`)
+
+### Documentation
+
+- Update PROJECT_STATUS.md with security fixes, accurate `any` count, and expanded next steps
+- Remove stale `types/` directory reference from AGENTS.md
+- Fix README comparison table: bundle format now correctly lists ESM + CJS + UMD
+
 ## 0.4.2 (2026-02-15)
 
 ### Bug fixes (ported from epub.js upstream PRs and forks)
