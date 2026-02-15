@@ -14,7 +14,7 @@ import type { IEventEmitter, ManagerOptions, ViewSettings, ViewLocation, Request
 
 class DefaultViewManager implements IEventEmitter {
 	name: string;
-	optsSettings: ManagerOptions;
+	optsSettings: ManagerOptions | undefined;
 	View: new (section: Section, options?: ViewSettings) => IframeView;
 	request: RequestFunction;
 	renditionQueue: Queue;
@@ -55,7 +55,7 @@ class DefaultViewManager implements IEventEmitter {
 		this.optsSettings = options.settings;
 		this.View = options.view as unknown as new (section: Section, options?: ViewSettings) => IframeView;
 		this.request = options.request!;
-		this.renditionQueue = options.queue;
+		this.renditionQueue = options.queue!;
 		this.q = new Queue(this);
 
 		this.settings = extend({} as ManagerOptions, {
@@ -208,7 +208,7 @@ class DefaultViewManager implements IEventEmitter {
 	onOrientationChange(_e?: Event): void {
 		const {orientation} = window;
 
-		if(this.optsSettings.resizeOnOrientationChange) {
+		if(this.optsSettings?.resizeOnOrientationChange) {
 			this.resize();
 		}
 
@@ -221,7 +221,7 @@ class DefaultViewManager implements IEventEmitter {
 		this.orientationTimeout = setTimeout(() => {
 			this.orientationTimeout = undefined;
 
-			if(this.optsSettings.resizeOnOrientationChange) {
+			if(this.optsSettings?.resizeOnOrientationChange) {
 				this.resize();
 			}
 

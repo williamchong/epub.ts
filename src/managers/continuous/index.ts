@@ -52,7 +52,7 @@ class ContinuousViewManager extends DefaultViewManager {
 		extend(this.settings, options.settings || {});
 
 		// Gap can be 0, but defaults doesn't handle that
-		if (options.settings.gap != "undefined" && options.settings.gap === 0) {
+		if (options.settings?.gap !== undefined && options.settings.gap === 0) {
 			this.settings.gap = options.settings.gap;
 		}
 
@@ -106,10 +106,10 @@ class ContinuousViewManager extends DefaultViewManager {
 
 		if(!this.isPaginated) {
 			distY = offset.top;
-			_offsetY = offset.top+this.settings.offsetDelta;
+			_offsetY = offset.top+(this.settings.offsetDelta ?? 0);
 		} else {
 			distX = Math.floor(offset.left / this.layout.delta) * this.layout.delta;
-			_offsetX = distX+this.settings.offsetDelta;
+			_offsetX = distX+(this.settings.offsetDelta ?? 0);
 		}
 
 		if (distX > 0 || distY > 0) {

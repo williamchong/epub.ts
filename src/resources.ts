@@ -136,15 +136,15 @@ class Resources {
 		} else {
 			if (this.settings!.replacements === "base64") {
 				return this.settings!.request(url, "blob")
-					.then((blob: Blob) => {
-						return blob2base64(blob);
+					.then((blob) => {
+						return blob2base64(blob as Blob);
 					})
 					.then((base64: string | ArrayBuffer) => {
 						return createBase64Url(base64 as string, mimeType)!;
 					});
 			} else {
-				return this.settings!.request(url, "blob").then((blob: Blob) => {
-					return createBlobUrl(blob, mimeType);
+				return this.settings!.request(url, "blob").then((blob) => {
+					return createBlobUrl(blob as Blob, mimeType);
 				})
 			}
 		}
@@ -247,9 +247,9 @@ class Resources {
 			});
 		}
 
-		return textResponse.then( (text: string) => {
+		return textResponse.then( (rawText) => {
 			// Replacements in the css text
-			text = substitute(text, relUrls, this.replacementUrls!);
+			const text = substitute(rawText as string, relUrls, this.replacementUrls!);
 
 			// Get the new url
 			if (this.settings!.replacements === "base64") {

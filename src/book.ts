@@ -315,7 +315,7 @@ class Book implements IEventEmitter {
 			this.archived = true;
 			this.url = new Url("/", "");
 			opening = this.request(input as string, "binary", this.settings.requestCredentials, this.settings.requestHeaders)
-				.then((result) => this.openEpub(result));
+				.then((result) => this.openEpub(result as string | ArrayBuffer));
 		} else if(type == INPUT_TYPE.OPF) {
 			this.url = new Url(input as string);
 			opening = this.openPackaging(this.url.Path.toString());

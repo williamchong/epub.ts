@@ -70,11 +70,11 @@ class Section {
 			loading.resolve(this.contents);
 		} else {
 			request(this.url!)
-				.then((xml: Document) => {
+				.then((xml) => {
 					// var directory = new Url(this.url).directory;
 
-					this.document = xml;
-					this.contents = xml.documentElement;
+					this.document = xml as Document;
+					this.contents = (xml as Document).documentElement;
 
 					return this.hooks!.content.trigger(this.document, this);
 				})

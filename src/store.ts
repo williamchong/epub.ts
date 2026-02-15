@@ -56,7 +56,7 @@ const _URL = window.URL || window.webkitURL || window.mozURL;
 class Store implements IEventEmitter {
 	declare on: (type: string, fn: (...args: any[]) => void) => this;
 	declare off: (type: string, fn?: (...args: any[]) => void) => this;
-	declare emit: (type: string, ...args: any[]) => void;
+	declare emit: (type: string, ...args: unknown[]) => void;
 
 	urlCache: Record<string, string>;
 	storage!: SimpleStorage;
@@ -144,8 +144,8 @@ class Store implements IEventEmitter {
 			return this.storage.getItem(encodedUrl).then((item) => {
 				if (!item || force) {
 					return this.requester(url, "binary")
-						.then((data: Uint8Array) => {
-							return this.storage.setItem(encodedUrl, data);
+						.then((data) => {
+							return this.storage.setItem(encodedUrl, data as Uint8Array);
 						});
 				} else {
 					return item;
@@ -168,8 +168,8 @@ class Store implements IEventEmitter {
 
 		return this.storage.getItem(encodedUrl).then((result) => {
 			if (!result) {
-				return this.requester(url, "binary", withCredentials, headers).then((data: Uint8Array) => {
-					return this.storage.setItem(encodedUrl, data);
+				return this.requester(url, "binary", withCredentials, headers).then((data) => {
+					return this.storage.setItem(encodedUrl, data as Uint8Array);
 				});
 			}
 			return result;

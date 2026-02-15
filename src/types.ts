@@ -3,6 +3,7 @@
  * Adapted from legacy types/ directory (epubjs v0.3.93)
  */
 import type Section from "./section";
+import type Queue from "./utils/queue";
 
 // ===== Deferred =====
 export interface Deferred<T = unknown> {
@@ -14,9 +15,9 @@ export interface Deferred<T = unknown> {
 
 // ===== Event Emitter =====
 export interface IEventEmitter {
-	on(type: string, fn: (...args: any[]) => void): any;
-	off(type: string, fn?: (...args: any[]) => void): any;
-	emit(type: string, ...args: any[]): void;
+	on(type: string, fn: (...args: any[]) => void): unknown;
+	off(type: string, fn?: (...args: any[]) => void): unknown;
+	emit(type: string, ...args: unknown[]): void;
 	__listeners?: Record<string, Array<(...args: any[]) => void>>;
 }
 
@@ -224,7 +225,7 @@ export interface EpubCFIComponent {
 }
 
 // ===== Function Types =====
-export type RequestFunction = (url: string, type?: string, withCredentials?: boolean, headers?: Record<string, string>) => Promise<any>;
+export type RequestFunction = (url: string, type?: string, withCredentials?: boolean, headers?: Record<string, string>) => Promise<unknown>;
 
 // ===== Bounds/Sizing =====
 export interface SizeObject { width: number; height: number; }
@@ -266,12 +267,20 @@ export interface ManagerOptions extends ViewSettings {
 	snap?: boolean | object;
 	view?: string | Function | object;
 	request?: RequestFunction;
-	[key: string]: any;
+	size?: SizeObject;
+	rtlScrollType?: string;
+	offset?: number;
+	afterScrolledTimeout?: number;
+	gap?: number;
+	offsetDelta?: number;
+	resizeOnOrientationChange?: boolean;
+	queue?: Queue;
+	settings?: ManagerOptions;
 }
 
 // ===== Hooks =====
 export interface HooksObject {
-	[key: string]: any;
+	[key: string]: unknown;
 }
 
 // ===== Stage =====

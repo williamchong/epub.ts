@@ -16,7 +16,7 @@ import type Section from "./section";
 class Locations implements IEventEmitter {
 	declare on: (type: string, fn: (...args: any[]) => void) => this;
 	declare off: (type: string, fn?: (...args: any[]) => void) => this;
-	declare emit: (type: string, ...args: any[]) => void;
+	declare emit: (type: string, ...args: unknown[]) => void;
 
 	spine: Spine | undefined;
 	request: RequestFunction | undefined;

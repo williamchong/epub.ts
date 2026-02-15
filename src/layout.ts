@@ -17,7 +17,7 @@ import type Section from "./section";
 class Layout implements IEventEmitter {
 	declare on: (type: string, fn: (...args: any[]) => void) => this;
 	declare off: (type: string, fn?: (...args: any[]) => void) => this;
-	declare emit: (type: string, ...args: any[]) => void;
+	declare emit: (type: string, ...args: unknown[]) => void;
 
 	settings: LayoutSettings;
 	name: string;
