@@ -215,10 +215,10 @@ class Locations implements IEventEmitter {
 			if (section.linear) {
 				if (start) {
 					if (section.index! >= start.spinePos) {
-						this.q!.enqueue((s: Section, wc: number, st: any, c: number) => this.processWords(s, wc, st, c), section, wordCount, start, count);
+						this.q!.enqueue((s: Section, wc: number, st: any, c: number) => this.processWords(s, wc, st, c), section, wordCount!, start, count!);
 					}
 				} else {
-					this.q!.enqueue((s: Section, wc: number, st: any, c: number) => this.processWords(s, wc, st, c), section, wordCount, start, count);
+					this.q!.enqueue((s: Section, wc: number, st: any, c: number) => this.processWords(s, wc, st, c), section, wordCount!, start, count!);
 				}
 			}
 		});

@@ -178,7 +178,7 @@ class Rendition implements IEventEmitter {
 		this.location = undefined;
 
 		// Hold queue until book is opened
-		this.q.enqueue(this.book.opened);
+		this.q.enqueue(this.book.opened!);
 
 		this.starting = new defer();
 		/**
@@ -340,7 +340,7 @@ class Rendition implements IEventEmitter {
 		if (this.displaying) {
 			this.displaying.resolve();
 		}
-		return this.q.enqueue(this._display, target);
+		return this.q.enqueue(this._display, target) as Promise<Section>;
 	}
 
 	/**
