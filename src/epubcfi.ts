@@ -171,7 +171,7 @@ class EpubCFI {
 
 		component.steps = steps.map((step: string) => {
 			return this.parseStep(step);
-		}).filter((step): step is EpubCFIStep => step !== undefined);
+		}) as EpubCFIStep[];
 
 		return component;
 	}
@@ -404,13 +404,14 @@ class EpubCFI {
 		}
 
 		// Compare the character offset of the text node
-		if(terminalA.offset != null && terminalB.offset != null) {
-			if(terminalA.offset > terminalB.offset) {
-				return 1;
-			}
-			if(terminalA.offset < terminalB.offset) {
-				return -1;
-			}
+		// Null offsets are treated as 0, matching original JS coercion behavior
+		const offsetA = terminalA.offset ?? 0;
+		const offsetB = terminalB.offset ?? 0;
+		if(offsetA > offsetB) {
+			return 1;
+		}
+		if(offsetA < offsetB) {
+			return -1;
 		}
 
 		// CFI's are equal

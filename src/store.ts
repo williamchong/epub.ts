@@ -367,9 +367,8 @@ class Store implements IEventEmitter {
 			if (response) {
 				response.then((tempUrl: string | undefined) => {
 
-					if (!tempUrl) return;
-					this.urlCache[url] = tempUrl;
-					deferred.resolve(tempUrl);
+					this.urlCache[url] = tempUrl!;
+					deferred.resolve(tempUrl!);
 
 				});
 
@@ -382,10 +381,9 @@ class Store implements IEventEmitter {
 			if (response) {
 				response.then((blob: Blob | undefined) => {
 
-					if (!blob) return;
-					tempUrl = _URL.createObjectURL(blob);
-					this.urlCache[url] = tempUrl;
-					deferred.resolve(tempUrl);
+					tempUrl = blob ? _URL.createObjectURL(blob) : undefined;
+					this.urlCache[url] = tempUrl!;
+					deferred.resolve(tempUrl!);
 
 				});
 
