@@ -56,7 +56,7 @@ interface RenditionHooks {
 
 class Rendition implements IEventEmitter {
 	settings: RenditionOptions;
-	book: Book | undefined;
+	book!: Book;
 	hooks: RenditionHooks;
 	themes: Themes;
 	annotations: Annotations;
@@ -123,14 +123,14 @@ class Rendition implements IEventEmitter {
 		this.hooks.content.register((contents: Contents) => this.passEvents(contents));
 		this.hooks.content.register((contents: Contents) => this.adjustImages(contents));
 
-		this.book!.spine!.hooks!.content.register((doc: Document, section: Section) => this.injectIdentifier(doc, section));
+		this.book.spine.hooks.content.register((doc: Document, section: Section) => this.injectIdentifier(doc, section));
 
 		if (this.settings.stylesheet) {
-			this.book!.spine!.hooks!.content.register((doc: Document, section: Section) => this.injectStylesheet(doc, section));
+			this.book.spine.hooks.content.register((doc: Document, section: Section) => this.injectStylesheet(doc, section));
 		}
 
 		if (this.settings.script) {
-			this.book!.spine!.hooks!.content.register((doc: Document, section: Section) => this.injectScript(doc, section));
+			this.book.spine.hooks.content.register((doc: Document, section: Section) => this.injectScript(doc, section));
 		}
 
 		/**
@@ -178,7 +178,7 @@ class Rendition implements IEventEmitter {
 		this.location = undefined;
 
 		// Hold queue until book is opened
-		this.q.enqueue(this.book.opened!);
+		this.q.enqueue(this.book.opened);
 
 		this.starting = new defer<void>();
 		/**
@@ -244,10 +244,10 @@ class Rendition implements IEventEmitter {
 	 * @return {Promise} rendering has started
 	 */
 	start(): void {
-		if (!this.settings.layout && (this.book!.package!.metadata!.layout === "pre-paginated" || this.book!.displayOptions!.fixedLayout === "true")) {
+		if (!this.settings.layout && (this.book.package!.metadata.layout === "pre-paginated" || this.book.displayOptions!.fixedLayout === "true")) {
 			this.settings.layout = "pre-paginated";
 		}
-		switch(this.book!.package!.metadata!.spread) {
+		switch(this.book.package!.metadata.spread) {
 			case "none":
 				this.settings.spread = "none";
 				break;
@@ -263,15 +263,15 @@ class Rendition implements IEventEmitter {
 			this.manager = new this.ViewManager({
 				view: this.View,
 				queue: this.q,
-				request: this.book!.load.bind(this.book),
+				request: this.book.load.bind(this.book),
 				settings: this.settings
 			}) as DefaultViewManager;
 		}
 
-		this.direction(this.book!.package!.metadata!.direction || this.settings.defaultDirection);
+		this.direction(this.book.package!.metadata.direction || this.settings.defaultDirection);
 
 		// Parse metadata to get layout props
-		this.settings.globalLayoutProperties = this.determineLayoutProperties(this.book!.package!.metadata!);
+		this.settings.globalLayoutProperties = this.determineLayoutProperties(this.book.package!.metadata);
 
 		this.flow(this.settings.globalLayoutProperties.flow);
 
@@ -360,11 +360,11 @@ class Rendition implements IEventEmitter {
 		this.displaying = displaying;
 
 		// Check if this is a book percentage
-		if (this.book!.locations!.length() && isFloat(target)) {
-			target = this.book!.locations!.cfiFromPercentage(parseFloat(target as string));
+		if (this.book.locations.length() && isFloat(target)) {
+			target = this.book.locations.cfiFromPercentage(parseFloat(target as string));
 		}
 
-		const section: Section | null = this.book!.spine!.get(target);
+		const section: Section | null = this.book.spine.get(target);
 
 		if(!section){
 			displaying.reject(new Error("No Section Found"));
@@ -835,20 +835,20 @@ class Rendition implements IEventEmitter {
 			}
 		};
 
-		const locationStart = this.book!.locations!.locationFromCfi(start.mapping.start);
-		const locationEnd = this.book!.locations!.locationFromCfi(end.mapping.end);
+		const locationStart = this.book.locations.locationFromCfi(start.mapping.start);
+		const locationEnd = this.book.locations.locationFromCfi(end.mapping.end);
 
 		if (locationStart != null) {
 			located.start.location = locationStart;
-			located.start.percentage = this.book!.locations!.percentageFromLocation(locationStart);
+			located.start.percentage = this.book.locations.percentageFromLocation(locationStart);
 		}
 		if (locationEnd != null) {
 			located.end.location = locationEnd;
-			located.end.percentage = this.book!.locations!.percentageFromLocation(locationEnd);
+			located.end.percentage = this.book.locations.percentageFromLocation(locationEnd);
 		}
 
-		const pageStart = this.book!.pageList!.pageFromCfi(start.mapping.start);
-		const pageEnd = this.book!.pageList!.pageFromCfi(end.mapping.end);
+		const pageStart = this.book.pageList!.pageFromCfi(start.mapping.start);
+		const pageEnd = this.book.pageList!.pageFromCfi(end.mapping.end);
 
 		if (pageStart != -1) {
 			located.start.page = pageStart;
@@ -857,12 +857,12 @@ class Rendition implements IEventEmitter {
 			located.end.page = pageEnd;
 		}
 
-		if (end.index === this.book!.spine!.last()!.index &&
+		if (end.index === this.book.spine.last()!.index &&
 				located.end.displayed.page >= located.end.displayed.total) {
 			located.atEnd = true;
 		}
 
-		if (start.index === this.book!.spine!.first()!.index &&
+		if (start.index === this.book.spine.first()!.index &&
 				located.start.displayed.page === 1) {
 			located.atStart = true;
 		}
@@ -886,7 +886,7 @@ class Rendition implements IEventEmitter {
 			this.manager = undefined;
 		}
 
-		this.book = undefined;
+		this.book = undefined!;
 
 		this.hooks.display.clear();
 		this.hooks.serialize.clear();
@@ -1047,7 +1047,7 @@ class Rendition implements IEventEmitter {
 	handleLinks(contents: Contents): void {
 		if (contents) {
 			contents.on(EVENTS.CONTENTS.LINK_CLICKED, (href: string) => {
-				const relative = this.book!.path!.relative(href);
+				const relative = this.book.path!.relative(href);
 				this.display(relative);
 			});
 		}
@@ -1091,7 +1091,7 @@ class Rendition implements IEventEmitter {
 	 * @private
 	 */
 	injectIdentifier(doc: Document, _section: Section): void {
-		const ident = this.book!.packaging!.metadata!.identifier;
+		const ident = this.book.packaging!.metadata.identifier;
 		const meta = doc.createElement("meta");
 		meta.setAttribute("name", "dc.relation.ispartof");
 		if (ident) {

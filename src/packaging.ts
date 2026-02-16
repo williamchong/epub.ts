@@ -13,13 +13,13 @@ export interface WebPubManifest {
  * Open Packaging Format Parser
  */
 class Packaging {
-	manifest: PackagingManifestObject | undefined;
-	navPath: string | undefined;
-	ncxPath: string | undefined;
-	coverPath: string | undefined;
-	spineNodeIndex: number | undefined;
-	spine: PackagingSpineItem[] | undefined;
-	metadata: PackagingMetadataObject | undefined;
+	manifest!: PackagingManifestObject;
+	navPath!: string;
+	ncxPath!: string;
+	coverPath!: string;
+	spineNodeIndex!: number;
+	spine!: PackagingSpineItem[];
+	metadata!: PackagingMetadataObject;
 	uniqueIdentifier!: string;
 	toc!: NavItem[];
 
@@ -349,7 +349,7 @@ class Packaging {
 		});
 
 		json.resources.forEach((item: PackagingManifestItem & { rel?: string[] }, index: number) => {
-			this.manifest![index] = item;
+			this.manifest[index] = item;
 
 			if (item.rel && item.rel[0] === "cover") {
 				this.coverPath = item.href;
@@ -364,25 +364,25 @@ class Packaging {
 		});
 
 		return {
-			"metadata" : this.metadata!,
-			"spine"    : this.spine!,
-			"manifest" : this.manifest!,
-			"navPath"  : this.navPath!,
-			"ncxPath"  : this.ncxPath!,
-			"coverPath": this.coverPath!,
-			"spineNodeIndex" : this.spineNodeIndex!,
+			"metadata" : this.metadata,
+			"spine"    : this.spine,
+			"manifest" : this.manifest,
+			"navPath"  : this.navPath,
+			"ncxPath"  : this.ncxPath,
+			"coverPath": this.coverPath,
+			"spineNodeIndex" : this.spineNodeIndex,
 			"toc" : this.toc
 		};
 	}
 
 	destroy(): void {
-		this.manifest = undefined;
-		this.navPath = undefined;
-		this.ncxPath = undefined;
-		this.coverPath = undefined;
-		this.spineNodeIndex = undefined;
-		this.spine = undefined;
-		this.metadata = undefined;
+		this.manifest = undefined!;
+		this.navPath = undefined!;
+		this.ncxPath = undefined!;
+		this.coverPath = undefined!;
+		this.spineNodeIndex = undefined!;
+		this.spine = undefined!;
+		this.metadata = undefined!;
 	}
 }
 

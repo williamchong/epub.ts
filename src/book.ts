@@ -76,15 +76,15 @@ const INPUT_TYPE = {
 class Book implements IEventEmitter {
 	settings: BookOptions;
 	opening: defer<Book>;
-	opened: Promise<Book> | undefined;
+	opened!: Promise<Book>;
 	isOpen: boolean;
-	loading: BookLoadingState | undefined;
-	loaded: BookLoadedState | undefined;
-	ready: Promise<[PackagingManifestObject, Spine, PackagingMetadataObject, string, Navigation, Resources, DisplayOptions]> | undefined;
+	loading!: BookLoadingState;
+	loaded!: BookLoadedState;
+	ready!: Promise<[PackagingManifestObject, Spine, PackagingMetadataObject, string, Navigation, Resources, DisplayOptions]>;
 	isRendered: boolean;
 	request: RequestFunction;
-	spine: Spine | undefined;
-	locations: Locations | undefined;
+	spine!: Spine;
+	locations!: Locations;
 	navigation: Navigation | undefined;
 	pageList: PageList | undefined;
 	url: Url | undefined;
@@ -511,23 +511,23 @@ class Book implements IEventEmitter {
 	unpack(packaging: Packaging): void {
 		this.package = packaging; //TODO: deprecated this
 
-		if (this.packaging!.metadata!.layout === "") {
+		if (this.packaging!.metadata.layout === "") {
 			// rendition:layout not set - check display options if book is pre-paginated
 			this.load(this.url!.resolve(IBOOKS_DISPLAY_OPTIONS_PATH)).then((xml) => {
 				this.displayOptions = new DisplayOptions(xml as Document);
-				this.loading!.displayOptions.resolve(this.displayOptions);
+				this.loading.displayOptions.resolve(this.displayOptions);
 			}).catch((_err) => {
 				this.displayOptions = new DisplayOptions();
-				this.loading!.displayOptions.resolve(this.displayOptions);
+				this.loading.displayOptions.resolve(this.displayOptions);
 			});
 		} else {
 			this.displayOptions = new DisplayOptions();
-			this.loading!.displayOptions.resolve(this.displayOptions);
+			this.loading.displayOptions.resolve(this.displayOptions);
 		}
 
-		this.spine!.unpack(this.packaging!, (path: string, absolute?: boolean): string => this.resolve(path, absolute), (path: string): string => this.canonical(path));
+		this.spine.unpack(this.packaging!, (path: string, absolute?: boolean): string => this.resolve(path, absolute), (path: string): string => this.canonical(path));
 
-		this.resources = new Resources(this.packaging!.manifest!, {
+		this.resources = new Resources(this.packaging!.manifest, {
 			archive: this.archive,
 			resolver: (path: string, absolute?: boolean): string => this.resolve(path, absolute),
 			request: (path: string, type?: string): Promise<unknown> => this.request(path, type),
@@ -536,25 +536,25 @@ class Book implements IEventEmitter {
 
 		this.loadNavigation(this.packaging!).then(() => {
 			// this.toc = this.navigation.toc;
-			this.loading!.navigation.resolve(this.navigation!);
+			this.loading.navigation.resolve(this.navigation!);
 		});
 
 		if (this.packaging!.coverPath) {
 			this.cover = this.resolve(this.packaging!.coverPath);
 		}
 		// Resolve promises
-		this.loading!.manifest.resolve(this.packaging!.manifest!);
-		this.loading!.metadata.resolve(this.packaging!.metadata!);
-		this.loading!.spine.resolve(this.spine!);
-		this.loading!.cover.resolve(this.cover);
-		this.loading!.resources.resolve(this.resources!);
-		this.loading!.pageList.resolve(this.pageList!);
+		this.loading.manifest.resolve(this.packaging!.manifest);
+		this.loading.metadata.resolve(this.packaging!.metadata);
+		this.loading.spine.resolve(this.spine);
+		this.loading.cover.resolve(this.cover);
+		this.loading.resources.resolve(this.resources!);
+		this.loading.pageList.resolve(this.pageList!);
 
 		this.isOpen = true;
 
 		if(this.archived || this.settings.replacements && this.settings.replacements != "none") {
 			this.replacements().then(() => {
-				this.loaded!.displayOptions.then(() => {
+				this.loaded.displayOptions.then(() => {
 					this.opening.resolve(this);
 				});
 			})
@@ -564,7 +564,7 @@ class Book implements IEventEmitter {
 			});
 		} else {
 			// Resolve book opened promise
-			this.loaded!.displayOptions.then(() => {
+			this.loaded.displayOptions.then(() => {
 				this.opening.resolve(this);
 			});
 		}
@@ -617,7 +617,7 @@ class Book implements IEventEmitter {
 	 * @return {Section}
 	 */
 	section(target: string | number): Section | null {
-		return this.spine!.get(target);
+		return this.spine.get(target);
 	}
 
 	/**
@@ -682,7 +682,7 @@ class Book implements IEventEmitter {
 		// Replace request method to go through store
 		this.request = (path: string, type?: string): Promise<unknown> => this.storage!.request(path, type);
 
-		this.opened!.then(() => {
+		this.opened.then(() => {
 			if (this.archived) {
 				this.storage!.requester = (path: string, type?: string): Promise<unknown> => this.archive!.request(path, type);
 			}
@@ -703,14 +703,14 @@ class Book implements IEventEmitter {
 				// Remove url to use relative resolving for hrefs
 				this.url = new Url("/", "");
 				// Add hook to replace resources in contents
-				this.spine!.hooks!.serialize.register(substituteResources);
+				this.spine.hooks.serialize.register(substituteResources);
 			});
 
 			this.storage!.on("online", () => {
 				// Restore original url
 				this.url = originalUrl;
 				// Remove hook
-				this.spine!.hooks!.serialize.deregister(substituteResources);
+				this.spine.hooks.serialize.deregister(substituteResources);
 			});
 
 		});
@@ -723,7 +723,7 @@ class Book implements IEventEmitter {
 	 * @return {Promise<?string>} coverUrl
 	 */
 	coverUrl(): Promise<string | null> {
-		return this.loaded!.cover.then(() => {
+		return this.loaded.cover.then(() => {
 			if (!this.cover) {
 				return null;
 			}
@@ -742,7 +742,7 @@ class Book implements IEventEmitter {
 	 * @return {Promise} completed loading urls
 	 */
 	replacements(): Promise<void> {
-		this.spine!.hooks!.serialize.register((output: string, section: Section) => {
+		this.spine.hooks.serialize.register((output: string, section: Section) => {
 			section.output = this.resources!.substitute(output, section.url);
 		});
 
@@ -759,7 +759,7 @@ class Book implements IEventEmitter {
 	 */
 	getRange(cfiRange: string): Promise<Range> {
 		const cfi = new EpubCFI(cfiRange);
-		const item = this.spine!.get(cfi.spinePos);
+		const item = this.spine.get(cfi.spinePos);
 		const _request = (path: string): Promise<unknown> => this.load(path);
 		if (!item) {
 			return new Promise((resolve, reject) => {
@@ -778,7 +778,7 @@ class Book implements IEventEmitter {
 	 * @return {string} key
 	 */
 	key(identifier?: string): string {
-		const ident = identifier || this.packaging!.metadata!.identifier || this.url!.filename;
+		const ident = identifier || this.packaging!.metadata.identifier || this.url!.filename;
 		return `epubjs:${EPUBJS_VERSION}:${ident}`;
 	}
 
@@ -786,10 +786,10 @@ class Book implements IEventEmitter {
 	 * Destroy the Book and all associated objects
 	 */
 	destroy(): void {
-		this.opened = undefined;
-		this.loading = undefined;
-		this.loaded = undefined;
-		this.ready = undefined;
+		this.opened = undefined!;
+		this.loading = undefined!;
+		this.loaded = undefined!;
+		this.ready = undefined!;
 
 		this.isOpen = false;
 		this.isRendered = false;
@@ -809,8 +809,8 @@ class Book implements IEventEmitter {
 			this.storage = undefined;
 		}
 
-		this.spine = undefined;
-		this.locations = undefined;
+		this.spine = undefined!;
+		this.locations = undefined!;
 		this.pageList = undefined;
 		this.archive = undefined;
 		this.resources = undefined;
