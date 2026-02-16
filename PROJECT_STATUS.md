@@ -18,7 +18,7 @@
 
 ### Stage C: Improvements
 - [x] Enable `noImplicitAny` (270 implicit-any params annotated)
-- [x] Replace ~528 explicit `any` with proper types (~136 remain across 28 files)
+- [x] Replace ~528 explicit `any` with proper types (~64 remain across 22 files)
 - [x] Type all public APIs (no `any` in user-facing signatures)
 - [x] Fix CSS injection vulnerability (use `textContent` instead of `innerHTML` for style elements)
 - [x] Fix dangerous URL scheme handling (strip `javascript:` and `data:text/html` hrefs)
@@ -31,7 +31,7 @@
 - [x] Add `"sideEffects": false` to package.json (enables better tree-shaking for consumers)
 - [ ] Node.js support (parsing-only entry point)
 - [ ] Improve test coverage (currently 14% — 6 test files for 42 source files)
-- [ ] Reduce remaining `any` types (136 across 28 files, concentrated in queue.ts, store.ts, inline.ts)
+- [ ] Reduce remaining `any` types (~64 across 22 files, concentrated in continuous/index.ts, snap.ts, contents.ts, locations.ts)
 
 ---
 
@@ -97,7 +97,7 @@ All formats are single-file bundles. `preserveModules` was considered for ESM bu
 
 - **No Node.js support** — requires a DOM environment; parsing-only entry point planned
 - **Single-file ESM bundle** — `Book` imports nearly everything, so `preserveModules` wouldn't help much
-- **~136 `any` types remain** — concentrated in `queue.ts` (15), `store.ts` (17), `inline.ts` (19), `core.ts` (12)
+- **~64 `any` types remain** — concentrated in `continuous/index.ts` (13), `snap.ts` (10), `contents.ts` (6), `locations.ts` (6)
 
 ---
 

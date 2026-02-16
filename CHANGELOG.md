@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.4.4 (2026-02-16)
+
+### Bug fixes
+
+- Fix 6 unintended behavioral changes from TypeScript migration:
+  - Restore `locations.parse()` order: check empty text before starting range
+  - Restore `rendition` `metadata.minSpreadWidth` fallback
+  - Revert `contents.css()` to bracket access for camelCase compat
+  - Remove incorrect BINARY fallback in `book.determineType()`
+  - Restore `window` guard on `_URL` for Node.js/SSR safety
+  - Restore `qs()` returning `null` instead of `undefined`
+- Fix 3 more unintended behavioral changes:
+  - Restore `EpubCFI.compare()` offset ordering when one offset is null
+  - Remove `parseComponent()` `.filter()` that changed step array indices
+  - Fix `store.createUrl()` promise hanging forever when value is undefined
+- Fix `store()` replacement string value coerced to boolean
+
+### Type safety
+
+- Remove ~100 `any` types across 22 source files (~64 remain)
+- Add `defer<T>` generic type and cascade across 16 files
+- Add Window augmentation for vendor URL prefixes
+- Fix type errors from stricter queue `enqueue` signature
+
 ## 0.4.3 (2026-02-15)
 
 ### Security

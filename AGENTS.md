@@ -22,6 +22,7 @@ All project rules and conventions are below. See also `README.md` for project ov
 ### TypeScript
 - Full `strict: true` (noImplicitAny, strictNullChecks, strictPropertyInitialization, etc.)
 - API-compatible with epubjs v0.3.93 — do not break the public API
+- When adding or tightening types, do not introduce unintended behavioral changes — adding null guards is fine, but do not change return values, filter arrays, or alter control flow just to satisfy the type checker
 - ES6 classes with inline typed emitter
 - Tabs for indentation, double quotes for strings
 
