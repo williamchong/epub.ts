@@ -63,7 +63,7 @@ class Hook {
 				executing = task.call(context, ...args);
 			} catch (_err) {
 				// eslint-disable-next-line no-console
-				console.log(_err);
+				console.error(_err);
 			}
 
 			if(executing && typeof executing["then"] === "function") {

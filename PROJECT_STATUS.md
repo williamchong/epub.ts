@@ -111,5 +111,4 @@ All formats are single-file bundles. `preserveModules` was considered for ESM bu
 2. Improve test coverage — untested: Rendition, Contents, Spine, Navigation, Packaging, Archive, all view managers
 
 ### Medium Priority
-3. Replace empty catch blocks with proper error propagation (~15 instances)
-4. Explore splitting `Book` dependency graph for better tree-shaking
+3. Explore splitting `Book` dependency graph for better tree-shaking

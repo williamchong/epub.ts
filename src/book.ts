@@ -561,6 +561,9 @@ class Book implements IEventEmitter {
 			.catch((err) => {
 				// eslint-disable-next-line no-console
 				console.error(err);
+				this.loaded.displayOptions.then(() => {
+					this.opening.resolve(this);
+				});
 			});
 		} else {
 			// Resolve book opened promise
