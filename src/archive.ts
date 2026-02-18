@@ -130,7 +130,7 @@ class Archive {
 	 * @return {Blob}
 	 */
 	getBlob(url: string, mimeType?: string): Promise<Blob> | undefined {
-		const decodededUrl = window.decodeURIComponent(url.substr(1)); // Remove first slash
+		const decodededUrl = decodeURIComponent(url.substr(1)); // Remove first slash
 		const entry = this.zip!.file(decodededUrl);
 
 		if(entry) {
@@ -149,7 +149,7 @@ class Archive {
 	 * @return text content
 	 */
 	getText(url: string, _encoding?: string): Promise<string> | undefined {
-		const decodededUrl = window.decodeURIComponent(url.substr(1)); // Remove first slash
+		const decodededUrl = decodeURIComponent(url.substr(1)); // Remove first slash
 		const entry = this.zip!.file(decodededUrl);
 
 		if(entry) {
@@ -167,7 +167,7 @@ class Archive {
 	 * @return {string} base64 encoded
 	 */
 	getBase64(url: string, mimeType?: string): Promise<string> | undefined {
-		const decodededUrl = window.decodeURIComponent(url.substr(1)); // Remove first slash
+		const decodededUrl = decodeURIComponent(url.substr(1)); // Remove first slash
 		const entry = this.zip!.file(decodededUrl);
 
 		if(entry) {
@@ -187,7 +187,7 @@ class Archive {
 	 */
 	createUrl(url: string, options?: { base64?: boolean }): Promise<string> {
 		const deferred = new defer<string>();
-		const _URL = window.URL || window.webkitURL || window.mozURL;
+		const _URL = typeof window !== "undefined" ? (window.URL || window.webkitURL || window.mozURL) : URL;
 		let tempUrl;
 		let response;
 		const useBase64 = options && options.base64;
@@ -242,13 +242,13 @@ class Archive {
 	 * @param  {string} url url of the item in the archive
 	 */
 	revokeUrl(url: string): void {
-		const _URL = window.URL || window.webkitURL || window.mozURL;
+		const _URL = typeof window !== "undefined" ? (window.URL || window.webkitURL || window.mozURL) : URL;
 		const fromCache = this.urlCache[url];
 		if(fromCache) _URL.revokeObjectURL(fromCache);
 	}
 
 	destroy(): void {
-		const _URL = window.URL || window.webkitURL || window.mozURL;
+		const _URL = typeof window !== "undefined" ? (window.URL || window.webkitURL || window.mozURL) : URL;
 		for (const fromCache in this.urlCache) {
 			_URL.revokeObjectURL(fromCache);
 		}
