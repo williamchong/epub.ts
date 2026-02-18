@@ -249,8 +249,9 @@ class Archive {
 
 	destroy(): void {
 		const _URL = typeof window !== "undefined" ? (window.URL || window.webkitURL || window.mozURL) : URL;
-		for (const fromCache in this.urlCache) {
-			_URL.revokeObjectURL(fromCache);
+		for (const key in this.urlCache) {
+			const cachedUrl = this.urlCache[key];
+			if (cachedUrl) _URL.revokeObjectURL(cachedUrl);
 		}
 		this.zip = undefined;
 		this.urlCache = {};
