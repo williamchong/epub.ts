@@ -51,7 +51,7 @@ fileInput.addEventListener("change", async (event) => {
 
 ### Node.js (parsing only)
 
-Parse EPUB metadata, spine, navigation, and section content without a browser. Requires [`linkedom`](https://github.com/nicoleahmed/linkedom) as a peer dependency.
+Parse EPUB metadata, spine, navigation, and section content without a browser. Requires [`linkedom`](https://github.com/WebReflection/linkedom) as a peer dependency.
 
 ```bash
 npm install linkedom
